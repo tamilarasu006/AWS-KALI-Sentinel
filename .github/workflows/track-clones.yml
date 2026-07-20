@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          token: ${{ secrets.TRAFFIC_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Fetch clone traffic
         env:
