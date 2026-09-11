@@ -39,7 +39,7 @@ def _make_sqlite(tmp_path):
 
 def _make_bm25():
     bm25_mod = pytest.importorskip(
-        "DEMON.tools.storage.bm25",
+        "OpenDEMON.tools.storage.bm25",
         exc_type=ImportError,
     )
     BM25Memory = bm25_mod.BM25Memory

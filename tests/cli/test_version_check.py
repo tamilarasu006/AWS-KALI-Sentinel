@@ -221,30 +221,30 @@ class TestGetLatestVersion:
 
 
 class TestCheckForUpdates:
-    @patch("DEMON.cli._version_check._do_check")
+    @patch("OpenDEMON.cli._version_check._do_check")
     def test_runs_for_ask_command(self, mock_do):
         check_for_updates("ask")
         mock_do.assert_called_once()
 
-    @patch("DEMON.cli._version_check._do_check")
+    @patch("OpenDEMON.cli._version_check._do_check")
     def test_runs_for_doctor_command(self, mock_do):
         """Widened list: doctor wasn't checked before."""
         check_for_updates("doctor")
         mock_do.assert_called_once()
 
-    @patch("DEMON.cli._version_check._do_check")
+    @patch("OpenDEMON.cli._version_check._do_check")
     def test_skips_unknown_command(self, mock_do):
         check_for_updates("_bootstrap")
         mock_do.assert_not_called()
 
-    @patch("DEMON.cli._version_check._do_check")
+    @patch("OpenDEMON.cli._version_check._do_check")
     def test_ci_env_short_circuits_widely(self, mock_do, monkeypatch):
         monkeypatch.setenv("CI", "1")
         check_for_updates("ask")
         mock_do.assert_not_called()
 
     @patch(
-        "DEMON.cli._version_check._do_check",
+        "OpenDEMON.cli._version_check._do_check",
         side_effect=Exception("boom"),
     )
     def test_exception_in_do_check_never_propagates(self, mock_do):

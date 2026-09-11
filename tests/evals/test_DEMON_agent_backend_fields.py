@@ -9,7 +9,7 @@ class TestDEMONAgentExtendedFields:
     def test_generate_full_includes_framework_and_commit(self) -> None:
         from OpenDEMON.evals.backends.DEMON_agent import DEMONAgentBackend
 
-        with patch("DEMON.system.SystemBuilder") as MockSB:
+        with patch("OpenDEMON.system.SystemBuilder") as MockSB:
             mock_system = MagicMock()
             mock_system.ask.return_value = {
                 "content": "answer",

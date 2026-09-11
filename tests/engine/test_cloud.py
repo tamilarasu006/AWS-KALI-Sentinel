@@ -285,7 +285,7 @@ class TestCodexGenerate:
         }
 
         with mock.patch(
-            "DEMON.engine.cloud.httpx.post",
+            "OpenDEMON.engine.cloud.httpx.post",
             return_value=fake_response,
         ) as mock_post:
             result = engine.generate(
@@ -332,7 +332,7 @@ class TestCodexGenerate:
         }
 
         with mock.patch(
-            "DEMON.engine.cloud.httpx.post",
+            "OpenDEMON.engine.cloud.httpx.post",
             return_value=fake_response,
         ):
             result = engine.generate(
@@ -361,7 +361,7 @@ class TestCodexGenerate:
         }
 
         with mock.patch(
-            "DEMON.engine.cloud.httpx.post",
+            "OpenDEMON.engine.cloud.httpx.post",
             return_value=fake_response,
         ) as mock_post:
             engine.generate(

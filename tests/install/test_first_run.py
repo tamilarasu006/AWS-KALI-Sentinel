@@ -44,9 +44,9 @@ def test_routes_to_init_when_no_config(tmp_DEMON_home: Path) -> None:
 def test_handles_missing_state_dir(tmp_path: Path, monkeypatch) -> None:
     """When ~/.DEMON doesn't exist at all, route to init."""
     fresh_home = tmp_path / "fresh"
-    monkeypatch.setattr("DEMON.core.config.DEFAULT_CONFIG_DIR", fresh_home)
+    monkeypatch.setattr("OpenDEMON.core.config.DEFAULT_CONFIG_DIR", fresh_home)
     monkeypatch.setattr(
-        "DEMON.core.config.DEFAULT_CONFIG_PATH", fresh_home / "config.toml"
+        "OpenDEMON.core.config.DEFAULT_CONFIG_PATH", fresh_home / "config.toml"
     )
     ctx = _ctx_with_invocation(None)
     _first_run.check_and_route(ctx)
@@ -69,7 +69,7 @@ def test_root_group_invokes_guard_on_bare_DEMON(
     def _recorder(ctx) -> None:
         calls.append(ctx.invoked_subcommand)
 
-    monkeypatch.setattr("DEMON.cli._first_run.check_and_route", _recorder)
+    monkeypatch.setattr("OpenDEMON.cli._first_run.check_and_route", _recorder)
 
     from OpenDEMON.cli import cli
 
@@ -89,7 +89,7 @@ def test_root_group_does_not_invoke_guard_on_subcommand(
     def _recorder(ctx) -> None:
         calls.append(ctx.invoked_subcommand)
 
-    monkeypatch.setattr("DEMON.cli._first_run.check_and_route", _recorder)
+    monkeypatch.setattr("OpenDEMON.cli._first_run.check_and_route", _recorder)
 
     from OpenDEMON.cli import cli
 

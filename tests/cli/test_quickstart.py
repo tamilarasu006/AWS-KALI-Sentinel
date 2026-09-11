@@ -28,27 +28,27 @@ class TestQuickstartCommand:
         hw.gpu = MagicMock(name="Test GPU", vram_gb=24, count=1, vendor="nvidia")
 
         with (
-            patch("DEMON.cli.quickstart_cmd.detect_hardware", return_value=hw),
-            patch("DEMON.cli.quickstart_cmd.DEFAULT_CONFIG_PATH", config_path),
-            patch("DEMON.cli.quickstart_cmd.DEFAULT_CONFIG_DIR", tmp_path),
+            patch("OpenDEMON.cli.quickstart_cmd.detect_hardware", return_value=hw),
+            patch("OpenDEMON.cli.quickstart_cmd.DEFAULT_CONFIG_PATH", config_path),
+            patch("OpenDEMON.cli.quickstart_cmd.DEFAULT_CONFIG_DIR", tmp_path),
             patch(
-                "DEMON.cli.quickstart_cmd.generate_default_toml",
+                "OpenDEMON.cli.quickstart_cmd.generate_default_toml",
                 return_value="[engine]\n",
             ),
             patch(
-                "DEMON.cli.quickstart_cmd.recommend_engine",
+                "OpenDEMON.cli.quickstart_cmd.recommend_engine",
                 return_value="ollama",
             ),
             patch(
-                "DEMON.cli.quickstart_cmd._check_engine_health",
+                "OpenDEMON.cli.quickstart_cmd._check_engine_health",
                 return_value=True,
             ),
             patch(
-                "DEMON.cli.quickstart_cmd._check_model_available",
+                "OpenDEMON.cli.quickstart_cmd._check_model_available",
                 return_value=True,
             ),
             patch(
-                "DEMON.cli.quickstart_cmd._test_query",
+                "OpenDEMON.cli.quickstart_cmd._test_query",
                 return_value="Hello!",
             ),
         ):
@@ -70,27 +70,27 @@ class TestQuickstartCommand:
         hw.gpu = None
 
         with (
-            patch("DEMON.cli.quickstart_cmd.detect_hardware", return_value=hw),
-            patch("DEMON.cli.quickstart_cmd.DEFAULT_CONFIG_PATH", config_path),
-            patch("DEMON.cli.quickstart_cmd.DEFAULT_CONFIG_DIR", tmp_path),
+            patch("OpenDEMON.cli.quickstart_cmd.detect_hardware", return_value=hw),
+            patch("OpenDEMON.cli.quickstart_cmd.DEFAULT_CONFIG_PATH", config_path),
+            patch("OpenDEMON.cli.quickstart_cmd.DEFAULT_CONFIG_DIR", tmp_path),
             patch(
-                "DEMON.cli.quickstart_cmd.generate_default_toml",
+                "OpenDEMON.cli.quickstart_cmd.generate_default_toml",
                 return_value="[engine]\n",
             ),
             patch(
-                "DEMON.cli.quickstart_cmd.recommend_engine",
+                "OpenDEMON.cli.quickstart_cmd.recommend_engine",
                 return_value="ollama",
             ),
             patch(
-                "DEMON.cli.quickstart_cmd._check_engine_health",
+                "OpenDEMON.cli.quickstart_cmd._check_engine_health",
                 return_value=True,
             ),
             patch(
-                "DEMON.cli.quickstart_cmd._check_model_available",
+                "OpenDEMON.cli.quickstart_cmd._check_model_available",
                 return_value=True,
             ),
             patch(
-                "DEMON.cli.quickstart_cmd._test_query",
+                "OpenDEMON.cli.quickstart_cmd._test_query",
                 return_value="Hello!",
             ),
         ):
@@ -114,26 +114,26 @@ class TestQuickstartCommand:
         hw.gpu = None
 
         with (
-            patch("DEMON.cli.quickstart_cmd.detect_hardware", return_value=hw),
-            patch("DEMON.cli.quickstart_cmd.DEFAULT_CONFIG_PATH", config_path),
-            patch("DEMON.cli.quickstart_cmd.DEFAULT_CONFIG_DIR", tmp_path),
+            patch("OpenDEMON.cli.quickstart_cmd.detect_hardware", return_value=hw),
+            patch("OpenDEMON.cli.quickstart_cmd.DEFAULT_CONFIG_PATH", config_path),
+            patch("OpenDEMON.cli.quickstart_cmd.DEFAULT_CONFIG_DIR", tmp_path),
             patch(
-                "DEMON.cli.quickstart_cmd.generate_default_toml",
+                "OpenDEMON.cli.quickstart_cmd.generate_default_toml",
                 return_value="[engine]\nnew = true\n",
             ),
             patch(
-                "DEMON.cli.quickstart_cmd.recommend_engine",
+                "OpenDEMON.cli.quickstart_cmd.recommend_engine",
                 return_value="ollama",
             ),
             patch(
-                "DEMON.cli.quickstart_cmd._check_engine_health",
+                "OpenDEMON.cli.quickstart_cmd._check_engine_health",
                 return_value=True,
             ),
             patch(
-                "DEMON.cli.quickstart_cmd._check_model_available",
+                "OpenDEMON.cli.quickstart_cmd._check_model_available",
                 return_value=True,
             ),
-            patch("DEMON.cli.quickstart_cmd._test_query", return_value="Hello!"),
+            patch("OpenDEMON.cli.quickstart_cmd._test_query", return_value="Hello!"),
         ):
             runner = CliRunner()
             result = runner.invoke(cli, ["quickstart", "--force"])
@@ -151,19 +151,19 @@ class TestQuickstartCommand:
         hw.gpu = None
 
         with (
-            patch("DEMON.cli.quickstart_cmd.detect_hardware", return_value=hw),
-            patch("DEMON.cli.quickstart_cmd.DEFAULT_CONFIG_PATH", config_path),
-            patch("DEMON.cli.quickstart_cmd.DEFAULT_CONFIG_DIR", tmp_path),
+            patch("OpenDEMON.cli.quickstart_cmd.detect_hardware", return_value=hw),
+            patch("OpenDEMON.cli.quickstart_cmd.DEFAULT_CONFIG_PATH", config_path),
+            patch("OpenDEMON.cli.quickstart_cmd.DEFAULT_CONFIG_DIR", tmp_path),
             patch(
-                "DEMON.cli.quickstart_cmd.generate_default_toml",
+                "OpenDEMON.cli.quickstart_cmd.generate_default_toml",
                 return_value="[engine]\n",
             ),
             patch(
-                "DEMON.cli.quickstart_cmd.recommend_engine",
+                "OpenDEMON.cli.quickstart_cmd.recommend_engine",
                 return_value="ollama",
             ),
             patch(
-                "DEMON.cli.quickstart_cmd._check_engine_health",
+                "OpenDEMON.cli.quickstart_cmd._check_engine_health",
                 return_value=False,
             ),
         ):
@@ -186,31 +186,31 @@ class TestQuickstartCommand:
         hw.gpu = MagicMock(name="Apple GPU", vram_gb=16, count=1, vendor="apple")
 
         with (
-            patch("DEMON.cli.quickstart_cmd.detect_hardware", return_value=hw),
-            patch("DEMON.cli.quickstart_cmd.DEFAULT_CONFIG_PATH", config_path),
-            patch("DEMON.cli.quickstart_cmd.DEFAULT_CONFIG_DIR", tmp_path),
+            patch("OpenDEMON.cli.quickstart_cmd.detect_hardware", return_value=hw),
+            patch("OpenDEMON.cli.quickstart_cmd.DEFAULT_CONFIG_PATH", config_path),
+            patch("OpenDEMON.cli.quickstart_cmd.DEFAULT_CONFIG_DIR", tmp_path),
             patch(
-                "DEMON.cli.quickstart_cmd.generate_default_toml",
+                "OpenDEMON.cli.quickstart_cmd.generate_default_toml",
                 return_value='[engine]\ndefault = "mlx"\n',
             ),
             patch(
-                "DEMON.cli.quickstart_cmd.recommend_engine",
+                "OpenDEMON.cli.quickstart_cmd.recommend_engine",
                 return_value="mlx",
             ),
             patch(
-                "DEMON.cli.quickstart_cmd._check_engine_health",
+                "OpenDEMON.cli.quickstart_cmd._check_engine_health",
                 return_value=False,
             ),
             patch(
-                "DEMON.cli.quickstart_cmd._discover_healthy_engines",
+                "OpenDEMON.cli.quickstart_cmd._discover_healthy_engines",
                 return_value=["ollama"],
             ),
             patch(
-                "DEMON.cli.quickstart_cmd._check_model_available",
+                "OpenDEMON.cli.quickstart_cmd._check_model_available",
                 return_value=True,
             ),
             patch(
-                "DEMON.cli.quickstart_cmd._test_query",
+                "OpenDEMON.cli.quickstart_cmd._test_query",
                 return_value="Hello!",
             ),
         ):

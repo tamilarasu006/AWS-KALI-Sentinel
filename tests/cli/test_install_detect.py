@@ -71,7 +71,7 @@ def test_unknown_install_falls_back_to_pypi(tmp_path, monkeypatch):
 
 def test_missing_DEMON_file_falls_back_to_pypi(monkeypatch):
     """DEMON unimportable / no __file__ — still get a sane default."""
-    with patch("DEMON.cli._install_detect.Path") as mock_path:
+    with patch("OpenDEMON.cli._install_detect.Path") as mock_path:
         mock_path.side_effect = Exception("boom")
         info = detect_install()
     assert info.kind == "unknown"

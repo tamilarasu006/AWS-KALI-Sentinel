@@ -10,20 +10,20 @@ import pytest
 
 # All connectors that should be testable without credentials
 _LOCAL_CONNECTORS = [
-    ("apple_notes", "DEMON.connectors.apple_notes", "AppleNotesConnector"),
-    ("imessage", "DEMON.connectors.imessage", "IMessageConnector"),
+    ("apple_notes", "OpenDEMON.connectors.apple_notes", "AppleNotesConnector"),
+    ("imessage", "OpenDEMON.connectors.imessage", "IMessageConnector"),
 ]
 
 _TOKEN_CONNECTORS = [
-    ("gmail_imap", "DEMON.connectors.gmail_imap", "GmailIMAPConnector"),
-    ("outlook", "DEMON.connectors.outlook", "OutlookConnector"),
-    ("slack", "DEMON.connectors.slack_connector", "SlackConnector"),
-    ("notion", "DEMON.connectors.notion", "NotionConnector"),
-    ("granola", "DEMON.connectors.granola", "GranolaConnector"),
-    ("gdrive", "DEMON.connectors.gdrive", "GDriveConnector"),
-    ("gcalendar", "DEMON.connectors.gcalendar", "GCalendarConnector"),
-    ("gcontacts", "DEMON.connectors.gcontacts", "GContactsConnector"),
-    ("dropbox", "DEMON.connectors.dropbox", "DropboxConnector"),
+    ("gmail_imap", "OpenDEMON.connectors.gmail_imap", "GmailIMAPConnector"),
+    ("outlook", "OpenDEMON.connectors.outlook", "OutlookConnector"),
+    ("slack", "OpenDEMON.connectors.slack_connector", "SlackConnector"),
+    ("notion", "OpenDEMON.connectors.notion", "NotionConnector"),
+    ("granola", "OpenDEMON.connectors.granola", "GranolaConnector"),
+    ("gdrive", "OpenDEMON.connectors.gdrive", "GDriveConnector"),
+    ("gcalendar", "OpenDEMON.connectors.gcalendar", "GCalendarConnector"),
+    ("gcontacts", "OpenDEMON.connectors.gcontacts", "GContactsConnector"),
+    ("dropbox", "OpenDEMON.connectors.dropbox", "DropboxConnector"),
 ]
 
 _ALL_CONNECTORS = _LOCAL_CONNECTORS + _TOKEN_CONNECTORS

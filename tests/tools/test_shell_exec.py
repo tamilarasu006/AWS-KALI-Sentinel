@@ -43,7 +43,7 @@ class TestShellExecTool:
         import OpenDEMON.tools as tools_pkg
         from OpenDEMON.core.registry import ToolRegistry
 
-        sys.modules.pop("DEMON.tools.shell_exec", None)
+        sys.modules.pop("OpenDEMON.tools.shell_exec", None)
         importlib.reload(tools_pkg)
 
         assert ToolRegistry.contains("shell_exec")
@@ -76,7 +76,7 @@ class TestShellExecTool:
         )
         tool = ShellExecTool()
         with patch(
-            "DEMON._rust_bridge.get_rust_module",
+            "OpenDEMON._rust_bridge.get_rust_module",
             return_value=mock_mod,
         ):
             result = tool.execute(command="echo hello")
@@ -90,7 +90,7 @@ class TestShellExecTool:
         )
         tool = ShellExecTool()
         with patch(
-            "DEMON._rust_bridge.get_rust_module",
+            "OpenDEMON._rust_bridge.get_rust_module",
             return_value=mock_mod,
         ):
             result = tool.execute(command="echo error_msg >&2")
@@ -115,7 +115,7 @@ class TestShellExecTool:
         )
         tool = ShellExecTool()
         with patch(
-            "DEMON._rust_bridge.get_rust_module",
+            "OpenDEMON._rust_bridge.get_rust_module",
             return_value=mock_mod,
         ):
             result = tool.execute(command="echo ok", timeout=999)
@@ -128,7 +128,7 @@ class TestShellExecTool:
         )
         tool = ShellExecTool()
         with patch(
-            "DEMON._rust_bridge.get_rust_module",
+            "OpenDEMON._rust_bridge.get_rust_module",
             return_value=mock_mod,
         ):
             result = tool.execute(command="pwd", working_dir=str(tmp_path))
@@ -187,7 +187,7 @@ class TestShellExecTool:
         )
         tool = ShellExecTool()
         with patch(
-            "DEMON._rust_bridge.get_rust_module",
+            "OpenDEMON._rust_bridge.get_rust_module",
             return_value=mock_mod,
         ):
             result = tool.execute(command="echo ok")
@@ -204,7 +204,7 @@ class TestShellExecTool:
         )
         tool = ShellExecTool()
         with patch(
-            "DEMON._rust_bridge.get_rust_module",
+            "OpenDEMON._rust_bridge.get_rust_module",
             return_value=mock_mod,
         ):
             result = tool.execute(command="exit 42")
@@ -233,7 +233,7 @@ class TestShellExecTool:
         )
         tool = ShellExecTool()
         with patch(
-            "DEMON._rust_bridge.get_rust_module",
+            "OpenDEMON._rust_bridge.get_rust_module",
             return_value=mock_mod,
         ):
             result = tool.execute(command="true")
@@ -259,7 +259,7 @@ class TestShellExecTool:
         )
         tool = ShellExecTool()
         with patch(
-            "DEMON._rust_bridge.get_rust_module",
+            "OpenDEMON._rust_bridge.get_rust_module",
             return_value=mock_mod,
         ):
             result = tool.execute(command="echo ok")
@@ -272,7 +272,7 @@ class TestShellExecTool:
         )
         tool = ShellExecTool()
         with patch(
-            "DEMON._rust_bridge.get_rust_module",
+            "OpenDEMON._rust_bridge.get_rust_module",
             return_value=mock_mod,
         ):
             result = tool.execute(command="/nonexistent_binary")

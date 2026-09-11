@@ -32,7 +32,7 @@ class TestConfigSet:
         env = {"DEMON_CONFIG": str(config_file)}
         with (
             mock.patch.dict(os.environ, env),
-            mock.patch("DEMON.cli.config_cmd.httpx"),
+            mock.patch("OpenDEMON.cli.config_cmd.httpx"),
         ):
             result = CliRunner().invoke(
                 cli,
@@ -79,7 +79,7 @@ class TestConfigSet:
         env = {"DEMON_CONFIG": str(config_file)}
         with (
             mock.patch.dict(os.environ, env),
-            mock.patch("DEMON.cli.config_cmd.httpx") as mock_httpx,
+            mock.patch("OpenDEMON.cli.config_cmd.httpx") as mock_httpx,
         ):
             mock_httpx.get.return_value = mock.Mock(status_code=200)
             result = CliRunner().invoke(
@@ -96,7 +96,7 @@ class TestConfigSet:
         env = {"DEMON_CONFIG": str(config_file)}
         with (
             mock.patch.dict(os.environ, env),
-            mock.patch("DEMON.cli.config_cmd.httpx") as mock_httpx,
+            mock.patch("OpenDEMON.cli.config_cmd.httpx") as mock_httpx,
         ):
             mock_httpx.get.side_effect = Exception("Connection refused")
             result = CliRunner().invoke(

@@ -177,8 +177,8 @@ def create_app(
         Optional DEMONConfig for other settings.
     """
     app = FastAPI(
-        title="DEMON API",
-        description="OpenAI-compatible API server for DEMON",
+        title="KALI API",
+        description="OpenAI-compatible API server for KALI AI",
         version="0.1.0",
     )
 

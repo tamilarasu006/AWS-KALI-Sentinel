@@ -29,9 +29,9 @@ import pytest
 pytestmark = pytest.mark.hub
 
 PROVIDERS = [
-    ("DEMON.evals.datasets.adp", "ADPDataset"),
-    ("DEMON.evals.datasets.toolorchestra", "ToolOrchestraDataset"),
-    ("DEMON.evals.datasets.generalthoughts", "GeneralThoughtsDataset"),
+    ("OpenDEMON.evals.datasets.adp", "ADPDataset"),
+    ("OpenDEMON.evals.datasets.toolorchestra", "ToolOrchestraDataset"),
+    ("OpenDEMON.evals.datasets.generalthoughts", "GeneralThoughtsDataset"),
 ]
 
 

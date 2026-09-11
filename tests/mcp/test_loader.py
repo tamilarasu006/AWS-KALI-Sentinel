@@ -33,12 +33,12 @@ def _fake_tool(name):
 @pytest.fixture
 def _mock_mcp_stack():
     """Patch MCPClient / transports / MCPToolProvider so no real I/O happens."""
-    with patch("DEMON.mcp.client.MCPClient") as MockClient, patch(
-        "DEMON.mcp.transport.StreamableHTTPTransport"
+    with patch("OpenDEMON.mcp.client.MCPClient") as MockClient, patch(
+        "OpenDEMON.mcp.transport.StreamableHTTPTransport"
     ) as MockHttp, patch(
-        "DEMON.mcp.transport.StdioTransport"
+        "OpenDEMON.mcp.transport.StdioTransport"
     ) as MockStdio, patch(
-        "DEMON.tools.mcp_adapter.MCPToolProvider"
+        "OpenDEMON.tools.mcp_adapter.MCPToolProvider"
     ) as MockProvider:
         # Default: any provider discovers no tools (per-test overrides as needed)
         MockProvider.return_value.discover.return_value = []

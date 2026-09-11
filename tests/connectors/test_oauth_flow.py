@@ -48,7 +48,7 @@ def test_gdrive_handle_callback_persists_creds_no_background_flow(
     creds = str(tmp_path / "gdrive.json")
     conn = GDriveConnector(credentials_path=creds)
 
-    with patch("DEMON.core.open_browser") as mock_browser:
+    with patch("OpenDEMON.core.open_browser") as mock_browser:
         conn.handle_callback("test-id.apps.googleusercontent.com:test-secret")
 
     mock_browser.assert_not_called()
@@ -87,7 +87,7 @@ def test_gcalendar_handle_callback_persists_creds_no_background_flow(
     creds = str(tmp_path / "gcalendar.json")
     conn = GCalendarConnector(credentials_path=creds)
 
-    with patch("DEMON.core.open_browser") as mock_browser:
+    with patch("OpenDEMON.core.open_browser") as mock_browser:
         conn.handle_callback("test-id.apps.googleusercontent.com:test-secret")
 
     mock_browser.assert_not_called()
@@ -108,7 +108,7 @@ def test_gcontacts_handle_callback_persists_creds_no_background_flow(
     creds = str(tmp_path / "gcontacts.json")
     conn = GContactsConnector(credentials_path=creds)
 
-    with patch("DEMON.core.open_browser") as mock_browser:
+    with patch("OpenDEMON.core.open_browser") as mock_browser:
         conn.handle_callback("test-id.apps.googleusercontent.com:test-secret")
 
     mock_browser.assert_not_called()

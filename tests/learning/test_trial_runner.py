@@ -179,11 +179,11 @@ class TestRunTrial:
         defaults.update(overrides)
         return RunSummary(**defaults)
 
-    @patch("DEMON.evals.cli._build_scorer")
-    @patch("DEMON.evals.cli._build_judge_backend")
-    @patch("DEMON.evals.cli._build_dataset")
-    @patch("DEMON.evals.cli._build_backend")
-    @patch("DEMON.evals.core.runner.EvalRunner")
+    @patch("OpenDEMON.evals.cli._build_scorer")
+    @patch("OpenDEMON.evals.cli._build_judge_backend")
+    @patch("OpenDEMON.evals.cli._build_dataset")
+    @patch("OpenDEMON.evals.cli._build_backend")
+    @patch("OpenDEMON.evals.core.runner.EvalRunner")
     def test_run_trial_returns_trial_result(
         self,
         mock_runner_cls,
@@ -216,11 +216,11 @@ class TestRunTrial:
         mock_runner_cls.assert_called_once()
         mock_runner_instance.run.assert_called_once()
 
-    @patch("DEMON.evals.cli._build_scorer")
-    @patch("DEMON.evals.cli._build_judge_backend")
-    @patch("DEMON.evals.cli._build_dataset")
-    @patch("DEMON.evals.cli._build_backend")
-    @patch("DEMON.evals.core.runner.EvalRunner")
+    @patch("OpenDEMON.evals.cli._build_scorer")
+    @patch("OpenDEMON.evals.cli._build_judge_backend")
+    @patch("OpenDEMON.evals.cli._build_dataset")
+    @patch("OpenDEMON.evals.cli._build_backend")
+    @patch("OpenDEMON.evals.core.runner.EvalRunner")
     def test_run_trial_accuracy_from_summary(
         self,
         mock_runner_cls,
@@ -240,11 +240,11 @@ class TestRunTrial:
 
         assert result.accuracy == 0.92
 
-    @patch("DEMON.evals.cli._build_scorer")
-    @patch("DEMON.evals.cli._build_judge_backend")
-    @patch("DEMON.evals.cli._build_dataset")
-    @patch("DEMON.evals.cli._build_backend")
-    @patch("DEMON.evals.core.runner.EvalRunner")
+    @patch("OpenDEMON.evals.cli._build_scorer")
+    @patch("OpenDEMON.evals.cli._build_judge_backend")
+    @patch("OpenDEMON.evals.cli._build_dataset")
+    @patch("OpenDEMON.evals.cli._build_backend")
+    @patch("OpenDEMON.evals.core.runner.EvalRunner")
     def test_run_trial_tokens_summed(
         self,
         mock_runner_cls,
@@ -267,11 +267,11 @@ class TestRunTrial:
 
         assert result.total_tokens == 5000
 
-    @patch("DEMON.evals.cli._build_scorer")
-    @patch("DEMON.evals.cli._build_judge_backend")
-    @patch("DEMON.evals.cli._build_dataset")
-    @patch("DEMON.evals.cli._build_backend")
-    @patch("DEMON.evals.core.runner.EvalRunner")
+    @patch("OpenDEMON.evals.cli._build_scorer")
+    @patch("OpenDEMON.evals.cli._build_judge_backend")
+    @patch("OpenDEMON.evals.cli._build_dataset")
+    @patch("OpenDEMON.evals.cli._build_backend")
+    @patch("OpenDEMON.evals.core.runner.EvalRunner")
     def test_run_trial_summary_attached(
         self,
         mock_runner_cls,
@@ -291,11 +291,11 @@ class TestRunTrial:
 
         assert result.summary is summary
 
-    @patch("DEMON.evals.cli._build_scorer")
-    @patch("DEMON.evals.cli._build_judge_backend")
-    @patch("DEMON.evals.cli._build_dataset")
-    @patch("DEMON.evals.cli._build_backend")
-    @patch("DEMON.evals.core.runner.EvalRunner")
+    @patch("OpenDEMON.evals.cli._build_scorer")
+    @patch("OpenDEMON.evals.cli._build_judge_backend")
+    @patch("OpenDEMON.evals.cli._build_dataset")
+    @patch("OpenDEMON.evals.cli._build_backend")
+    @patch("OpenDEMON.evals.core.runner.EvalRunner")
     def test_run_trial_failure_modes_on_errors(
         self,
         mock_runner_cls,
@@ -316,11 +316,11 @@ class TestRunTrial:
         assert len(result.failure_modes) == 1
         assert "5" in result.failure_modes[0]
 
-    @patch("DEMON.evals.cli._build_scorer")
-    @patch("DEMON.evals.cli._build_judge_backend")
-    @patch("DEMON.evals.cli._build_dataset")
-    @patch("DEMON.evals.cli._build_backend")
-    @patch("DEMON.evals.core.runner.EvalRunner")
+    @patch("OpenDEMON.evals.cli._build_scorer")
+    @patch("OpenDEMON.evals.cli._build_judge_backend")
+    @patch("OpenDEMON.evals.cli._build_dataset")
+    @patch("OpenDEMON.evals.cli._build_backend")
+    @patch("OpenDEMON.evals.core.runner.EvalRunner")
     def test_run_trial_no_failure_modes_when_clean(
         self,
         mock_runner_cls,
@@ -340,11 +340,11 @@ class TestRunTrial:
 
         assert result.failure_modes == []
 
-    @patch("DEMON.evals.cli._build_scorer")
-    @patch("DEMON.evals.cli._build_judge_backend")
-    @patch("DEMON.evals.cli._build_dataset")
-    @patch("DEMON.evals.cli._build_backend")
-    @patch("DEMON.evals.core.runner.EvalRunner")
+    @patch("OpenDEMON.evals.cli._build_scorer")
+    @patch("OpenDEMON.evals.cli._build_judge_backend")
+    @patch("OpenDEMON.evals.cli._build_dataset")
+    @patch("OpenDEMON.evals.cli._build_backend")
+    @patch("OpenDEMON.evals.core.runner.EvalRunner")
     def test_run_trial_closes_backends(
         self,
         mock_runner_cls,
@@ -367,11 +367,11 @@ class TestRunTrial:
         mock_backend.close.assert_called_once()
         mock_judge.close.assert_called_once()
 
-    @patch("DEMON.evals.cli._build_scorer")
-    @patch("DEMON.evals.cli._build_judge_backend")
-    @patch("DEMON.evals.cli._build_dataset")
-    @patch("DEMON.evals.cli._build_backend")
-    @patch("DEMON.evals.core.runner.EvalRunner")
+    @patch("OpenDEMON.evals.cli._build_scorer")
+    @patch("OpenDEMON.evals.cli._build_judge_backend")
+    @patch("OpenDEMON.evals.cli._build_dataset")
+    @patch("OpenDEMON.evals.cli._build_backend")
+    @patch("OpenDEMON.evals.core.runner.EvalRunner")
     def test_run_trial_populates_sample_scores(
         self,
         mock_runner_cls,

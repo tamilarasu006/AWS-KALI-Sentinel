@@ -51,7 +51,7 @@ class TestPullCliMultiEngine:
 
         runner = CliRunner()
         with (
-            mock.patch("DEMON.cli.model.load_config") as mock_cfg,
+            mock.patch("OpenDEMON.cli.model.load_config") as mock_cfg,
             mock.patch("subprocess.run") as mock_run,
         ):
             mock_cfg.return_value.engine.default = "llamacpp"
@@ -73,7 +73,7 @@ class TestPullCliMultiEngine:
 
         runner = CliRunner()
         with (
-            mock.patch("DEMON.cli.model.load_config") as mock_cfg,
+            mock.patch("OpenDEMON.cli.model.load_config") as mock_cfg,
             mock.patch("subprocess.run") as mock_run,
         ):
             mock_cfg.return_value.engine.default = "mlx"
@@ -95,7 +95,7 @@ class TestPullCliMultiEngine:
 
         runner = CliRunner()
         with (
-            mock.patch("DEMON.cli.model.load_config") as mock_cfg,
+            mock.patch("OpenDEMON.cli.model.load_config") as mock_cfg,
             mock.patch("subprocess.run", side_effect=FileNotFoundError),
         ):
             mock_cfg.return_value.engine.default = "llamacpp"

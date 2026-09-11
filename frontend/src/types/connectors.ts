@@ -106,7 +106,7 @@ export const SOURCE_CATALOG: ConnectorMeta[] = [
     unitLabel: 'emails',
     steps: [
       {
-        label: 'Make sure 2-Step Verification is enabled, then generate a 16-character App Password (Mail / Other / "DEMON"). Paste it below \u2014 spaces are fine, and use the app password, not your regular Gmail password.',
+        label: 'Make sure 2-Step Verification is enabled, then generate a 16-character App Password (Mail / Other / "KALI AI"). Paste it below \u2014 spaces are fine, and use the app password, not your regular Gmail password.',
         url: 'https://myaccount.google.com/apppasswords',
         urlLabel: 'How to get an app password \u2192',
       },
@@ -131,7 +131,7 @@ export const SOURCE_CATALOG: ConnectorMeta[] = [
     unitLabel: 'messages',
     steps: [
       {
-        label: 'Go to api.slack.com/apps and click "Create New App" → choose "From scratch". Name it "DEMON" and pick your workspace',
+        label: 'Go to api.slack.com/apps and click "Create New App" → choose "From scratch". Name it "KALI AI" and pick your workspace',
         url: 'https://api.slack.com/apps',
         urlLabel: 'Open Slack Apps',
       },
@@ -148,7 +148,7 @@ export const SOURCE_CATALOG: ConnectorMeta[] = [
         label: 'Paste the user token below. Sync indexes every channel, private channel, DM, and group DM you have access to — no need to invite anything to channels',
       },
       {
-        label: '(Optional) Set the app icon: in the left sidebar click "Basic Information" → scroll to "Display Information" → upload the DEMON logo',
+        label: '(Optional) Set the app icon: in the left sidebar click "Basic Information" → scroll to "Display Information" → upload the KALI AI logo',
         url: 'https://github.com/DEMON/DEMON/blob/main/assets/DEMON-slack-icon.jpg',
         urlLabel: 'Download icon',
       },
@@ -168,7 +168,7 @@ export const SOURCE_CATALOG: ConnectorMeta[] = [
     unitLabel: 'pages',
     steps: [
       {
-        label: 'Go to notion.so/profile/integrations → click "+ New integration". Name it "DEMON", select your workspace, and click Submit',
+        label: 'Go to notion.so/profile/integrations → click "+ New integration". Name it "KALI AI", select your workspace, and click Submit',
         url: 'https://www.notion.so/profile/integrations',
         urlLabel: 'Open Notion Integrations',
       },
@@ -176,7 +176,7 @@ export const SOURCE_CATALOG: ConnectorMeta[] = [
         label: 'Copy the "Internal Integration Secret" (starts with ntn_) and paste it below',
       },
       {
-        label: 'To share ALL your pages at once: open any top-level page → click "..." (top right) → "Connections" → "Add connections" → search "DEMON" → click it. This shares the page and all its sub-pages. Repeat for each top-level page, or share your entire workspace by doing this on every root page',
+        label: 'To share ALL your pages at once: open any top-level page → click "..." (top right) → "Connections" → "Add connections" → search "KALI AI" → click it. This shares the page and all its sub-pages. Repeat for each top-level page, or share your entire workspace by doing this on every root page',
       },
       {
         label: 'Tip: if you have a single top-level page that contains everything, sharing just that one page will share all nested sub-pages automatically',
@@ -217,10 +217,10 @@ export const SOURCE_CATALOG: ConnectorMeta[] = [
         label: 'Open the Apple menu () → System Settings → Privacy & Security (in the left sidebar) → scroll down and click "Full Disk Access"',
       },
       {
-        label: 'Click the "+" button at the bottom of the list. Navigate to Applications → Utilities → select "Terminal.app" (or iTerm2/Warp if you use those). If you\'re using the desktop app, also add "DEMON.app" from Applications',
+        label: 'Click the "+" button at the bottom of the list. Navigate to Applications → Utilities → select "Terminal.app" (or iTerm2/Warp if you use those). If you\'re using the desktop app, also add "KALI AI.app" from Applications',
       },
       {
-        label: 'Toggle the switch ON next to each app you added. Close and reopen your terminal (or restart DEMON). iMessage data will be detected automatically — no credentials needed',
+        label: 'Toggle the switch ON next to each app you added. Close and reopen your terminal (or restart KALI AI). iMessage data will be detected automatically — no credentials needed',
       },
     ],
   },
@@ -242,7 +242,7 @@ export const SOURCE_CATALOG: ConnectorMeta[] = [
         label: 'Alternatively, open Finder → navigate to your vault folder (it contains a hidden .obsidian directory). Right-click the folder → "Copy as Pathname" to get the full path',
       },
       {
-        label: 'Paste the full path below. DEMON will index all .md files in the vault',
+        label: 'Paste the full path below. KALI AI will index all .md files in the vault',
       },
     ],
     inputFields: [
@@ -260,7 +260,7 @@ export const SOURCE_CATALOG: ConnectorMeta[] = [
     unitLabel: 'files',
     steps: [
       {
-        label: 'Go to Google Cloud Console → create a new project (or select an existing one). Give it any name (e.g. "DEMON")',
+        label: 'Go to Google Cloud Console → create a new project (or select an existing one). Give it any name (e.g. "KALI AI")',
         url: 'https://console.cloud.google.com/projectcreate',
         urlLabel: 'Create Project',
       },
@@ -270,7 +270,7 @@ export const SOURCE_CATALOG: ConnectorMeta[] = [
         urlLabel: 'Enable Drive API',
       },
       {
-        label: 'Create OAuth credentials: go to Credentials (link below) → click "+ Create Credentials" → choose "OAuth client ID" → Application type: "Web application". Under "Authorized redirect URIs" add this server\'s callback (e.g. http://localhost:1313/v1/connectors/gdrive/oauth/callback — match the host/port your DEMON server is bound to) → click "Create".',
+        label: 'Create OAuth credentials: go to Credentials (link below) → click "+ Create Credentials" → choose "OAuth client ID" → Application type: "Web application". Under "Authorized redirect URIs" add this server\'s callback (e.g. http://localhost:1313/v1/connectors/gdrive/oauth/callback — match the host/port your KALI AI server is bound to) → click "Create".',
         url: 'https://console.cloud.google.com/apis/credentials',
         urlLabel: 'Open Credentials',
       },
@@ -366,10 +366,10 @@ export const SOURCE_CATALOG: ConnectorMeta[] = [
         label: 'Open the Apple menu () → System Settings → Privacy & Security (in the left sidebar) → scroll down and click "Full Disk Access"',
       },
       {
-        label: 'Click the "+" button at the bottom of the list. Navigate to Applications → Utilities → select "Terminal.app" (or iTerm2/Warp if you use those). If you\'re using the desktop app, also add "DEMON.app" from Applications',
+        label: 'Click the "+" button at the bottom of the list. Navigate to Applications → Utilities → select "Terminal.app" (or iTerm2/Warp if you use those). If you\'re using the desktop app, also add "KALI AI.app" from Applications',
       },
       {
-        label: 'Toggle the switch ON next to each app you added. Close and reopen your terminal (or restart DEMON). Apple Notes will be detected automatically — no credentials needed',
+        label: 'Toggle the switch ON next to each app you added. Close and reopen your terminal (or restart KALI AI). Apple Notes will be detected automatically — no credentials needed',
       },
     ],
   },
@@ -387,10 +387,10 @@ export const SOURCE_CATALOG: ConnectorMeta[] = [
         label: 'Open the Apple menu () → System Settings → Privacy & Security (in the left sidebar) → scroll down and click "Full Disk Access"',
       },
       {
-        label: 'Click the "+" button at the bottom of the list. Navigate to Applications → Utilities → select "Terminal.app" (or iTerm2/Warp if you use those). If you\'re using the desktop app, also add "DEMON.app" from Applications',
+        label: 'Click the "+" button at the bottom of the list. Navigate to Applications → Utilities → select "Terminal.app" (or iTerm2/Warp if you use those). If you\'re using the desktop app, also add "KALI AI.app" from Applications',
       },
       {
-        label: 'Toggle the switch ON next to each app you added. Close and reopen your terminal (or restart DEMON). Apple Contacts will be detected automatically — no credentials needed',
+        label: 'Toggle the switch ON next to each app you added. Close and reopen your terminal (or restart KALI AI). Apple Contacts will be detected automatically — no credentials needed',
       },
     ],
   },
@@ -405,7 +405,7 @@ export const SOURCE_CATALOG: ConnectorMeta[] = [
     unitLabel: 'emails',
     steps: [
       {
-        label: 'Go to the Azure Portal → App Registrations → click "+ New registration". Name it "DEMON", select "Accounts in this organizational directory only", and click Register',
+        label: 'Go to the Azure Portal → App Registrations → click "+ New registration". Name it "KALI AI", select "Accounts in this organizational directory only", and click Register',
         url: 'https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade',
         urlLabel: 'Open Azure App Registrations',
       },
@@ -435,7 +435,7 @@ export const SOURCE_CATALOG: ConnectorMeta[] = [
     unitLabel: 'files',
     steps: [
       {
-        label: 'Go to the Dropbox App Console and click "Create app". Choose "Scoped access" → "Full Dropbox" → give it a name (e.g. "DEMON") → click "Create app"',
+        label: 'Go to the Dropbox App Console and click "Create app". Choose "Scoped access" → "Full Dropbox" → give it a name (e.g. "KALI AI") → click "Create app"',
         url: 'https://www.dropbox.com/developers/apps/create',
         urlLabel: 'Open Dropbox App Console',
       },

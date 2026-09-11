@@ -36,7 +36,7 @@ async def test_vllm_pearl_start_writes_sidecar(tmp_path, monkeypatch):
     from OpenDEMON.mining.vllm_pearl import VllmPearlProvider
 
     sidecar_path = tmp_path / "mining.json"
-    monkeypatch.setattr("DEMON.mining.vllm_pearl.SIDECAR_PATH", sidecar_path)
+    monkeypatch.setattr("OpenDEMON.mining.vllm_pearl.SIDECAR_PATH", sidecar_path)
     monkeypatch.setenv("PEARLD_RPC_PASSWORD", "x")
 
     fake_client = MagicMock()
@@ -88,7 +88,7 @@ async def test_vllm_pearl_start_pool_target_raises_not_implemented(
     from OpenDEMON.mining.vllm_pearl import VllmPearlProvider
 
     sidecar_path = tmp_path / "mining.json"
-    monkeypatch.setattr("DEMON.mining.vllm_pearl.SIDECAR_PATH", sidecar_path)
+    monkeypatch.setattr("OpenDEMON.mining.vllm_pearl.SIDECAR_PATH", sidecar_path)
 
     cfg = MiningConfig(
         provider="vllm-pearl",
@@ -106,7 +106,7 @@ async def test_vllm_pearl_start_pool_target_raises_not_implemented(
 async def test_vllm_pearl_stop_removes_sidecar(tmp_path, monkeypatch, written_sidecar):
     from OpenDEMON.mining.vllm_pearl import VllmPearlProvider
 
-    monkeypatch.setattr("DEMON.mining.vllm_pearl.SIDECAR_PATH", written_sidecar)
+    monkeypatch.setattr("OpenDEMON.mining.vllm_pearl.SIDECAR_PATH", written_sidecar)
     fake_client = MagicMock()
     provider = VllmPearlProvider(docker_client=fake_client)
     provider._launcher._container = MagicMock()  # simulate running
@@ -117,13 +117,13 @@ async def test_vllm_pearl_stop_removes_sidecar(tmp_path, monkeypatch, written_si
 def test_vllm_pearl_stats_reads_gateway(monkeypatch, written_sidecar):
     from OpenDEMON.mining.vllm_pearl import VllmPearlProvider
 
-    monkeypatch.setattr("DEMON.mining.vllm_pearl.SIDECAR_PATH", written_sidecar)
+    monkeypatch.setattr("OpenDEMON.mining.vllm_pearl.SIDECAR_PATH", written_sidecar)
     sample = (
         "pearl_gateway_shares_submitted_total 100\n"
         "pearl_gateway_shares_accepted_total 99\n"
         "pearl_gateway_blocks_found_total 1\n"
     )
-    with patch("DEMON.mining.vllm_pearl.httpx.get") as get:
+    with patch("OpenDEMON.mining.vllm_pearl.httpx.get") as get:
         get.return_value.status_code = 200
         get.return_value.text = sample
         provider = VllmPearlProvider(docker_client=MagicMock())
@@ -136,7 +136,7 @@ def test_vllm_pearl_stats_reads_gateway(monkeypatch, written_sidecar):
 def test_vllm_pearl_stats_falls_back_to_vllm_metrics(monkeypatch, written_sidecar):
     from OpenDEMON.mining.vllm_pearl import VllmPearlProvider
 
-    monkeypatch.setattr("DEMON.mining.vllm_pearl.SIDECAR_PATH", written_sidecar)
+    monkeypatch.setattr("OpenDEMON.mining.vllm_pearl.SIDECAR_PATH", written_sidecar)
 
     def fake_get(url: str, timeout: float):
         resp = MagicMock()
@@ -147,7 +147,7 @@ def test_vllm_pearl_stats_falls_back_to_vllm_metrics(monkeypatch, written_sideca
         resp.text = "process_start_time_seconds 1\n"
         return resp
 
-    with patch("DEMON.mining.vllm_pearl.httpx.get", side_effect=fake_get):
+    with patch("OpenDEMON.mining.vllm_pearl.httpx.get", side_effect=fake_get):
         provider = VllmPearlProvider(docker_client=MagicMock())
         stats = provider.stats()
         assert stats.uptime_seconds > 0

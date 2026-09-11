@@ -97,8 +97,8 @@ def test_auth_url(connector) -> None:
 # ---------------------------------------------------------------------------
 
 
-@patch("DEMON.connectors.notion._notion_api_search")
-@patch("DEMON.connectors.notion._notion_api_get_blocks")
+@patch("OpenDEMON.connectors.notion._notion_api_search")
+@patch("OpenDEMON.connectors.notion._notion_api_get_blocks")
 def test_sync_yields_documents(
     mock_blocks,
     mock_search,

@@ -49,7 +49,7 @@ def test_cartesia_synthesize():
     backend = CartesiaTTSBackend(api_key="fake-key")
 
     with patch(
-        "DEMON.speech.cartesia_tts._cartesia_synthesize",
+        "OpenDEMON.speech.cartesia_tts._cartesia_synthesize",
         return_value=b"fake-audio-mp3-bytes",
     ):
         result = backend.synthesize("Hello world", voice_id="test-voice")
@@ -97,7 +97,7 @@ def test_openai_tts_synthesize():
     backend = OpenAITTSBackend(api_key="fake-key")
 
     with patch(
-        "DEMON.speech.openai_tts._openai_tts_request",
+        "OpenDEMON.speech.openai_tts._openai_tts_request",
         return_value=b"fake-openai-audio",
     ):
         result = backend.synthesize("Hello", voice_id="nova")

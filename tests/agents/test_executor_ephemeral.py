@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from unittest.mock import MagicMock, patch
 
-REGISTRY_PATH = "DEMON.core.registry.AgentRegistry.get"
+REGISTRY_PATH = "OpenDEMON.core.registry.AgentRegistry.get"
 
 
 def test_run_ephemeral_creates_and_runs_agent():

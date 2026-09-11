@@ -90,11 +90,11 @@ def hermetic_connectors(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path
     # patched DEFAULT_CONFIG_DIR now, before any request, and register them so
     # the router's lazy reload-on-empty-registry path is a no-op.
     google_mods = [
-        "DEMON.connectors.gdrive",
-        "DEMON.connectors.gcalendar",
-        "DEMON.connectors.gcontacts",
-        "DEMON.connectors.gmail",
-        "DEMON.connectors.google_tasks",
+        "OpenDEMON.connectors.gdrive",
+        "OpenDEMON.connectors.gcalendar",
+        "OpenDEMON.connectors.gcontacts",
+        "OpenDEMON.connectors.gmail",
+        "OpenDEMON.connectors.google_tasks",
     ]
     for name in google_mods:
         if name in sys.modules:
@@ -137,7 +137,7 @@ def test_connect_client_pair_returns_oauth_required_no_browser(
     Covers every Google connector that shares the OAuth provider, proving the
     sibling connectors are fixed too (not just gdrive).
     """
-    with patch("DEMON.core.open_browser") as mock_browser:
+    with patch("OpenDEMON.core.open_browser") as mock_browser:
         resp = client.post(
             f"/v1/connectors/{connector_id}/connect", json={"code": _CLIENT_PAIR}
         )

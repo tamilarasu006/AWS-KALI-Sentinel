@@ -142,8 +142,8 @@ def test_auth_url(connector) -> None:
 # ---------------------------------------------------------------------------
 
 
-@patch("DEMON.connectors.granola._granola_api_list_notes")
-@patch("DEMON.connectors.granola._granola_api_get_note")
+@patch("OpenDEMON.connectors.granola._granola_api_list_notes")
+@patch("OpenDEMON.connectors.granola._granola_api_get_note")
 def test_sync_yields_documents(
     mock_get,
     mock_list,
@@ -274,8 +274,8 @@ def test_registry() -> None:
 # ---------------------------------------------------------------------------
 
 
-@patch("DEMON.connectors.granola._granola_api_list_notes")
-@patch("DEMON.connectors.granola._granola_api_get_note")
+@patch("OpenDEMON.connectors.granola._granola_api_list_notes")
+@patch("OpenDEMON.connectors.granola._granola_api_get_note")
 def test_sync_logs_note_count(
     mock_get,
     mock_list,
@@ -294,7 +294,7 @@ def test_sync_logs_note_count(
     mock_list.return_value = _LIST_RESPONSE
     mock_get.side_effect = [_NOTE_1, _NOTE_2]
 
-    with caplog.at_level(logging.INFO, logger="DEMON.connectors.granola"):
+    with caplog.at_level(logging.INFO, logger="OpenDEMON.connectors.granola"):
         list(connector.sync())
 
     text = caplog.text
@@ -307,8 +307,8 @@ def test_sync_logs_note_count(
 # ---------------------------------------------------------------------------
 
 
-@patch("DEMON.connectors.granola._granola_api_list_notes")
-@patch("DEMON.connectors.granola._granola_api_get_note")
+@patch("OpenDEMON.connectors.granola._granola_api_list_notes")
+@patch("OpenDEMON.connectors.granola._granola_api_get_note")
 def test_end_to_end_ingest_and_search(
     mock_get,
     mock_list,
@@ -419,7 +419,7 @@ def test_validate_key_rejects_unauthorized(status: int) -> None:
     )
 
     with patch(
-        "DEMON.connectors.granola.httpx.get",
+        "OpenDEMON.connectors.granola.httpx.get",
         return_value=_FakeResponse(status),
     ) as mock_get:
         with pytest.raises(GranolaKeyError) as excinfo:
@@ -433,7 +433,7 @@ def test_validate_key_rejects_unauthorized(status: int) -> None:
     assert kwargs["params"] == {"limit": 1}
 
 
-@patch("DEMON.connectors.granola._granola_api_validate_key")
+@patch("OpenDEMON.connectors.granola._granola_api_validate_key")
 def test_handle_callback_persists_after_validation(mock_validate, connector) -> None:
     """A valid key is written only after the validation probe succeeds."""
     connector.handle_callback("grl_good_key")
@@ -451,7 +451,7 @@ def test_handle_callback_invalid_key_does_not_overwrite_existing(connector) -> N
     creds_path.write_text(json.dumps({"token": "grl_real_existing_key"}))
 
     with patch(
-        "DEMON.connectors.granola.httpx.get",
+        "OpenDEMON.connectors.granola.httpx.get",
         return_value=_FakeResponse(401),
     ):
         with pytest.raises(GranolaKeyError):

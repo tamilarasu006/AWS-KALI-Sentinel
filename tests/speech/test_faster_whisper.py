@@ -39,7 +39,7 @@ def test_faster_whisper_transcribe():
     mock_model.transcribe.return_value = ([mock_segment], mock_info)
 
     with patch(
-        "DEMON.speech.faster_whisper.WhisperModel",
+        "OpenDEMON.speech.faster_whisper.WhisperModel",
         return_value=mock_model,
     ):
         from OpenDEMON.speech.faster_whisper import FasterWhisperBackend
@@ -58,11 +58,11 @@ def test_faster_whisper_falls_back_from_unsupported_float16():
 
     with (
         patch(
-            "DEMON.speech.faster_whisper.WhisperModel",
+            "OpenDEMON.speech.faster_whisper.WhisperModel",
             return_value=mock_model,
         ) as mock_whisper,
         patch(
-            "DEMON.speech.faster_whisper.ctranslate2",
+            "OpenDEMON.speech.faster_whisper.ctranslate2",
             MagicMock(
                 get_supported_compute_types=MagicMock(return_value={"float32", "int8"})
             ),
@@ -79,7 +79,7 @@ def test_faster_whisper_falls_back_from_unsupported_float16():
 
 
 def test_faster_whisper_missing_dependency_hint_uses_desktop_extra():
-    with patch("DEMON.speech.faster_whisper.WhisperModel", new=None):
+    with patch("OpenDEMON.speech.faster_whisper.WhisperModel", new=None):
         backend = FasterWhisperBackend()
 
         with pytest.raises(ImportError) as excinfo:
@@ -92,7 +92,7 @@ def test_faster_whisper_missing_dependency_hint_uses_desktop_extra():
 def test_faster_whisper_health_no_model():
     """Health returns False before model is loaded."""
     with patch(
-        "DEMON.speech.faster_whisper.WhisperModel",
+        "OpenDEMON.speech.faster_whisper.WhisperModel",
         new=None,
     ):
         backend = FasterWhisperBackend()
@@ -102,7 +102,7 @@ def test_faster_whisper_health_no_model():
 
 def test_faster_whisper_health_captures_load_error():
     with patch(
-        "DEMON.speech.faster_whisper.WhisperModel",
+        "OpenDEMON.speech.faster_whisper.WhisperModel",
         side_effect=RuntimeError("missing cublas64_12.dll"),
     ):
         backend = FasterWhisperBackend()
@@ -112,7 +112,7 @@ def test_faster_whisper_health_captures_load_error():
 
 def test_faster_whisper_supported_formats():
     """Backend supports standard audio formats."""
-    with patch("DEMON.speech.faster_whisper.WhisperModel"):
+    with patch("OpenDEMON.speech.faster_whisper.WhisperModel"):
         from OpenDEMON.speech.faster_whisper import FasterWhisperBackend
 
         backend = FasterWhisperBackend.__new__(FasterWhisperBackend)

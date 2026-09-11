@@ -47,7 +47,7 @@ def _make_adapter(name: str) -> MagicMock:
 # ---------------------------------------------------------------------------
 
 
-@patch("DEMON.core.config.load_config")
+@patch("OpenDEMON.core.config.load_config")
 def test_returns_tools_from_mcp_server(mock_load_config: MagicMock):
     """With a mocked MCP server, discovered tools are returned."""
     from OpenDEMON.server.agent_manager_routes import _get_mcp_tools
@@ -60,9 +60,9 @@ def test_returns_tools_from_mcp_server(mock_load_config: MagicMock):
     mock_adapter = _make_adapter("get_weather")
 
     with (
-        patch("DEMON.mcp.transport.StreamableHTTPTransport"),
-        patch("DEMON.mcp.client.MCPClient"),
-        patch("DEMON.tools.mcp_adapter.MCPToolProvider") as MockProvider,
+        patch("OpenDEMON.mcp.transport.StreamableHTTPTransport"),
+        patch("OpenDEMON.mcp.client.MCPClient"),
+        patch("OpenDEMON.tools.mcp_adapter.MCPToolProvider") as MockProvider,
     ):
         MockProvider.return_value.discover.return_value = [mock_adapter]
 
@@ -74,7 +74,7 @@ def test_returns_tools_from_mcp_server(mock_load_config: MagicMock):
     assert "get_weather" in adapters
 
 
-@patch("DEMON.core.config.load_config")
+@patch("OpenDEMON.core.config.load_config")
 def test_caches_successful_discovery(mock_load_config: MagicMock):
     """Second call returns cached result without re-discovering."""
     from OpenDEMON.server.agent_manager_routes import _get_mcp_tools
@@ -87,9 +87,9 @@ def test_caches_successful_discovery(mock_load_config: MagicMock):
     mock_adapter = _make_adapter("cached_tool")
 
     with (
-        patch("DEMON.mcp.transport.StreamableHTTPTransport"),
-        patch("DEMON.mcp.client.MCPClient"),
-        patch("DEMON.tools.mcp_adapter.MCPToolProvider") as MockProvider,
+        patch("OpenDEMON.mcp.transport.StreamableHTTPTransport"),
+        patch("OpenDEMON.mcp.client.MCPClient"),
+        patch("OpenDEMON.tools.mcp_adapter.MCPToolProvider") as MockProvider,
     ):
         MockProvider.return_value.discover.return_value = [mock_adapter]
 
@@ -106,7 +106,7 @@ def test_caches_successful_discovery(mock_load_config: MagicMock):
         assert MockProvider.return_value.discover.call_count == discover_call_count
 
 
-@patch("DEMON.core.config.load_config")
+@patch("OpenDEMON.core.config.load_config")
 def test_does_not_cache_empty_results(mock_load_config: MagicMock):
     """Failed/empty discovery is not cached so it can be retried."""
     from OpenDEMON.server.agent_manager_routes import _get_mcp_tools
@@ -117,9 +117,9 @@ def test_does_not_cache_empty_results(mock_load_config: MagicMock):
     )
 
     with (
-        patch("DEMON.mcp.transport.StreamableHTTPTransport"),
-        patch("DEMON.mcp.client.MCPClient"),
-        patch("DEMON.tools.mcp_adapter.MCPToolProvider") as MockProvider,
+        patch("OpenDEMON.mcp.transport.StreamableHTTPTransport"),
+        patch("OpenDEMON.mcp.client.MCPClient"),
+        patch("OpenDEMON.tools.mcp_adapter.MCPToolProvider") as MockProvider,
     ):
         # First call: discovery returns empty
         MockProvider.return_value.discover.return_value = []
@@ -140,7 +140,7 @@ def test_does_not_cache_empty_results(mock_load_config: MagicMock):
         assert tools2[0]["function"]["name"] == "retry_tool"
 
 
-@patch("DEMON.core.config.load_config")
+@patch("OpenDEMON.core.config.load_config")
 def test_handles_config_load_failure(mock_load_config: MagicMock):
     """Config load failure returns empty, no crash."""
     from OpenDEMON.server.agent_manager_routes import _get_mcp_tools

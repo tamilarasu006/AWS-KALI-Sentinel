@@ -112,7 +112,7 @@ class TestBrowserNavigateTool:
         from OpenDEMON.tools.browser import BrowserNavigateTool
 
         session = _make_import_error_session()
-        with patch("DEMON.tools.browser._session", session):
+        with patch("OpenDEMON.tools.browser._session", session):
             tool = BrowserNavigateTool()
             result = tool.execute(url="https://example.com")
         assert result.success is False
@@ -127,7 +127,7 @@ class TestBrowserNavigateTool:
         )
         with patch.dict(
             "sys.modules",
-            {"DEMON.security.ssrf": mock_ssrf_module},
+            {"OpenDEMON.security.ssrf": mock_ssrf_module},
         ):
             tool = BrowserNavigateTool()
             result = tool.execute(url="http://169.254.169.254/latest/meta-data/")
@@ -155,10 +155,10 @@ class TestBrowserNavigateTool:
         page = _make_mock_page()
         session = _make_mock_session(page)
 
-        with patch("DEMON.tools.browser._session", session):
+        with patch("OpenDEMON.tools.browser._session", session):
             with patch.dict(
                 "sys.modules",
-                {"DEMON.security.ssrf": mock_ssrf_module},
+                {"OpenDEMON.security.ssrf": mock_ssrf_module},
             ):
                 tool = BrowserNavigateTool()
                 result = tool.execute(url="http://127.0.0.1:8080/admin")
@@ -176,10 +176,10 @@ class TestBrowserNavigateTool:
         page = _make_mock_page()
         session = _make_mock_session(page)
 
-        with patch("DEMON.tools.browser._session", session):
+        with patch("OpenDEMON.tools.browser._session", session):
             with patch.dict(
                 "sys.modules",
-                {"DEMON.security.ssrf": mock_ssrf_module},
+                {"OpenDEMON.security.ssrf": mock_ssrf_module},
             ):
                 tool = BrowserNavigateTool()
                 result = tool.execute(url="https://example.com")
@@ -194,7 +194,7 @@ class TestBrowserNavigateTool:
         page.inner_text.return_value = "Example page content"
         session = _make_mock_session(page)
 
-        with patch("DEMON.tools.browser._session", session):
+        with patch("OpenDEMON.tools.browser._session", session):
             tool = BrowserNavigateTool()
             result = tool.execute(url="https://example.com")
 
@@ -211,7 +211,7 @@ class TestBrowserNavigateTool:
         page = _make_mock_page()
         session = _make_mock_session(page)
 
-        with patch("DEMON.tools.browser._session", session):
+        with patch("OpenDEMON.tools.browser._session", session):
             tool = BrowserNavigateTool()
             tool.execute(url="https://example.com", wait_for="networkidle")
 
@@ -225,7 +225,7 @@ class TestBrowserNavigateTool:
         page = _make_mock_page()
         session = _make_mock_session(page)
 
-        with patch("DEMON.tools.browser._session", session):
+        with patch("OpenDEMON.tools.browser._session", session):
             tool = BrowserNavigateTool()
             tool.execute(url="https://example.com", wait_for="invalid")
 
@@ -238,7 +238,7 @@ class TestBrowserNavigateTool:
         page.inner_text.return_value = "x" * 6000
         session = _make_mock_session(page)
 
-        with patch("DEMON.tools.browser._session", session):
+        with patch("OpenDEMON.tools.browser._session", session):
             tool = BrowserNavigateTool()
             result = tool.execute(url="https://example.com")
 
@@ -252,7 +252,7 @@ class TestBrowserNavigateTool:
         page.goto.side_effect = Exception("net::ERR_NAME_NOT_RESOLVED")
         session = _make_mock_session(page)
 
-        with patch("DEMON.tools.browser._session", session):
+        with patch("OpenDEMON.tools.browser._session", session):
             tool = BrowserNavigateTool()
             result = tool.execute(url="https://nonexistent.example")
 
@@ -321,7 +321,7 @@ class TestBrowserClickTool:
         from OpenDEMON.tools.browser import BrowserClickTool
 
         session = _make_import_error_session()
-        with patch("DEMON.tools.browser._session", session):
+        with patch("OpenDEMON.tools.browser._session", session):
             tool = BrowserClickTool()
             result = tool.execute(selector="#btn")
         assert result.success is False
@@ -333,7 +333,7 @@ class TestBrowserClickTool:
         page = _make_mock_page()
         session = _make_mock_session(page)
 
-        with patch("DEMON.tools.browser._session", session):
+        with patch("OpenDEMON.tools.browser._session", session):
             tool = BrowserClickTool()
             result = tool.execute(selector="#submit-btn")
 
@@ -349,7 +349,7 @@ class TestBrowserClickTool:
         page = _make_mock_page()
         session = _make_mock_session(page)
 
-        with patch("DEMON.tools.browser._session", session):
+        with patch("OpenDEMON.tools.browser._session", session):
             tool = BrowserClickTool()
             result = tool.execute(selector="Sign In", by_text=True)
 
@@ -365,7 +365,7 @@ class TestBrowserClickTool:
         page.click.side_effect = Exception("Element not found")
         session = _make_mock_session(page)
 
-        with patch("DEMON.tools.browser._session", session):
+        with patch("OpenDEMON.tools.browser._session", session):
             tool = BrowserClickTool()
             result = tool.execute(selector="#nonexistent")
 
@@ -442,7 +442,7 @@ class TestBrowserTypeTool:
         from OpenDEMON.tools.browser import BrowserTypeTool
 
         session = _make_import_error_session()
-        with patch("DEMON.tools.browser._session", session):
+        with patch("OpenDEMON.tools.browser._session", session):
             tool = BrowserTypeTool()
             result = tool.execute(selector="#input", text="hello")
         assert result.success is False
@@ -454,7 +454,7 @@ class TestBrowserTypeTool:
         page = _make_mock_page()
         session = _make_mock_session(page)
 
-        with patch("DEMON.tools.browser._session", session):
+        with patch("OpenDEMON.tools.browser._session", session):
             tool = BrowserTypeTool()
             result = tool.execute(selector="#search", text="query", clear=True)
 
@@ -470,7 +470,7 @@ class TestBrowserTypeTool:
         page = _make_mock_page()
         session = _make_mock_session(page)
 
-        with patch("DEMON.tools.browser._session", session):
+        with patch("OpenDEMON.tools.browser._session", session):
             tool = BrowserTypeTool()
             result = tool.execute(selector="#search", text="query")
 
@@ -483,7 +483,7 @@ class TestBrowserTypeTool:
         page = _make_mock_page()
         session = _make_mock_session(page)
 
-        with patch("DEMON.tools.browser._session", session):
+        with patch("OpenDEMON.tools.browser._session", session):
             tool = BrowserTypeTool()
             result = tool.execute(selector="#search", text="query", clear=False)
 
@@ -498,7 +498,7 @@ class TestBrowserTypeTool:
         page.fill.side_effect = Exception("Element not editable")
         session = _make_mock_session(page)
 
-        with patch("DEMON.tools.browser._session", session):
+        with patch("OpenDEMON.tools.browser._session", session):
             tool = BrowserTypeTool()
             result = tool.execute(selector="#readonly", text="hello")
 
@@ -551,7 +551,7 @@ class TestBrowserScreenshotTool:
         from OpenDEMON.tools.browser import BrowserScreenshotTool
 
         session = _make_import_error_session()
-        with patch("DEMON.tools.browser._session", session):
+        with patch("OpenDEMON.tools.browser._session", session):
             tool = BrowserScreenshotTool()
             result = tool.execute()
         assert result.success is False
@@ -565,7 +565,7 @@ class TestBrowserScreenshotTool:
         page.screenshot.return_value = fake_png
         session = _make_mock_session(page)
 
-        with patch("DEMON.tools.browser._session", session):
+        with patch("OpenDEMON.tools.browser._session", session):
             tool = BrowserScreenshotTool()
             result = tool.execute()
 
@@ -583,7 +583,7 @@ class TestBrowserScreenshotTool:
         page.screenshot.return_value = b"png-data"
         session = _make_mock_session(page)
 
-        with patch("DEMON.tools.browser._session", session):
+        with patch("OpenDEMON.tools.browser._session", session):
             tool = BrowserScreenshotTool()
             result = tool.execute(full_page=True)
 
@@ -601,7 +601,7 @@ class TestBrowserScreenshotTool:
 
         save_path = str(tmp_path / "test_screenshot.png")
 
-        with patch("DEMON.tools.browser._session", session):
+        with patch("OpenDEMON.tools.browser._session", session):
             tool = BrowserScreenshotTool()
             result = tool.execute(path=save_path)
 
@@ -618,7 +618,7 @@ class TestBrowserScreenshotTool:
         page.screenshot.side_effect = Exception("Browser crashed")
         session = _make_mock_session(page)
 
-        with patch("DEMON.tools.browser._session", session):
+        with patch("OpenDEMON.tools.browser._session", session):
             tool = BrowserScreenshotTool()
             result = tool.execute()
 
@@ -665,7 +665,7 @@ class TestBrowserExtractTool:
         from OpenDEMON.tools.browser import BrowserExtractTool
 
         session = _make_import_error_session()
-        with patch("DEMON.tools.browser._session", session):
+        with patch("OpenDEMON.tools.browser._session", session):
             tool = BrowserExtractTool()
             result = tool.execute()
         assert result.success is False
@@ -686,7 +686,7 @@ class TestBrowserExtractTool:
         page.inner_text.return_value = "Page text content here"
         session = _make_mock_session(page)
 
-        with patch("DEMON.tools.browser._session", session):
+        with patch("OpenDEMON.tools.browser._session", session):
             tool = BrowserExtractTool()
             result = tool.execute(extract_type="text")
 
@@ -702,7 +702,7 @@ class TestBrowserExtractTool:
         page.inner_text.return_value = "Article content"
         session = _make_mock_session(page)
 
-        with patch("DEMON.tools.browser._session", session):
+        with patch("OpenDEMON.tools.browser._session", session):
             tool = BrowserExtractTool()
             result = tool.execute(selector="#article", extract_type="text")
 
@@ -718,7 +718,7 @@ class TestBrowserExtractTool:
         page.inner_text.return_value = "Default text"
         session = _make_mock_session(page)
 
-        with patch("DEMON.tools.browser._session", session):
+        with patch("OpenDEMON.tools.browser._session", session):
             tool = BrowserExtractTool()
             result = tool.execute()
 
@@ -732,7 +732,7 @@ class TestBrowserExtractTool:
         page.inner_text.return_value = "a" * 12000
         session = _make_mock_session(page)
 
-        with patch("DEMON.tools.browser._session", session):
+        with patch("OpenDEMON.tools.browser._session", session):
             tool = BrowserExtractTool()
             result = tool.execute(extract_type="text")
 
@@ -751,7 +751,7 @@ class TestBrowserExtractTool:
         ]
         session = _make_mock_session(page)
 
-        with patch("DEMON.tools.browser._session", session):
+        with patch("OpenDEMON.tools.browser._session", session):
             tool = BrowserExtractTool()
             result = tool.execute(extract_type="links")
 
@@ -767,7 +767,7 @@ class TestBrowserExtractTool:
         page.eval_on_selector_all.return_value = []
         session = _make_mock_session(page)
 
-        with patch("DEMON.tools.browser._session", session):
+        with patch("OpenDEMON.tools.browser._session", session):
             tool = BrowserExtractTool()
             result = tool.execute(extract_type="links")
 
@@ -785,7 +785,7 @@ class TestBrowserExtractTool:
         ]
         session = _make_mock_session(page)
 
-        with patch("DEMON.tools.browser._session", session):
+        with patch("OpenDEMON.tools.browser._session", session):
             tool = BrowserExtractTool()
             result = tool.execute(extract_type="tables")
 
@@ -801,7 +801,7 @@ class TestBrowserExtractTool:
         page.eval_on_selector_all.return_value = []
         session = _make_mock_session(page)
 
-        with patch("DEMON.tools.browser._session", session):
+        with patch("OpenDEMON.tools.browser._session", session):
             tool = BrowserExtractTool()
             result = tool.execute(extract_type="tables")
 
@@ -815,7 +815,7 @@ class TestBrowserExtractTool:
         page.inner_text.side_effect = Exception("Selector not found")
         session = _make_mock_session(page)
 
-        with patch("DEMON.tools.browser._session", session):
+        with patch("OpenDEMON.tools.browser._session", session):
             tool = BrowserExtractTool()
             result = tool.execute(selector="#missing", extract_type="text")
 

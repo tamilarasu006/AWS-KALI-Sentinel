@@ -46,7 +46,7 @@ class TestCliInstallE2E:
 
         # Patch the helper that builds resolvers in the CLI
         with patch(
-            "DEMON.cli.skill_cmd._get_resolver",
+            "OpenDEMON.cli.skill_cmd._get_resolver",
             lambda src, url="": _make_resolver(),
         ):
             # Patch HermesResolver.sync to no-op (cache is already built)

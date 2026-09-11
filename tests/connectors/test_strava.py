@@ -62,7 +62,7 @@ def connector(tmp_path):
 
 def test_sync_yields_activities(connector):
     with patch(
-        "DEMON.connectors.strava._strava_api_get",
+        "OpenDEMON.connectors.strava._strava_api_get",
         return_value=_ACTIVITIES_RESPONSE,
     ):
         docs = list(connector.sync(since=datetime(2026, 4, 1)))

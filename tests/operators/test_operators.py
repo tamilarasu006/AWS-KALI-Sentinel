@@ -486,7 +486,7 @@ class TestOperativeAgent:
 
         engine = FakeEngine()
         with patch(
-            "DEMON.agents._stubs.load_config",
+            "OpenDEMON.agents._stubs.load_config",
             side_effect=Exception("no config"),
         ):
             agent = OperativeAgent(engine, "test-model")

@@ -19,9 +19,9 @@ class TestInitHost:
         config_dir = tmp_path / ".DEMON"
         config_path = config_dir / "config.toml"
         with (
-            mock.patch("DEMON.cli.init_cmd.DEFAULT_CONFIG_DIR", config_dir),
-            mock.patch("DEMON.cli.init_cmd.DEFAULT_CONFIG_PATH", config_path),
-            mock.patch("DEMON.cli.init_cmd.PrivacyScanner"),
+            mock.patch("OpenDEMON.cli.init_cmd.DEFAULT_CONFIG_DIR", config_dir),
+            mock.patch("OpenDEMON.cli.init_cmd.DEFAULT_CONFIG_PATH", config_path),
+            mock.patch("OpenDEMON.cli.init_cmd.PrivacyScanner"),
         ):
             result = CliRunner().invoke(
                 cli,
@@ -43,9 +43,9 @@ class TestInitHost:
         config_dir = tmp_path / ".DEMON"
         config_path = config_dir / "config.toml"
         with (
-            mock.patch("DEMON.cli.init_cmd.DEFAULT_CONFIG_DIR", config_dir),
-            mock.patch("DEMON.cli.init_cmd.DEFAULT_CONFIG_PATH", config_path),
-            mock.patch("DEMON.cli.init_cmd.PrivacyScanner"),
+            mock.patch("OpenDEMON.cli.init_cmd.DEFAULT_CONFIG_DIR", config_dir),
+            mock.patch("OpenDEMON.cli.init_cmd.DEFAULT_CONFIG_PATH", config_path),
+            mock.patch("OpenDEMON.cli.init_cmd.PrivacyScanner"),
         ):
             result = CliRunner().invoke(
                 cli,
@@ -60,10 +60,10 @@ class TestInitHost:
         config_dir = tmp_path / ".DEMON"
         config_path = config_dir / "config.toml"
         with (
-            mock.patch("DEMON.cli.init_cmd.DEFAULT_CONFIG_DIR", config_dir),
-            mock.patch("DEMON.cli.init_cmd.DEFAULT_CONFIG_PATH", config_path),
-            mock.patch("DEMON.cli.init_cmd.PrivacyScanner"),
-            mock.patch("DEMON.cli.init_cmd.httpx") as mock_httpx,
+            mock.patch("OpenDEMON.cli.init_cmd.DEFAULT_CONFIG_DIR", config_dir),
+            mock.patch("OpenDEMON.cli.init_cmd.DEFAULT_CONFIG_PATH", config_path),
+            mock.patch("OpenDEMON.cli.init_cmd.PrivacyScanner"),
+            mock.patch("OpenDEMON.cli.init_cmd.httpx") as mock_httpx,
         ):
             mock_httpx.get.side_effect = Exception("Connection refused")
             result = CliRunner().invoke(
@@ -79,9 +79,9 @@ class TestInitHost:
         config_dir = tmp_path / ".DEMON"
         config_path = config_dir / "config.toml"
         with (
-            mock.patch("DEMON.cli.init_cmd.DEFAULT_CONFIG_DIR", config_dir),
-            mock.patch("DEMON.cli.init_cmd.DEFAULT_CONFIG_PATH", config_path),
-            mock.patch("DEMON.cli.init_cmd.PrivacyScanner"),
+            mock.patch("OpenDEMON.cli.init_cmd.DEFAULT_CONFIG_DIR", config_dir),
+            mock.patch("OpenDEMON.cli.init_cmd.DEFAULT_CONFIG_PATH", config_path),
+            mock.patch("OpenDEMON.cli.init_cmd.PrivacyScanner"),
         ):
             result = CliRunner().invoke(cli, ["init", "--engine", "ollama", _NO_DL])
         assert result.exit_code == 0

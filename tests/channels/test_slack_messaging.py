@@ -14,7 +14,7 @@ def test_slack_channel_connect_with_tokens() -> None:
         app_token="xapp-test-token",
     )
     # Mock the SocketModeClient import to avoid real connection
-    with patch("DEMON.channels.slack.SlackChannel._socket_mode_loop"):
+    with patch("OpenDEMON.channels.slack.SlackChannel._socket_mode_loop"):
         ch.connect()
 
     from OpenDEMON.channels._stubs import ChannelStatus

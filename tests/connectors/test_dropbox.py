@@ -84,8 +84,8 @@ def test_auth_url(connector) -> None:
 # ---------------------------------------------------------------------------
 
 
-@patch("DEMON.connectors.dropbox._dropbox_api_list_folder")
-@patch("DEMON.connectors.dropbox._dropbox_api_download")
+@patch("OpenDEMON.connectors.dropbox._dropbox_api_list_folder")
+@patch("OpenDEMON.connectors.dropbox._dropbox_api_download")
 def test_sync_yields_documents(
     mock_download,
     mock_list,

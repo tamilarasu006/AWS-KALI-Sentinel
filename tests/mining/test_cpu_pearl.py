@@ -8,7 +8,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-_AVAIL = "DEMON.mining._install.pearl_packages_available"
+_AVAIL = "OpenDEMON.mining._install.pearl_packages_available"
 
 
 @pytest.fixture
@@ -142,15 +142,15 @@ def test_start_writes_sidecar_and_is_running(cpu_pearl_config, tmp_path, monkeyp
 
     sidecar = tmp_path / "mining.json"
     log_dir = tmp_path / "logs"
-    monkeypatch.setattr("DEMON.mining.cpu_pearl._sidecar_path", lambda: sidecar)
-    monkeypatch.setattr("DEMON.mining.cpu_pearl._log_dir", lambda: log_dir)
+    monkeypatch.setattr("OpenDEMON.mining.cpu_pearl._sidecar_path", lambda: sidecar)
+    monkeypatch.setattr("OpenDEMON.mining.cpu_pearl._log_dir", lambda: log_dir)
     monkeypatch.setenv("TEST_PEARLD_PASSWORD", "secret")
 
     fake_launcher = MagicMock()
     fake_launcher.is_running.return_value = True
     fake_launcher.pids.return_value = (11111, 22222)
 
-    _target = "DEMON.mining.cpu_pearl.PearlSubprocessLauncher"
+    _target = "OpenDEMON.mining.cpu_pearl.PearlSubprocessLauncher"
     with patch(_target, return_value=fake_launcher):
         provider = CpuPearlProvider()
         asyncio.run(provider.start(cpu_pearl_config))
@@ -172,15 +172,15 @@ def test_stop_terminates_and_removes_sidecar(cpu_pearl_config, tmp_path, monkeyp
 
     sidecar = tmp_path / "mining.json"
     log_dir = tmp_path / "logs"
-    monkeypatch.setattr("DEMON.mining.cpu_pearl._sidecar_path", lambda: sidecar)
-    monkeypatch.setattr("DEMON.mining.cpu_pearl._log_dir", lambda: log_dir)
+    monkeypatch.setattr("OpenDEMON.mining.cpu_pearl._sidecar_path", lambda: sidecar)
+    monkeypatch.setattr("OpenDEMON.mining.cpu_pearl._log_dir", lambda: log_dir)
     monkeypatch.setenv("TEST_PEARLD_PASSWORD", "secret")
 
     fake_launcher = MagicMock()
     fake_launcher.is_running.side_effect = [True, False]
     fake_launcher.pids.return_value = (11111, 22222)
 
-    _target = "DEMON.mining.cpu_pearl.PearlSubprocessLauncher"
+    _target = "OpenDEMON.mining.cpu_pearl.PearlSubprocessLauncher"
     with patch(_target, return_value=fake_launcher):
         provider = CpuPearlProvider()
         asyncio.run(provider.start(cpu_pearl_config))
@@ -241,8 +241,8 @@ def test_provider_runs_end_to_end_on_this_host(tmp_path, monkeypatch):
 
     sidecar = tmp_path / "mining.json"
     log_dir = tmp_path / "logs"
-    monkeypatch.setattr("DEMON.mining.cpu_pearl._sidecar_path", lambda: sidecar)
-    monkeypatch.setattr("DEMON.mining.cpu_pearl._log_dir", lambda: log_dir)
+    monkeypatch.setattr("OpenDEMON.mining.cpu_pearl._sidecar_path", lambda: sidecar)
+    monkeypatch.setattr("OpenDEMON.mining.cpu_pearl._log_dir", lambda: log_dir)
     monkeypatch.setenv("TEST_PEARLD_PASSWORD", "test")
 
     cfg = MiningConfig(

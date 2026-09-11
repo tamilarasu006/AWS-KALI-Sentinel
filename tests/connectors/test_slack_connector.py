@@ -122,10 +122,10 @@ def test_auth_url(connector) -> None:
 # ---------------------------------------------------------------------------
 
 
-@patch("DEMON.connectors.slack_connector._slack_api_auth_test")
-@patch("DEMON.connectors.slack_connector._slack_api_conversations_list")
-@patch("DEMON.connectors.slack_connector._slack_api_conversations_history")
-@patch("DEMON.connectors.slack_connector._slack_api_users_list")
+@patch("OpenDEMON.connectors.slack_connector._slack_api_auth_test")
+@patch("OpenDEMON.connectors.slack_connector._slack_api_conversations_list")
+@patch("OpenDEMON.connectors.slack_connector._slack_api_conversations_history")
+@patch("OpenDEMON.connectors.slack_connector._slack_api_users_list")
 def test_sync_yields_documents(
     mock_users,
     mock_history,
@@ -210,7 +210,7 @@ def test_sync_yields_documents(
 # ---------------------------------------------------------------------------
 
 
-@patch("DEMON.connectors.slack_connector._slack_api_with_retry")
+@patch("OpenDEMON.connectors.slack_connector._slack_api_with_retry")
 def test_conversations_list_requests_all_conversation_types(mock_retry) -> None:
     """``_slack_api_conversations_list`` widens ``types`` to cover IMs + MPIMs.
 
@@ -238,11 +238,11 @@ def test_conversations_list_requests_all_conversation_types(mock_retry) -> None:
 # ---------------------------------------------------------------------------
 
 
-@patch("DEMON.connectors.slack_connector._slack_api_with_retry")
-@patch("DEMON.connectors.slack_connector._slack_api_auth_test")
-@patch("DEMON.connectors.slack_connector._slack_api_conversations_list")
-@patch("DEMON.connectors.slack_connector._slack_api_conversations_history")
-@patch("DEMON.connectors.slack_connector._slack_api_users_list")
+@patch("OpenDEMON.connectors.slack_connector._slack_api_with_retry")
+@patch("OpenDEMON.connectors.slack_connector._slack_api_auth_test")
+@patch("OpenDEMON.connectors.slack_connector._slack_api_conversations_list")
+@patch("OpenDEMON.connectors.slack_connector._slack_api_conversations_history")
+@patch("OpenDEMON.connectors.slack_connector._slack_api_users_list")
 def test_sync_includes_dms_and_group_dms(
     mock_users,
     mock_history,
@@ -389,10 +389,10 @@ def test_registry() -> None:
 # ---------------------------------------------------------------------------
 
 
-@patch("DEMON.connectors.slack_connector._slack_api_auth_test")
-@patch("DEMON.connectors.slack_connector._slack_api_conversations_list")
-@patch("DEMON.connectors.slack_connector._slack_api_conversations_history")
-@patch("DEMON.connectors.slack_connector._slack_api_users_list")
+@patch("OpenDEMON.connectors.slack_connector._slack_api_auth_test")
+@patch("OpenDEMON.connectors.slack_connector._slack_api_conversations_list")
+@patch("OpenDEMON.connectors.slack_connector._slack_api_conversations_history")
+@patch("OpenDEMON.connectors.slack_connector._slack_api_users_list")
 def test_end_to_end_ingest_and_search(
     mock_users,
     mock_history,
@@ -513,10 +513,10 @@ def test_sync_with_xoxb_token_surfaces_error(connector, tmp_path: Path) -> None:
 # ---------------------------------------------------------------------------
 
 
-@patch("DEMON.connectors.slack_connector._slack_api_auth_test")
-@patch("DEMON.connectors.slack_connector._slack_api_conversations_list")
-@patch("DEMON.connectors.slack_connector._slack_api_conversations_history")
-@patch("DEMON.connectors.slack_connector._slack_api_users_list")
+@patch("OpenDEMON.connectors.slack_connector._slack_api_auth_test")
+@patch("OpenDEMON.connectors.slack_connector._slack_api_conversations_list")
+@patch("OpenDEMON.connectors.slack_connector._slack_api_conversations_history")
+@patch("OpenDEMON.connectors.slack_connector._slack_api_users_list")
 def test_sync_logs_per_type_channel_counts(
     mock_users,
     mock_history,
@@ -552,7 +552,7 @@ def test_sync_logs_per_type_channel_counts(
     }
     mock_history.return_value = {"messages": [], "has_more": False}
 
-    with caplog.at_level("INFO", logger="DEMON.connectors.slack_connector"):
+    with caplog.at_level("INFO", logger="OpenDEMON.connectors.slack_connector"):
         list(connector.sync())
 
     summary = " ".join(r.message for r in caplog.records)
@@ -569,7 +569,7 @@ def test_sync_logs_per_type_channel_counts(
 # ---------------------------------------------------------------------------
 
 
-@patch("DEMON.connectors.slack_connector._slack_api_auth_test")
+@patch("OpenDEMON.connectors.slack_connector._slack_api_auth_test")
 def test_handle_callback_persists_after_auth_test_succeeds(
     mock_auth, connector
 ) -> None:
@@ -583,7 +583,7 @@ def test_handle_callback_persists_after_auth_test_succeeds(
     assert stored["token"] == "xoxp-valid-user-token"
 
 
-@patch("DEMON.connectors.slack_connector._slack_api_auth_test")
+@patch("OpenDEMON.connectors.slack_connector._slack_api_auth_test")
 def test_handle_callback_rejects_when_auth_test_fails(mock_auth, connector) -> None:
     """A well-formed token Slack rejects (auth.test not ok) is never written."""
     from OpenDEMON.connectors.slack_connector import SlackTokenError  # noqa: PLC0415
@@ -597,7 +597,7 @@ def test_handle_callback_rejects_when_auth_test_fails(mock_auth, connector) -> N
     assert not Path(connector._credentials_path).exists()
 
 
-@patch("DEMON.connectors.slack_connector._slack_api_auth_test")
+@patch("OpenDEMON.connectors.slack_connector._slack_api_auth_test")
 def test_handle_callback_skips_auth_test_for_bad_shape(mock_auth, connector) -> None:
     """Shape validation short-circuits before any network call is made."""
     from OpenDEMON.connectors.slack_connector import SlackTokenError  # noqa: PLC0415

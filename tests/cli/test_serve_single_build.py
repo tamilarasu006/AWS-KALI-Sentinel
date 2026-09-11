@@ -63,7 +63,7 @@ def _repopulate_registries() -> None:
 
     if not AgentRegistry.keys():
         for mod_name in list(sys.modules):
-            if mod_name.startswith("DEMON.agents.") and not mod_name.endswith(
+            if mod_name.startswith("OpenDEMON.agents.") and not mod_name.endswith(
                 "_stubs"
             ):
                 try:
@@ -74,7 +74,7 @@ def _repopulate_registries() -> None:
     if not ToolRegistry.keys():
         for mod_name in list(sys.modules):
             if (
-                mod_name.startswith("DEMON.tools.")
+                mod_name.startswith("OpenDEMON.tools.")
                 and not mod_name.endswith("_stubs")
                 and not mod_name.endswith("agent_tools")
             ):
@@ -86,7 +86,7 @@ def _repopulate_registries() -> None:
     if not MemoryRegistry.keys():
         for mod_name in list(sys.modules):
             if mod_name.startswith(
-                "DEMON.tools.storage."
+                "OpenDEMON.tools.storage."
             ) and not mod_name.endswith("_stubs"):
                 try:
                     importlib.reload(sys.modules[mod_name])
@@ -134,15 +134,15 @@ def _run_serve(tmp_path, monkeypatch, *, build_spy, set_system_spy):
     sec.engine = engine
     sec.capability_policy = None
     sec.audit_logger = None
-    monkeypatch.setattr("DEMON.security.setup_security", lambda *a, **k: sec)
+    monkeypatch.setattr("OpenDEMON.security.setup_security", lambda *a, **k: sec)
 
     with (
         patch(
-            "DEMON.system.builder.SystemBuilder.build",
+            "OpenDEMON.system.builder.SystemBuilder.build",
             build_spy,
         ),
         patch(
-            "DEMON.agents.executor.AgentExecutor.set_system",
+            "OpenDEMON.agents.executor.AgentExecutor.set_system",
             set_system_spy,
         ),
         patch("uvicorn.run", lambda *a, **k: None),

@@ -57,7 +57,7 @@ def connector(tmp_path: Path):
     creds_path = str(tmp_path / "gdrive.json")
     # Prevent fallback to shared google.json on machines with real credentials
     with patch(
-        "DEMON.connectors.oauth._SHARED_GOOGLE_CREDENTIALS_PATH",
+        "OpenDEMON.connectors.oauth._SHARED_GOOGLE_CREDENTIALS_PATH",
         str(tmp_path / "google_shared.json"),
     ):
         yield GDriveConnector(credentials_path=creds_path)
@@ -91,8 +91,8 @@ def test_auth_url(connector) -> None:
 # ---------------------------------------------------------------------------
 
 
-@patch("DEMON.connectors.gdrive._gdrive_api_list_files")
-@patch("DEMON.connectors.gdrive._gdrive_api_export")
+@patch("OpenDEMON.connectors.gdrive._gdrive_api_list_files")
+@patch("OpenDEMON.connectors.gdrive._gdrive_api_export")
 def test_sync_yields_documents(
     mock_export,
     mock_list,

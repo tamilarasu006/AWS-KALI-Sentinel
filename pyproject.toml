@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "DEMON"
 dynamic = ["version"]
-description = "DEMON — modular AI assistant backend with composable intelligence primitives"
+description = "KALI AI — modular AI platform with composable intelligence primitives"
 readme = "README.md"
 # Upper bound: numpy 2.2.x (pinned transitively via datasets/pandas) ships no
 # cp314 Windows wheel, so under Python 3.14 uv would compile numpy from source

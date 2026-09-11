@@ -439,7 +439,7 @@ class TestResolveToolSpecs:
 
         for mod_name in list(sys.modules):
             if (
-                mod_name.startswith("DEMON.tools.")
+                mod_name.startswith("OpenDEMON.tools.")
                 and not mod_name.endswith("_stubs")
                 and not mod_name.endswith("agent_tools")
             ):
@@ -515,7 +515,7 @@ class TestLightweightSystemEngineResolution:
             captured["key"] = key
             return ("resolved", MagicMock())
 
-        monkeypatch.setattr("DEMON.engine._discovery.get_engine", fake_get_engine)
+        monkeypatch.setattr("OpenDEMON.engine._discovery.get_engine", fake_get_engine)
         return captured
 
     def test_resolves_preferred_engine_over_default(self, monkeypatch):

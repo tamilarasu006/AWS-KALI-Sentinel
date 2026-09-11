@@ -368,7 +368,7 @@ class TestSystemBuilderEngineInstance:
         config = DEMONConfig()
         engine = self._fake_engine(healthy=False)
         builder = SystemBuilder(config).engine_instance(engine)
-        with patch("DEMON.engine._discovery.get_engine") as mock_get_engine:
+        with patch("OpenDEMON.engine._discovery.get_engine") as mock_get_engine:
             with pytest.raises(RuntimeError, match="Refusing to fall back"):
                 builder._resolve_engine(config)
         mock_get_engine.assert_not_called()
@@ -377,7 +377,7 @@ class TestSystemBuilderEngineInstance:
         config = DEMONConfig()
         engine = self._fake_engine(healthy=True)
         builder = SystemBuilder(config).engine_instance(engine, key="endpoint")
-        with patch("DEMON.engine._discovery.get_engine") as mock_get_engine:
+        with patch("OpenDEMON.engine._discovery.get_engine") as mock_get_engine:
             resolved_engine, _ = builder._resolve_engine(config)
         assert resolved_engine is engine
         mock_get_engine.assert_not_called()

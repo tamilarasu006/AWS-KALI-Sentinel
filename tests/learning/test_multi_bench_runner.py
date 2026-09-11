@@ -199,7 +199,7 @@ class TestMultiBenchAggregation:
 
 
 class TestMultiBenchRunTrial:
-    @patch("DEMON.learning.optimize.trial_runner.TrialRunner.run_trial")
+    @patch("OpenDEMON.learning.optimize.trial_runner.TrialRunner.run_trial")
     def test_delegates_to_trial_runners(self, mock_run_trial):
         """Each benchmark gets its own TrialRunner call."""
         mock_run_trial.return_value = _make_trial_result()

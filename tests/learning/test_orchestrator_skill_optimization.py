@@ -23,7 +23,7 @@ class TestOrchestratorSkillAutoOptimize:
         )
 
         with patch(
-            "DEMON.learning.agents.skill_optimizer.SkillOptimizer.optimize"
+            "OpenDEMON.learning.agents.skill_optimizer.SkillOptimizer.optimize"
         ) as mock_optimize:
             orchestrator._maybe_optimize_skills(auto_optimize=False)
             mock_optimize.assert_not_called()
@@ -42,7 +42,7 @@ class TestOrchestratorSkillAutoOptimize:
         )
 
         with patch(
-            "DEMON.learning.agents.skill_optimizer.SkillOptimizer.optimize",
+            "OpenDEMON.learning.agents.skill_optimizer.SkillOptimizer.optimize",
             return_value={},
         ) as mock_optimize:
             orchestrator._maybe_optimize_skills(
@@ -93,11 +93,11 @@ class TestOrchestratorRunSkillTrigger:
         )
 
         with patch(
-            "DEMON.core.config.load_config",
+            "OpenDEMON.core.config.load_config",
             return_value=self._make_config(auto_optimize=False),
         ):
             with patch(
-                "DEMON.learning.agents.skill_optimizer.SkillOptimizer.optimize"
+                "OpenDEMON.learning.agents.skill_optimizer.SkillOptimizer.optimize"
             ) as mock_optimize:
                 orchestrator.run()
                 mock_optimize.assert_not_called()
@@ -127,11 +127,11 @@ class TestOrchestratorRunSkillTrigger:
         }
 
         with patch(
-            "DEMON.core.config.load_config",
+            "OpenDEMON.core.config.load_config",
             return_value=self._make_config(auto_optimize=True),
         ):
             with patch(
-                "DEMON.learning.agents.skill_optimizer.SkillOptimizer.optimize",
+                "OpenDEMON.learning.agents.skill_optimizer.SkillOptimizer.optimize",
                 return_value=fake_results,
             ) as mock_optimize:
                 result = orchestrator.run()

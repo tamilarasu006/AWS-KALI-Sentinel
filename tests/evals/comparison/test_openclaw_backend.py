@@ -39,14 +39,14 @@ class TestOpenClawBackend:
         cfg = _fake_third_party(tmp_path)
         with (
             patch(
-                "DEMON.evals.backends.external.openclaw.load_third_party_config",
+                "OpenDEMON.evals.backends.external.openclaw.load_third_party_config",
                 return_value=cfg,
             ),
             patch(
-                "DEMON.evals.backends.external.openclaw.verify_commit_pin",
+                "OpenDEMON.evals.backends.external.openclaw.verify_commit_pin",
             ),
             patch(
-                "DEMON.evals.backends.external.openclaw.run_one_shot",
+                "OpenDEMON.evals.backends.external.openclaw.run_one_shot",
             ) as mock_run,
         ):
             mock_run.return_value = SubprocessResult(
@@ -85,14 +85,14 @@ class TestOpenClawBackend:
         cfg = _fake_third_party(tmp_path)
         with (
             patch(
-                "DEMON.evals.backends.external.openclaw.load_third_party_config",
+                "OpenDEMON.evals.backends.external.openclaw.load_third_party_config",
                 return_value=cfg,
             ),
             patch(
-                "DEMON.evals.backends.external.openclaw.verify_commit_pin",
+                "OpenDEMON.evals.backends.external.openclaw.verify_commit_pin",
             ),
             patch(
-                "DEMON.evals.backends.external.openclaw.run_one_shot",
+                "OpenDEMON.evals.backends.external.openclaw.run_one_shot",
             ) as mock_run,
         ):
             mock_run.return_value = SubprocessResult(
@@ -130,14 +130,14 @@ class TestOpenClawBackend:
         cfg = _fake_third_party(tmp_path)
         with (
             patch(
-                "DEMON.evals.backends.external.openclaw.load_third_party_config",
+                "OpenDEMON.evals.backends.external.openclaw.load_third_party_config",
                 return_value=cfg,
             ),
             patch(
-                "DEMON.evals.backends.external.openclaw.verify_commit_pin",
+                "OpenDEMON.evals.backends.external.openclaw.verify_commit_pin",
             ),
             patch(
-                "DEMON.evals.backends.external.openclaw.run_one_shot",
+                "OpenDEMON.evals.backends.external.openclaw.run_one_shot",
             ) as mock_run,
         ):
             mock_run.return_value = SubprocessResult(
@@ -165,11 +165,11 @@ class TestOpenClawBackend:
         cfg = _fake_third_party(tmp_path)
         with (
             patch(
-                "DEMON.evals.backends.external.openclaw.load_third_party_config",
+                "OpenDEMON.evals.backends.external.openclaw.load_third_party_config",
                 return_value=cfg,
             ),
             patch(
-                "DEMON.evals.backends.external.openclaw.verify_commit_pin",
+                "OpenDEMON.evals.backends.external.openclaw.verify_commit_pin",
                 side_effect=CommitDriftError("drift!"),
             ),
         ):

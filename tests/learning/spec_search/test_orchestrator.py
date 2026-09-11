@@ -100,7 +100,7 @@ class TestSpecSearchOrchestrator:
         )
 
         with patch(
-            "DEMON.learning.spec_search.orchestrator.DiagnosisRunner"
+            "OpenDEMON.learning.spec_search.orchestrator.DiagnosisRunner"
         ) as MockDiag:
             MockDiag.return_value.run.return_value = _make_diagnosis_result()
             session = orch.run(OnDemandTrigger())
@@ -166,7 +166,7 @@ class TestSpecSearchOrchestrator:
         )
 
         with patch(
-            "DEMON.learning.spec_search.orchestrator.DiagnosisRunner"
+            "OpenDEMON.learning.spec_search.orchestrator.DiagnosisRunner"
         ) as MockDiag:
             MockDiag.return_value.run.return_value = _make_diagnosis_result()
             orch.run(OnDemandTrigger())

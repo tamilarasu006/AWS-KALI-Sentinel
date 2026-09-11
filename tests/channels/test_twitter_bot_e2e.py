@@ -474,12 +474,12 @@ class TestEnvVarExpansion:
         with (
             patch.dict(os.environ, {"GITHUB_TOKEN": "ghp_test123"}),
             patch(
-                "DEMON._rust_bridge.get_rust_module",
+                "OpenDEMON._rust_bridge.get_rust_module",
                 return_value=mock_rust,
             ),
-            patch("DEMON.tools.http_request.check_ssrf", return_value=None),
+            patch("OpenDEMON.tools.http_request.check_ssrf", return_value=None),
             patch(
-                "DEMON.tools.http_request.httpx.request",
+                "OpenDEMON.tools.http_request.httpx.request",
                 return_value=mock_resp,
             ) as mock_req,
         ):
@@ -516,12 +516,12 @@ class TestEnvVarExpansion:
         with (
             patch.dict(os.environ, env, clear=True),
             patch(
-                "DEMON._rust_bridge.get_rust_module",
+                "OpenDEMON._rust_bridge.get_rust_module",
                 return_value=mock_rust,
             ),
-            patch("DEMON.tools.http_request.check_ssrf", return_value=None),
+            patch("OpenDEMON.tools.http_request.check_ssrf", return_value=None),
             patch(
-                "DEMON.tools.http_request.httpx.request",
+                "OpenDEMON.tools.http_request.httpx.request",
                 return_value=mock_resp,
             ) as mock_req,
         ):
@@ -551,12 +551,12 @@ class TestEnvVarExpansion:
 
         with (
             patch(
-                "DEMON._rust_bridge.get_rust_module",
+                "OpenDEMON._rust_bridge.get_rust_module",
                 return_value=mock_rust,
             ),
-            patch("DEMON.tools.http_request.check_ssrf", return_value=None),
+            patch("OpenDEMON.tools.http_request.check_ssrf", return_value=None),
             patch(
-                "DEMON.tools.http_request.httpx.request",
+                "OpenDEMON.tools.http_request.httpx.request",
                 return_value=mock_resp,
             ) as mock_req,
         ):
@@ -782,10 +782,10 @@ class TestGitHubIssueCreation:
 
         with (
             patch.dict(os.environ, {"GITHUB_TOKEN": "ghp_testtoken123"}),
-            patch("DEMON._rust_bridge.get_rust_module", return_value=mock_rust),
-            patch("DEMON.tools.http_request.check_ssrf", return_value=None),
+            patch("OpenDEMON._rust_bridge.get_rust_module", return_value=mock_rust),
+            patch("OpenDEMON.tools.http_request.check_ssrf", return_value=None),
             patch(
-                "DEMON.tools.http_request.httpx.request",
+                "OpenDEMON.tools.http_request.httpx.request",
                 return_value=mock_resp,
             ) as mock_req,
         ):
@@ -837,10 +837,10 @@ class TestGitHubIssueCreation:
 
         with (
             patch.dict(os.environ, {"GITHUB_TOKEN": "ghp_testtoken123"}),
-            patch("DEMON._rust_bridge.get_rust_module", return_value=mock_rust),
-            patch("DEMON.tools.http_request.check_ssrf", return_value=None),
+            patch("OpenDEMON._rust_bridge.get_rust_module", return_value=mock_rust),
+            patch("OpenDEMON.tools.http_request.check_ssrf", return_value=None),
             patch(
-                "DEMON.tools.http_request.httpx.request",
+                "OpenDEMON.tools.http_request.httpx.request",
                 return_value=mock_resp,
             ) as mock_req,
         ):

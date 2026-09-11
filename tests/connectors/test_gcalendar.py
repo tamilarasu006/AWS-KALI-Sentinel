@@ -63,7 +63,7 @@ def connector(tmp_path: Path):
 
     creds_path = str(tmp_path / "gcalendar.json")
     with patch(
-        "DEMON.connectors.oauth._SHARED_GOOGLE_CREDENTIALS_PATH",
+        "OpenDEMON.connectors.oauth._SHARED_GOOGLE_CREDENTIALS_PATH",
         str(tmp_path / "google_shared.json"),
     ):
         yield GCalendarConnector(credentials_path=creds_path)
@@ -97,8 +97,8 @@ def test_auth_url(connector) -> None:
 # ---------------------------------------------------------------------------
 
 
-@patch("DEMON.connectors.gcalendar._gcal_api_calendars_list")
-@patch("DEMON.connectors.gcalendar._gcal_api_events_list")
+@patch("OpenDEMON.connectors.gcalendar._gcal_api_calendars_list")
+@patch("OpenDEMON.connectors.gcalendar._gcal_api_events_list")
 def test_sync_yields_events(
     mock_events,
     mock_calendars,

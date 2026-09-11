@@ -141,7 +141,7 @@ def test_detect_unsupported_for_low_vram():
 def test_check_docker_available_true():
     from OpenDEMON.mining._discovery import check_docker_available
 
-    with patch("DEMON.mining._discovery._docker_client") as fake:
+    with patch("OpenDEMON.mining._discovery._docker_client") as fake:
         fake.return_value.ping.return_value = True
         fake.return_value.version.return_value = {"Version": "24.0.7"}
         ok, info = check_docker_available()
@@ -152,7 +152,7 @@ def test_check_docker_available_true():
 def test_check_docker_available_false_when_daemon_down():
     from OpenDEMON.mining._discovery import check_docker_available
 
-    with patch("DEMON.mining._discovery._docker_client") as fake:
+    with patch("OpenDEMON.mining._discovery._docker_client") as fake:
         fake.side_effect = Exception("Cannot connect to the Docker daemon")
         ok, info = check_docker_available()
         assert ok is False
@@ -162,7 +162,7 @@ def test_check_docker_available_false_when_daemon_down():
 def test_check_docker_available_false_when_sdk_missing():
     from OpenDEMON.mining._discovery import check_docker_available
 
-    with patch("DEMON.mining._discovery._docker_client") as fake:
+    with patch("OpenDEMON.mining._discovery._docker_client") as fake:
         fake.side_effect = RuntimeError(
             "Docker SDK not installed; install with `uv sync --extra mining-pearl-vllm`"
         )
@@ -174,7 +174,7 @@ def test_check_docker_available_false_when_sdk_missing():
 def test_check_disk_free_passes(tmp_path):
     from OpenDEMON.mining._discovery import check_disk_free
 
-    with patch("DEMON.mining._discovery.shutil.disk_usage") as du:
+    with patch("OpenDEMON.mining._discovery.shutil.disk_usage") as du:
         # 500 GB free
         du.return_value = MagicMock(
             total=1_000_000_000_000,
@@ -188,7 +188,7 @@ def test_check_disk_free_passes(tmp_path):
 def test_check_disk_free_fails_below_threshold(tmp_path):
     from OpenDEMON.mining._discovery import check_disk_free
 
-    with patch("DEMON.mining._discovery.shutil.disk_usage") as du:
+    with patch("OpenDEMON.mining._discovery.shutil.disk_usage") as du:
         du.return_value = MagicMock(
             total=1_000_000_000_000,
             used=950_000_000_000,
@@ -201,7 +201,7 @@ def test_check_disk_free_fails_below_threshold(tmp_path):
 def test_check_pearld_reachable_true():
     from OpenDEMON.mining._discovery import check_pearld_reachable
 
-    with patch("DEMON.mining._discovery.httpx.post") as post:
+    with patch("OpenDEMON.mining._discovery.httpx.post") as post:
         post.return_value.status_code = 200
         post.return_value.json.return_value = {
             "result": {"blocks": 442107, "headers": 442107}
@@ -216,7 +216,7 @@ def test_check_pearld_reachable_false_on_connection_error():
 
     from OpenDEMON.mining._discovery import check_pearld_reachable
 
-    with patch("DEMON.mining._discovery.httpx.post") as post:
+    with patch("OpenDEMON.mining._discovery.httpx.post") as post:
         post.side_effect = httpx.ConnectError("connection refused")
         ok, info = check_pearld_reachable("http://localhost:44107", "user", "pass")
         assert ok is False

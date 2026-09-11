@@ -18,13 +18,13 @@ import pytest
 pytestmark = pytest.mark.hub
 
 PROVIDERS = [
-    ("DEMON.evals.datasets.pinchbench", "PinchBenchDataset"),
-    ("DEMON.evals.datasets.liveresearch", "LiveResearchBenchDataset"),
-    ("DEMON.evals.datasets.gaia", "GAIADataset"),
-    ("DEMON.evals.datasets.liveresearchbench", "LiveResearchBenchDataset"),
-    ("DEMON.evals.datasets.taubench", "TauBenchDataset"),
-    ("DEMON.evals.datasets.toolcall15", "ToolCall15Dataset"),
-    ("DEMON.evals.datasets.livecodebench", "LiveCodeBenchDataset"),
+    ("OpenDEMON.evals.datasets.pinchbench", "PinchBenchDataset"),
+    ("OpenDEMON.evals.datasets.liveresearch", "LiveResearchBenchDataset"),
+    ("OpenDEMON.evals.datasets.gaia", "GAIADataset"),
+    ("OpenDEMON.evals.datasets.liveresearchbench", "LiveResearchBenchDataset"),
+    ("OpenDEMON.evals.datasets.taubench", "TauBenchDataset"),
+    ("OpenDEMON.evals.datasets.toolcall15", "ToolCall15Dataset"),
+    ("OpenDEMON.evals.datasets.livecodebench", "LiveCodeBenchDataset"),
 ]
 
 

@@ -149,7 +149,7 @@ class TestRunAgentForwardsExamples:
         system._mcp_clients = []
 
         with patch(
-            "DEMON.core.registry.AgentRegistry.get",
+            "OpenDEMON.core.registry.AgentRegistry.get",
             return_value=_CapturingAgent,
         ):
             system._run_agent(

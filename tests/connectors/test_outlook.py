@@ -68,7 +68,7 @@ def test_outlook_sync_source_is_outlook(tmp_path: Path) -> None:
     mock_imap.fetch.return_value = ("OK", [(b"1", raw_email)])
     mock_imap.logout.return_value = ("OK", [])
 
-    with patch("DEMON.connectors.gmail_imap.imaplib") as mock_imaplib:
+    with patch("OpenDEMON.connectors.gmail_imap.imaplib") as mock_imaplib:
         mock_imaplib.IMAP4_SSL.return_value = mock_imap
         mock_imaplib.IMAP4 = type(mock_imap)
         docs = list(conn.sync())

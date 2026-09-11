@@ -91,11 +91,11 @@ def test_sync_yields_top_five(connector):
 
     with (
         patch(
-            "DEMON.connectors.hackernews._hn_top_story_ids",
+            "OpenDEMON.connectors.hackernews._hn_top_story_ids",
             return_value=_TOP_STORY_IDS,
         ),
         patch(
-            "DEMON.connectors.hackernews._hn_item",
+            "OpenDEMON.connectors.hackernews._hn_item",
             side_effect=mock_item,
         ),
     ):

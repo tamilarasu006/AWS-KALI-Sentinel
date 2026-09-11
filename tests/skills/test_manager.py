@@ -478,7 +478,7 @@ class TestSkillManagerOverlayLoading:
             overlay_dir=str(tmp_path / "configured-overlays")
         )
 
-        with patch("DEMON.core.config.load_config", return_value=cfg):
+        with patch("OpenDEMON.core.config.load_config", return_value=cfg):
             mgr = SkillManager(bus=EventBus())
             assert mgr._overlay_dir == (tmp_path / "configured-overlays").expanduser()
 

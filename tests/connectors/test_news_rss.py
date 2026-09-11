@@ -107,7 +107,7 @@ def test_is_connected_empty_feeds(tmp_path):
 def test_sync_rss_feed(connector):
     """Sync parses RSS XML and returns Documents."""
     with patch(
-        "DEMON.connectors.news_rss._fetch_feed",
+        "OpenDEMON.connectors.news_rss._fetch_feed",
         return_value=_SAMPLE_RSS,
     ):
         docs = list(connector.sync())
@@ -144,7 +144,7 @@ def test_sync_atom_feed(tmp_path):
     c = NewsRSSConnector(config_path=str(config_path))
 
     with patch(
-        "DEMON.connectors.news_rss._fetch_feed",
+        "OpenDEMON.connectors.news_rss._fetch_feed",
         return_value=_SAMPLE_ATOM,
     ):
         docs = list(c.sync())
@@ -157,7 +157,7 @@ def test_sync_atom_feed(tmp_path):
 def test_sync_filters_by_since(connector):
     """Items older than `since` are excluded when date is parseable."""
     with patch(
-        "DEMON.connectors.news_rss._fetch_feed",
+        "OpenDEMON.connectors.news_rss._fetch_feed",
         return_value=_SAMPLE_RSS,
     ):
         # Only items after April 1 12:00 should come through

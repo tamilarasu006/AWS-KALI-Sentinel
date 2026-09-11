@@ -19,12 +19,12 @@ def tmp_DEMON_home(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
     (home / ".state" / "models").mkdir()
     (home / ".scripts").mkdir()
     config_path = home / "config.toml"
-    monkeypatch.setattr("DEMON.core.config.DEFAULT_CONFIG_DIR", home)
-    monkeypatch.setattr("DEMON.core.config.DEFAULT_CONFIG_PATH", config_path)
+    monkeypatch.setattr("OpenDEMON.core.config.DEFAULT_CONFIG_DIR", home)
+    monkeypatch.setattr("OpenDEMON.core.config.DEFAULT_CONFIG_PATH", config_path)
     # Also patch init_cmd's module-level bindings (imported with ``from ... import``).
-    monkeypatch.setattr("DEMON.cli.init_cmd.DEFAULT_CONFIG_DIR", home)
-    monkeypatch.setattr("DEMON.cli.init_cmd.DEFAULT_CONFIG_PATH", config_path)
+    monkeypatch.setattr("OpenDEMON.cli.init_cmd.DEFAULT_CONFIG_DIR", home)
+    monkeypatch.setattr("OpenDEMON.cli.init_cmd.DEFAULT_CONFIG_PATH", config_path)
     # Patch doctor_cmd's module-level bindings.
-    monkeypatch.setattr("DEMON.cli.doctor_cmd.DEFAULT_CONFIG_PATH", config_path)
+    monkeypatch.setattr("OpenDEMON.cli.doctor_cmd.DEFAULT_CONFIG_PATH", config_path)
     monkeypatch.setenv("HOME", str(tmp_path))
     return home

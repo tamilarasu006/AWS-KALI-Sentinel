@@ -28,7 +28,7 @@ def test_openai_whisper_transcribe():
     mock_response.duration = 2.0
     mock_client.audio.transcriptions.create.return_value = mock_response
 
-    with patch("DEMON.speech.openai_whisper.OpenAI", return_value=mock_client):
+    with patch("OpenDEMON.speech.openai_whisper.OpenAI", return_value=mock_client):
         from OpenDEMON.speech.openai_whisper import OpenAIWhisperBackend
 
         backend = OpenAIWhisperBackend(api_key="test-key")
@@ -40,7 +40,7 @@ def test_openai_whisper_transcribe():
 
 
 def test_openai_whisper_health():
-    with patch("DEMON.speech.openai_whisper.OpenAI"):
+    with patch("OpenDEMON.speech.openai_whisper.OpenAI"):
         from OpenDEMON.speech.openai_whisper import OpenAIWhisperBackend
 
         backend = OpenAIWhisperBackend(api_key="test-key")
@@ -48,7 +48,7 @@ def test_openai_whisper_health():
 
 
 def test_openai_whisper_health_no_key():
-    with patch("DEMON.speech.openai_whisper.OpenAI"):
+    with patch("OpenDEMON.speech.openai_whisper.OpenAI"):
         from OpenDEMON.speech.openai_whisper import OpenAIWhisperBackend
 
         backend = OpenAIWhisperBackend.__new__(OpenAIWhisperBackend)

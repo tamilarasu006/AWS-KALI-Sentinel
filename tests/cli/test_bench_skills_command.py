@@ -52,11 +52,11 @@ class TestBenchSkillsCommand:
         )
 
         with patch(
-            "DEMON.evals.skill_benchmark.SkillBenchmarkRunner.run_all_conditions",
+            "OpenDEMON.evals.skill_benchmark.SkillBenchmarkRunner.run_all_conditions",
             return_value=fake_cmp,
         ):
             with patch(
-                "DEMON.evals.skill_benchmark.SkillBenchmarkRunner.write_report",
+                "OpenDEMON.evals.skill_benchmark.SkillBenchmarkRunner.write_report",
                 return_value=tmp_path / "fake-report.md",
             ):
                 result = CliRunner().invoke(
@@ -92,7 +92,7 @@ class TestBenchSkillsCommand:
         )
 
         with patch(
-            "DEMON.evals.skill_benchmark.SkillBenchmarkRunner.run_condition",
+            "OpenDEMON.evals.skill_benchmark.SkillBenchmarkRunner.run_condition",
             return_value=fake_result,
         ):
             result = CliRunner().invoke(

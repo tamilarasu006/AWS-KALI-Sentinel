@@ -33,7 +33,7 @@ def test_deepgram_transcribe():
     mock_result.metadata.duration = 1.8
     mock_client.listen.rest.v.return_value.transcribe_file.return_value = mock_result
 
-    with patch("DEMON.speech.deepgram.DeepgramClient", return_value=mock_client):
+    with patch("OpenDEMON.speech.deepgram.DeepgramClient", return_value=mock_client):
         from OpenDEMON.speech.deepgram import DeepgramSpeechBackend
 
         backend = DeepgramSpeechBackend(api_key="test-key")
@@ -44,7 +44,7 @@ def test_deepgram_transcribe():
 
 
 def test_deepgram_health():
-    with patch("DEMON.speech.deepgram.DeepgramClient"):
+    with patch("OpenDEMON.speech.deepgram.DeepgramClient"):
         from OpenDEMON.speech.deepgram import DeepgramSpeechBackend
 
         backend = DeepgramSpeechBackend(api_key="test-key")
@@ -52,7 +52,7 @@ def test_deepgram_health():
 
 
 def test_deepgram_health_no_key():
-    with patch("DEMON.speech.deepgram.DeepgramClient"):
+    with patch("OpenDEMON.speech.deepgram.DeepgramClient"):
         from OpenDEMON.speech.deepgram import DeepgramSpeechBackend
 
         backend = DeepgramSpeechBackend.__new__(DeepgramSpeechBackend)

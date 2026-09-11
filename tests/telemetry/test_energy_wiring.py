@@ -189,7 +189,7 @@ class TestCliAskWiring:
         )
         mock_monitor = _mock_energy_monitor()
         with patch(
-            "DEMON.telemetry.energy_monitor.create_energy_monitor",
+            "OpenDEMON.telemetry.energy_monitor.create_energy_monitor",
             return_value=mock_monitor,
         ):
             result = CliRunner().invoke(cli, ["ask", "Hello"])
@@ -245,7 +245,7 @@ class TestCliAskWiring:
         )
         mock_monitor = _mock_energy_monitor()
         with patch(
-            "DEMON.telemetry.energy_monitor.create_energy_monitor",
+            "OpenDEMON.telemetry.energy_monitor.create_energy_monitor",
             return_value=mock_monitor,
         ):
             CliRunner().invoke(cli, ["ask", "Hello"])
@@ -327,7 +327,7 @@ class TestSdkWiring:
         engine = _mock_engine()
         cfg = DEMONConfig()
         with patch(
-            "DEMON.sdk.get_engine",
+            "OpenDEMON.sdk.get_engine",
             return_value=("mock", engine),
         ):
             j = DEMON(config=cfg, model="test-model")
@@ -345,11 +345,11 @@ class TestSdkWiring:
 
         with (
             patch(
-                "DEMON.sdk.get_engine",
+                "OpenDEMON.sdk.get_engine",
                 return_value=("mock", engine),
             ),
             patch(
-                "DEMON.telemetry.energy_monitor.create_energy_monitor",
+                "OpenDEMON.telemetry.energy_monitor.create_energy_monitor",
                 return_value=mock_monitor,
             ),
         ):
@@ -368,7 +368,7 @@ class TestSdkWiring:
         cfg.telemetry.gpu_metrics = False
 
         with patch(
-            "DEMON.sdk.get_engine",
+            "OpenDEMON.sdk.get_engine",
             return_value=("mock", engine),
         ):
             j = DEMON(config=cfg, model="test-model")
@@ -386,11 +386,11 @@ class TestSdkWiring:
 
         with (
             patch(
-                "DEMON.sdk.get_engine",
+                "OpenDEMON.sdk.get_engine",
                 return_value=("mock", engine),
             ),
             patch(
-                "DEMON.telemetry.energy_monitor.create_energy_monitor",
+                "OpenDEMON.telemetry.energy_monitor.create_energy_monitor",
                 return_value=mock_monitor,
             ),
         ):
@@ -418,11 +418,11 @@ class TestSdkWiring:
 
         with (
             patch(
-                "DEMON.sdk.get_engine",
+                "OpenDEMON.sdk.get_engine",
                 return_value=("mock", engine),
             ),
             patch(
-                "DEMON.telemetry.energy_monitor.create_energy_monitor",
+                "OpenDEMON.telemetry.energy_monitor.create_energy_monitor",
                 return_value=mock_monitor,
             ),
         ):
@@ -443,11 +443,11 @@ class TestSdkWiring:
 
         with (
             patch(
-                "DEMON.sdk.get_engine",
+                "OpenDEMON.sdk.get_engine",
                 return_value=("mock", engine),
             ),
             patch(
-                "DEMON.telemetry.energy_monitor.create_energy_monitor",
+                "OpenDEMON.telemetry.energy_monitor.create_energy_monitor",
                 return_value=mock_monitor,
             ),
         ):
@@ -587,15 +587,15 @@ class TestBenchWiring:
 
         with (
             patch(
-                "DEMON.cli.bench_cmd.get_engine",
+                "OpenDEMON.cli.bench_cmd.get_engine",
                 return_value=("mock", engine),
             ),
             patch(
-                "DEMON.cli.bench_cmd.load_config",
+                "OpenDEMON.cli.bench_cmd.load_config",
                 return_value=cfg,
             ),
             patch(
-                "DEMON.telemetry.energy_monitor.create_energy_monitor",
+                "OpenDEMON.telemetry.energy_monitor.create_energy_monitor",
                 return_value=mock_monitor,
             ) as mock_create,
         ):
@@ -627,11 +627,11 @@ class TestBenchWiring:
 
         with (
             patch(
-                "DEMON.cli.bench_cmd.get_engine",
+                "OpenDEMON.cli.bench_cmd.get_engine",
                 return_value=("mock", engine),
             ),
             patch(
-                "DEMON.cli.bench_cmd.load_config",
+                "OpenDEMON.cli.bench_cmd.load_config",
                 return_value=cfg,
             ),
         ):
@@ -661,11 +661,11 @@ class TestBenchWiring:
 
         with (
             patch(
-                "DEMON.cli.bench_cmd.get_engine",
+                "OpenDEMON.cli.bench_cmd.get_engine",
                 return_value=("mock", engine),
             ),
             patch(
-                "DEMON.cli.bench_cmd.load_config",
+                "OpenDEMON.cli.bench_cmd.load_config",
                 return_value=cfg,
             ),
         ):
@@ -705,7 +705,7 @@ def _patch_telemetry_config(tmp_path: Path):
     cfg = mock.MagicMock()
     cfg.telemetry.db_path = str(db_path)
     return mock.patch(
-        "DEMON.cli.telemetry_cmd.load_config",
+        "OpenDEMON.cli.telemetry_cmd.load_config",
         return_value=cfg,
     ), db_path
 
@@ -954,7 +954,7 @@ class TestEndToEndPipeline:
 
         mock_monitor = _mock_energy_monitor()
         with patch(
-            "DEMON.telemetry.energy_monitor.create_energy_monitor",
+            "OpenDEMON.telemetry.energy_monitor.create_energy_monitor",
             return_value=mock_monitor,
         ):
             CliRunner().invoke(cli, ["ask", "Hello"])
@@ -963,7 +963,7 @@ class TestEndToEndPipeline:
         telem_cfg = mock.MagicMock()
         telem_cfg.telemetry.db_path = cfg.telemetry.db_path
         with mock.patch(
-            "DEMON.cli.telemetry_cmd.load_config",
+            "OpenDEMON.cli.telemetry_cmd.load_config",
             return_value=telem_cfg,
         ):
             result = CliRunner().invoke(
@@ -1003,7 +1003,7 @@ class TestEndToEndPipeline:
 
         mock_monitor = _mock_energy_monitor()
         with patch(
-            "DEMON.telemetry.energy_monitor.create_energy_monitor",
+            "OpenDEMON.telemetry.energy_monitor.create_energy_monitor",
             return_value=mock_monitor,
         ):
             CliRunner().invoke(cli, ["ask", "Hello"])
@@ -1012,7 +1012,7 @@ class TestEndToEndPipeline:
         telem_cfg = mock.MagicMock()
         telem_cfg.telemetry.db_path = cfg.telemetry.db_path
         with mock.patch(
-            "DEMON.cli.telemetry_cmd.load_config",
+            "OpenDEMON.cli.telemetry_cmd.load_config",
             return_value=telem_cfg,
         ):
             result = CliRunner().invoke(

@@ -167,7 +167,7 @@ class TestBuildMessages:
 
         empty_cfg = DEMONConfig()
         empty_cfg.agent.default_system_prompt = ""
-        monkeypatch.setattr("DEMON.agents._stubs.load_config", lambda: empty_cfg)
+        monkeypatch.setattr("OpenDEMON.agents._stubs.load_config", lambda: empty_cfg)
 
         engine = MagicMock()
         agent = _ConcreteAgent(engine, "m")

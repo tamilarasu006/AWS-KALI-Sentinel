@@ -120,8 +120,8 @@ def test_auth_url_returns_string(connector) -> None:
 # ---------------------------------------------------------------------------
 
 
-@patch("DEMON.connectors.gmail._gmail_api_list_messages")
-@patch("DEMON.connectors.gmail._gmail_api_get_message")
+@patch("OpenDEMON.connectors.gmail._gmail_api_list_messages")
+@patch("OpenDEMON.connectors.gmail._gmail_api_get_message")
 def test_sync_yields_documents(
     mock_get,
     mock_list,
@@ -204,8 +204,8 @@ def test_mcp_tools(connector) -> None:
 # ---------------------------------------------------------------------------
 
 
-@patch("DEMON.connectors.gmail._gmail_api_list_messages")
-@patch("DEMON.connectors.gmail._gmail_api_get_message")
+@patch("OpenDEMON.connectors.gmail._gmail_api_list_messages")
+@patch("OpenDEMON.connectors.gmail._gmail_api_get_message")
 def test_sync_passes_since_as_query(
     mock_get,
     mock_list,
@@ -239,8 +239,8 @@ def test_sync_passes_since_as_query(
 # ---------------------------------------------------------------------------
 
 
-@patch("DEMON.connectors.gmail._gmail_api_list_messages")
-@patch("DEMON.connectors.gmail._gmail_api_get_message")
+@patch("OpenDEMON.connectors.gmail._gmail_api_list_messages")
+@patch("OpenDEMON.connectors.gmail._gmail_api_get_message")
 def test_sync_without_since_passes_empty_query(
     mock_get,
     mock_list,
@@ -308,8 +308,8 @@ _MSG_RICH = {
 }
 
 
-@patch("DEMON.connectors.gmail._gmail_api_list_messages")
-@patch("DEMON.connectors.gmail._gmail_api_get_message")
+@patch("OpenDEMON.connectors.gmail._gmail_api_list_messages")
+@patch("OpenDEMON.connectors.gmail._gmail_api_get_message")
 def test_sync_emits_v1_fields(
     mock_get,
     mock_list,
@@ -359,8 +359,8 @@ def test_sync_emits_v1_fields(
     assert "CATEGORY_PERSONAL" in doc.metadata["labels"]
 
 
-@patch("DEMON.connectors.gmail._gmail_api_list_messages")
-@patch("DEMON.connectors.gmail._gmail_api_get_message")
+@patch("OpenDEMON.connectors.gmail._gmail_api_list_messages")
+@patch("OpenDEMON.connectors.gmail._gmail_api_get_message")
 def test_sync_channel_falls_back_to_inbox(
     mock_get,
     mock_list,
@@ -378,8 +378,8 @@ def test_sync_channel_falls_back_to_inbox(
     assert all(d.channel == "INBOX" for d in docs)
 
 
-@patch("DEMON.connectors.gmail._gmail_api_list_messages")
-@patch("DEMON.connectors.gmail._gmail_api_get_message")
+@patch("OpenDEMON.connectors.gmail._gmail_api_list_messages")
+@patch("OpenDEMON.connectors.gmail._gmail_api_get_message")
 def test_sync_channel_none_when_no_system_label(
     mock_get,
     mock_list,
@@ -463,8 +463,8 @@ def test_html_to_text_inserts_paragraph_breaks() -> None:
     assert text.count("\n") >= 2
 
 
-@patch("DEMON.connectors.gmail._gmail_api_list_messages")
-@patch("DEMON.connectors.gmail._gmail_api_get_message")
+@patch("OpenDEMON.connectors.gmail._gmail_api_list_messages")
+@patch("OpenDEMON.connectors.gmail._gmail_api_get_message")
 def test_sync_strips_html_when_no_text_plain(
     mock_get,
     mock_list,
@@ -514,8 +514,8 @@ def test_sync_strips_html_when_no_text_plain(
     assert "<" not in content and ">" not in content
 
 
-@patch("DEMON.connectors.gmail._gmail_api_list_messages")
-@patch("DEMON.connectors.gmail._gmail_api_get_message")
+@patch("OpenDEMON.connectors.gmail._gmail_api_list_messages")
+@patch("OpenDEMON.connectors.gmail._gmail_api_get_message")
 def test_sync_prefers_text_plain_over_text_html(
     mock_get,
     mock_list,

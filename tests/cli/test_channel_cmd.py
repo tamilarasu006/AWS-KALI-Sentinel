@@ -25,11 +25,11 @@ def _patch_channel(
     bridge_instance.status.return_value = status_return
 
     config_patch = mock.patch(
-        "DEMON.core.config.load_config",
+        "OpenDEMON.core.config.load_config",
         return_value=cfg,
     )
     get_channel_patch = mock.patch(
-        "DEMON.cli.channel_cmd._get_channel",
+        "OpenDEMON.cli.channel_cmd._get_channel",
         return_value=bridge_instance,
     )
     return config_patch, get_channel_patch, bridge_instance

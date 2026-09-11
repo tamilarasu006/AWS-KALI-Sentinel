@@ -112,7 +112,7 @@ class TestRegistryCmd:
         from unittest.mock import patch
 
         with patch(
-            "DEMON.core.registry.ToolRegistry.keys",
+            "OpenDEMON.core.registry.ToolRegistry.keys",
             side_effect=Exception("Test error"),
         ):
             result = CliRunner().invoke(cli, ["registry", "show", "tool"])
@@ -134,7 +134,7 @@ class TestRegistryCmd:
         from unittest.mock import patch
 
         # Patch the entire import to raise an exception
-        with patch.dict("sys.modules", {"DEMON.core.registry": None}):
+        with patch.dict("sys.modules", {"OpenDEMON.core.registry": None}):
             # This tests the outer exception handler
             result = CliRunner().invoke(cli, ["registry", "show", "tool"])
             assert result.exit_code == 0

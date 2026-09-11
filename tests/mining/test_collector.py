@@ -16,7 +16,7 @@ async def test_collector_collect_once_returns_stats(written_sidecar):
         "pearl_gateway_shares_submitted_total 50\n"
         "pearl_gateway_shares_accepted_total 49\n"
     )
-    with patch("DEMON.mining._collector.httpx.get") as get:
+    with patch("OpenDEMON.mining._collector.httpx.get") as get:
         get.return_value.status_code = 200
         get.return_value.text = sample
         store = MagicMock()
@@ -38,7 +38,7 @@ async def test_collector_run_loop_writes_to_store_then_stops(written_sidecar):
     from OpenDEMON.mining._collector import MiningTelemetryCollector
 
     sample = "pearl_gateway_shares_submitted_total 1\n"
-    with patch("DEMON.mining._collector.httpx.get") as get:
+    with patch("OpenDEMON.mining._collector.httpx.get") as get:
         get.return_value.status_code = 200
         get.return_value.text = sample
         store = MagicMock()
@@ -60,7 +60,7 @@ async def test_collector_run_loop_writes_to_store_then_stops(written_sidecar):
 async def test_collector_handles_gateway_errors_gracefully(written_sidecar):
     from OpenDEMON.mining._collector import MiningTelemetryCollector
 
-    with patch("DEMON.mining._collector.httpx.get") as get:
+    with patch("OpenDEMON.mining._collector.httpx.get") as get:
         get.side_effect = ConnectionError("nope")
         store = MagicMock()
         collector = MiningTelemetryCollector(

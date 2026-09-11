@@ -59,7 +59,7 @@ def connector(tmp_path):
 
 def test_sync_yields_tasks(connector):
     with patch(
-        "DEMON.connectors.google_tasks._tasks_api_get",
+        "OpenDEMON.connectors.google_tasks._tasks_api_get",
         side_effect=[_TASK_LISTS_RESPONSE, _TASKS_RESPONSE],
     ):
         docs = list(connector.sync(since=datetime(2026, 3, 31)))

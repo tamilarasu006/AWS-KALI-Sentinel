@@ -13,13 +13,13 @@ def test_connect_list_no_connectors() -> None:
     """--list with an empty registry shows a 'no connectors' message."""
     runner = CliRunner()
     with mock.patch(
-        "DEMON.cli.connect_cmd.connect.__wrapped__"
+        "OpenDEMON.cli.connect_cmd.connect.__wrapped__"
         if hasattr(cli, "__wrapped__")
-        else "DEMON.core.registry.ConnectorRegistry.items",
+        else "OpenDEMON.core.registry.ConnectorRegistry.items",
         return_value=(),
     ):
         with mock.patch(
-            "DEMON.core.registry.ConnectorRegistry.items",
+            "OpenDEMON.core.registry.ConnectorRegistry.items",
             return_value=(),
         ):
             result = runner.invoke(cli, ["connect", "--list"])
@@ -40,7 +40,7 @@ def test_connect_list_with_connector(tmp_path: object) -> None:
     mock_cls.return_value = mock_instance
 
     with mock.patch(
-        "DEMON.core.registry.ConnectorRegistry.items",
+        "OpenDEMON.core.registry.ConnectorRegistry.items",
         return_value=(("obsidian", mock_cls),),
     ):
         result = runner.invoke(cli, ["connect", "--list"])
@@ -70,11 +70,11 @@ def test_connect_specific_source(tmp_path: object) -> None:
 
     with (
         mock.patch(
-            "DEMON.core.registry.ConnectorRegistry.contains",
+            "OpenDEMON.core.registry.ConnectorRegistry.contains",
             return_value=True,
         ),
         mock.patch(
-            "DEMON.core.registry.ConnectorRegistry.get",
+            "OpenDEMON.core.registry.ConnectorRegistry.get",
             return_value=mock_cls,
         ),
     ):
@@ -96,11 +96,11 @@ def test_connect_disconnect() -> None:
 
     with (
         mock.patch(
-            "DEMON.core.registry.ConnectorRegistry.contains",
+            "OpenDEMON.core.registry.ConnectorRegistry.contains",
             return_value=True,
         ),
         mock.patch(
-            "DEMON.core.registry.ConnectorRegistry.get",
+            "OpenDEMON.core.registry.ConnectorRegistry.get",
             return_value=mock_cls,
         ),
     ):

@@ -71,7 +71,7 @@ def test_is_connected_no_file(tmp_path):
 def test_sync_yields_two_documents(connector):
     """Sync returns one current weather and one forecast Document."""
     with patch(
-        "DEMON.connectors.weather._weather_api_get",
+        "OpenDEMON.connectors.weather._weather_api_get",
         side_effect=[_CURRENT_RESPONSE, _FORECAST_RESPONSE],
     ):
         docs = list(connector.sync())

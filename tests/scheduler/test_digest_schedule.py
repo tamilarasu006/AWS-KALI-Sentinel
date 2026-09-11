@@ -25,7 +25,7 @@ class TestDigestScheduleCLI:
         mock_cfg.digest.timezone = "America/Los_Angeles"
 
         runner = CliRunner()
-        with patch("DEMON.cli.digest_cmd.load_config", return_value=mock_cfg):
+        with patch("OpenDEMON.cli.digest_cmd.load_config", return_value=mock_cfg):
             result = runner.invoke(digest, ["--schedule", ""])
 
         assert result.exit_code == 0
@@ -45,15 +45,15 @@ class TestDigestScheduleCLI:
         runner = CliRunner()
         with (
             patch(
-                "DEMON.cli.digest_cmd.load_config",
+                "OpenDEMON.cli.digest_cmd.load_config",
                 return_value=mock_cfg,
             ),
             patch(
-                "DEMON.cli.digest_cmd.DEFAULT_CONFIG_PATH",
+                "OpenDEMON.cli.digest_cmd.DEFAULT_CONFIG_PATH",
                 config_path,
             ),
             patch(
-                "DEMON.cli.digest_cmd._create_scheduler_task",
+                "OpenDEMON.cli.digest_cmd._create_scheduler_task",
                 return_value="abc123",
             ) as mock_create,
         ):
@@ -79,12 +79,12 @@ class TestDigestScheduleCLI:
         runner = CliRunner()
         with (
             patch(
-                "DEMON.cli.digest_cmd.load_config",
+                "OpenDEMON.cli.digest_cmd.load_config",
                 return_value=mock_cfg,
             ),
-            patch("DEMON.cli.digest_cmd._save_digest_schedule") as mock_save,
+            patch("OpenDEMON.cli.digest_cmd._save_digest_schedule") as mock_save,
             patch(
-                "DEMON.cli.digest_cmd._cancel_scheduler_tasks",
+                "OpenDEMON.cli.digest_cmd._cancel_scheduler_tasks",
                 return_value=1,
             ),
         ):
@@ -124,7 +124,7 @@ class TestDigestScheduleEndpoints:
         mock_cfg.digest.schedule = "0 6 * * *"
 
         with patch(
-            "DEMON.server.digest_routes.load_config",
+            "OpenDEMON.server.digest_routes.load_config",
             return_value=mock_cfg,
         ):
             resp = client.get("/api/digest/schedule")
@@ -142,12 +142,12 @@ class TestDigestScheduleEndpoints:
 
         with (
             patch(
-                "DEMON.server.digest_routes.load_config",
+                "OpenDEMON.server.digest_routes.load_config",
                 return_value=mock_cfg,
             ),
-            patch("DEMON.server.digest_routes._save_digest_schedule") as mock_save,
+            patch("OpenDEMON.server.digest_routes._save_digest_schedule") as mock_save,
             patch(
-                "DEMON.server.digest_routes._create_scheduler_task",
+                "OpenDEMON.server.digest_routes._create_scheduler_task",
                 return_value="task123",
             ) as mock_create,
         ):
@@ -171,12 +171,12 @@ class TestDigestScheduleEndpoints:
 
         with (
             patch(
-                "DEMON.server.digest_routes.load_config",
+                "OpenDEMON.server.digest_routes.load_config",
                 return_value=mock_cfg,
             ),
-            patch("DEMON.server.digest_routes._save_digest_schedule") as mock_save,
+            patch("OpenDEMON.server.digest_routes._save_digest_schedule") as mock_save,
             patch(
-                "DEMON.server.digest_routes._cancel_scheduler_tasks",
+                "OpenDEMON.server.digest_routes._cancel_scheduler_tasks",
                 return_value=1,
             ) as mock_cancel,
         ):

@@ -82,12 +82,12 @@ class TestDeriveBaseUrl:
 
 class TestAvailability:
     def test_true(self, monkeypatch):
-        monkeypatch.setattr("DEMON.agents.opencode.shutil.which",
+        monkeypatch.setattr("OpenDEMON.agents.opencode.shutil.which",
                             lambda n: "/usr/bin/opencode")
         assert is_opencode_available() is True
 
     def test_false(self, monkeypatch):
-        monkeypatch.setattr("DEMON.agents.opencode.shutil.which", lambda n: None)
+        monkeypatch.setattr("OpenDEMON.agents.opencode.shutil.which", lambda n: None)
         assert is_opencode_available() is False
 
 
@@ -133,7 +133,7 @@ class TestConfigBuilding:
 
 class TestRunGracefulDegradation:
     def test_missing_binary_returns_error_result(self, monkeypatch, tmp_path):
-        monkeypatch.setattr("DEMON.agents.opencode.shutil.which", lambda n: None)
+        monkeypatch.setattr("OpenDEMON.agents.opencode.shutil.which", lambda n: None)
         agent = OpenCodeAgent(SimpleNamespace(_host="http://h:1"), "m",
                               workspace=str(tmp_path),
                               opencode_bin="/nonexistent/opencode")

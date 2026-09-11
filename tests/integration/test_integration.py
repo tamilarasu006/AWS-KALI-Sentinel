@@ -505,7 +505,7 @@ class TestSDKAskFlow:
         from OpenDEMON.sdk import DEMON
 
         engine = _make_engine("SDK response")
-        with patch("DEMON.sdk.get_engine", return_value=("mock", engine)):
+        with patch("OpenDEMON.sdk.get_engine", return_value=("mock", engine)):
             j = DEMON(config=DEMONConfig(), model="test-model")
             result = j.ask("Hello from integration test")
             assert result == "SDK response"
@@ -614,7 +614,7 @@ class TestFullPipeline:
         cfg = DEMONConfig()
         cfg.telemetry.db_path = str(tmp_path / "telemetry.db")
 
-        with patch("DEMON.sdk.get_engine", return_value=("mock", engine)):
+        with patch("OpenDEMON.sdk.get_engine", return_value=("mock", engine)):
             j = DEMON(config=cfg, model="test-model")
             result = j.ask("Full pipeline test", agent="pipeline-test")
             assert result == "Pipeline response"

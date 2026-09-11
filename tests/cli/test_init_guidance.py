@@ -19,9 +19,9 @@ class TestInitShowsNextSteps:
         config_dir = tmp_path / ".DEMON"
         config_path = config_dir / "config.toml"
         with (
-            mock.patch("DEMON.cli.init_cmd.DEFAULT_CONFIG_DIR", config_dir),
-            mock.patch("DEMON.cli.init_cmd.DEFAULT_CONFIG_PATH", config_path),
-            mock.patch("DEMON.cli.init_cmd.PrivacyScanner"),
+            mock.patch("OpenDEMON.cli.init_cmd.DEFAULT_CONFIG_DIR", config_dir),
+            mock.patch("OpenDEMON.cli.init_cmd.DEFAULT_CONFIG_PATH", config_path),
+            mock.patch("OpenDEMON.cli.init_cmd.PrivacyScanner"),
         ):
             result = CliRunner().invoke(cli, ["init", "--engine", "llamacpp", _NO_DL])
         assert result.exit_code == 0
@@ -34,9 +34,9 @@ class TestInitShowsNextSteps:
         config_dir = tmp_path / ".DEMON"
         config_path = config_dir / "config.toml"
         with (
-            mock.patch("DEMON.cli.init_cmd.DEFAULT_CONFIG_DIR", config_dir),
-            mock.patch("DEMON.cli.init_cmd.DEFAULT_CONFIG_PATH", config_path),
-            mock.patch("DEMON.cli.init_cmd.PrivacyScanner"),
+            mock.patch("OpenDEMON.cli.init_cmd.DEFAULT_CONFIG_DIR", config_dir),
+            mock.patch("OpenDEMON.cli.init_cmd.DEFAULT_CONFIG_PATH", config_path),
+            mock.patch("OpenDEMON.cli.init_cmd.PrivacyScanner"),
         ):
             result = CliRunner().invoke(cli, ["init", "--engine", "llamacpp", _NO_DL])
         assert result.exit_code == 0
@@ -94,9 +94,9 @@ class TestMinimalConfig:
         config_dir = tmp_path / ".DEMON"
         config_path = config_dir / "config.toml"
         with (
-            mock.patch("DEMON.cli.init_cmd.DEFAULT_CONFIG_DIR", config_dir),
-            mock.patch("DEMON.cli.init_cmd.DEFAULT_CONFIG_PATH", config_path),
-            mock.patch("DEMON.cli.init_cmd.PrivacyScanner"),
+            mock.patch("OpenDEMON.cli.init_cmd.DEFAULT_CONFIG_DIR", config_dir),
+            mock.patch("OpenDEMON.cli.init_cmd.DEFAULT_CONFIG_PATH", config_path),
+            mock.patch("OpenDEMON.cli.init_cmd.PrivacyScanner"),
         ):
             result = CliRunner().invoke(cli, ["init", "--engine", "ollama", _NO_DL])
         assert result.exit_code == 0
@@ -112,9 +112,9 @@ class TestMinimalConfig:
         config_dir = tmp_path / ".DEMON"
         config_path = config_dir / "config.toml"
         with (
-            mock.patch("DEMON.cli.init_cmd.DEFAULT_CONFIG_DIR", config_dir),
-            mock.patch("DEMON.cli.init_cmd.DEFAULT_CONFIG_PATH", config_path),
-            mock.patch("DEMON.cli.init_cmd.PrivacyScanner"),
+            mock.patch("OpenDEMON.cli.init_cmd.DEFAULT_CONFIG_DIR", config_dir),
+            mock.patch("OpenDEMON.cli.init_cmd.DEFAULT_CONFIG_PATH", config_path),
+            mock.patch("OpenDEMON.cli.init_cmd.PrivacyScanner"),
         ):
             result = CliRunner().invoke(
                 cli,
@@ -133,9 +133,9 @@ class TestInitDownloadPrompt:
         config_dir = tmp_path / ".DEMON"
         config_path = config_dir / "config.toml"
         with (
-            mock.patch("DEMON.cli.init_cmd.DEFAULT_CONFIG_DIR", config_dir),
-            mock.patch("DEMON.cli.init_cmd.DEFAULT_CONFIG_PATH", config_path),
-            mock.patch("DEMON.cli.init_cmd.PrivacyScanner"),
+            mock.patch("OpenDEMON.cli.init_cmd.DEFAULT_CONFIG_DIR", config_dir),
+            mock.patch("OpenDEMON.cli.init_cmd.DEFAULT_CONFIG_PATH", config_path),
+            mock.patch("OpenDEMON.cli.init_cmd.PrivacyScanner"),
         ):
             result = CliRunner().invoke(
                 cli, ["init", "--engine", "ollama"], input="n\n"
@@ -148,9 +148,9 @@ class TestInitDownloadPrompt:
         config_dir = tmp_path / ".DEMON"
         config_path = config_dir / "config.toml"
         with (
-            mock.patch("DEMON.cli.init_cmd.DEFAULT_CONFIG_DIR", config_dir),
-            mock.patch("DEMON.cli.init_cmd.DEFAULT_CONFIG_PATH", config_path),
-            mock.patch("DEMON.cli.init_cmd.PrivacyScanner"),
+            mock.patch("OpenDEMON.cli.init_cmd.DEFAULT_CONFIG_DIR", config_dir),
+            mock.patch("OpenDEMON.cli.init_cmd.DEFAULT_CONFIG_PATH", config_path),
+            mock.patch("OpenDEMON.cli.init_cmd.PrivacyScanner"),
         ):
             result = CliRunner().invoke(cli, ["init", "--engine", "ollama", _NO_DL])
         assert result.exit_code == 0
@@ -162,10 +162,10 @@ class TestInitEmptyModelFallback:
         config_dir = tmp_path / ".DEMON"
         config_path = config_dir / "config.toml"
         with (
-            mock.patch("DEMON.cli.init_cmd.DEFAULT_CONFIG_DIR", config_dir),
-            mock.patch("DEMON.cli.init_cmd.DEFAULT_CONFIG_PATH", config_path),
-            mock.patch("DEMON.cli.init_cmd.recommend_model", return_value=""),
-            mock.patch("DEMON.cli.init_cmd.PrivacyScanner"),
+            mock.patch("OpenDEMON.cli.init_cmd.DEFAULT_CONFIG_DIR", config_dir),
+            mock.patch("OpenDEMON.cli.init_cmd.DEFAULT_CONFIG_PATH", config_path),
+            mock.patch("OpenDEMON.cli.init_cmd.recommend_model", return_value=""),
+            mock.patch("OpenDEMON.cli.init_cmd.PrivacyScanner"),
         ):
             result = CliRunner().invoke(cli, ["init", "--engine", "llamacpp"])
         assert result.exit_code == 0
@@ -193,13 +193,13 @@ class TestInitDownloadDispatch:
         config_dir = tmp_path / ".DEMON"
         config_path = config_dir / "config.toml"
         with (
-            mock.patch("DEMON.cli.init_cmd.DEFAULT_CONFIG_DIR", config_dir),
-            mock.patch("DEMON.cli.init_cmd.DEFAULT_CONFIG_PATH", config_path),
+            mock.patch("OpenDEMON.cli.init_cmd.DEFAULT_CONFIG_DIR", config_dir),
+            mock.patch("OpenDEMON.cli.init_cmd.DEFAULT_CONFIG_PATH", config_path),
             mock.patch(
-                "DEMON.cli.init_cmd.ollama_pull",
+                "OpenDEMON.cli.init_cmd.ollama_pull",
                 return_value=True,
             ) as mock_pull,
-            mock.patch("DEMON.cli.init_cmd.PrivacyScanner"),
+            mock.patch("OpenDEMON.cli.init_cmd.PrivacyScanner"),
         ):
             result = CliRunner().invoke(
                 cli, ["init", "--engine", "ollama"], input="y\n"
@@ -211,9 +211,9 @@ class TestInitDownloadDispatch:
         config_dir = tmp_path / ".DEMON"
         config_path = config_dir / "config.toml"
         with (
-            mock.patch("DEMON.cli.init_cmd.DEFAULT_CONFIG_DIR", config_dir),
-            mock.patch("DEMON.cli.init_cmd.DEFAULT_CONFIG_PATH", config_path),
-            mock.patch("DEMON.cli.init_cmd.PrivacyScanner"),
+            mock.patch("OpenDEMON.cli.init_cmd.DEFAULT_CONFIG_DIR", config_dir),
+            mock.patch("OpenDEMON.cli.init_cmd.DEFAULT_CONFIG_PATH", config_path),
+            mock.patch("OpenDEMON.cli.init_cmd.PrivacyScanner"),
         ):
             result = CliRunner().invoke(cli, ["init", "--engine", "vllm"], input="y\n")
         assert result.exit_code == 0
@@ -225,9 +225,9 @@ class TestInitPrivacyHook:
         config_dir = tmp_path / ".DEMON"
         config_path = config_dir / "config.toml"
         with (
-            mock.patch("DEMON.cli.init_cmd.DEFAULT_CONFIG_DIR", config_dir),
-            mock.patch("DEMON.cli.init_cmd.DEFAULT_CONFIG_PATH", config_path),
-            mock.patch("DEMON.cli.init_cmd.PrivacyScanner") as MockScanner,
+            mock.patch("OpenDEMON.cli.init_cmd.DEFAULT_CONFIG_DIR", config_dir),
+            mock.patch("OpenDEMON.cli.init_cmd.DEFAULT_CONFIG_PATH", config_path),
+            mock.patch("OpenDEMON.cli.init_cmd.PrivacyScanner") as MockScanner,
         ):
             from OpenDEMON.cli.scan_cmd import ScanResult
 

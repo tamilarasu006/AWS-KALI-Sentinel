@@ -34,15 +34,15 @@ class TestDoctorRuns:
         mock_config.intelligence.default_model = ""
 
         with (
-            patch("DEMON.cli.doctor_cmd.load_config", return_value=mock_config),
+            patch("OpenDEMON.cli.doctor_cmd.load_config", return_value=mock_config),
             patch(
-                "DEMON.cli.doctor_cmd.DEFAULT_CONFIG_PATH",
+                "OpenDEMON.cli.doctor_cmd.DEFAULT_CONFIG_PATH",
                 Path("/tmp/nonexistent/config.toml"),
             ),
-            patch("DEMON.cli.doctor_cmd._check_engines", return_value=[]),
-            patch("DEMON.cli.doctor_cmd._check_models", return_value=[]),
+            patch("OpenDEMON.cli.doctor_cmd._check_engines", return_value=[]),
+            patch("OpenDEMON.cli.doctor_cmd._check_models", return_value=[]),
             patch(
-                "DEMON.cli.doctor_cmd._check_speech_backend",
+                "OpenDEMON.cli.doctor_cmd._check_speech_backend",
                 return_value=CheckResult("Speech backend", "ok", "mock ready"),
             ),
         ):
@@ -58,15 +58,15 @@ class TestDoctorJsonOutput:
         mock_config.intelligence.default_model = ""
 
         with (
-            patch("DEMON.cli.doctor_cmd.load_config", return_value=mock_config),
+            patch("OpenDEMON.cli.doctor_cmd.load_config", return_value=mock_config),
             patch(
-                "DEMON.cli.doctor_cmd.DEFAULT_CONFIG_PATH",
+                "OpenDEMON.cli.doctor_cmd.DEFAULT_CONFIG_PATH",
                 Path("/tmp/nonexistent/config.toml"),
             ),
-            patch("DEMON.cli.doctor_cmd._check_engines", return_value=[]),
-            patch("DEMON.cli.doctor_cmd._check_models", return_value=[]),
+            patch("OpenDEMON.cli.doctor_cmd._check_engines", return_value=[]),
+            patch("OpenDEMON.cli.doctor_cmd._check_models", return_value=[]),
             patch(
-                "DEMON.cli.doctor_cmd._check_speech_backend",
+                "OpenDEMON.cli.doctor_cmd._check_speech_backend",
                 return_value=CheckResult("Speech backend", "ok", "mock ready"),
             ),
         ):
@@ -94,7 +94,7 @@ class TestCheckConfigMissing:
     def test_check_config_missing(self) -> None:
         """Warning when config file does not exist."""
         with patch(
-            "DEMON.cli.doctor_cmd.DEFAULT_CONFIG_PATH",
+            "OpenDEMON.cli.doctor_cmd.DEFAULT_CONFIG_PATH",
             Path("/tmp/nonexistent/config.toml"),
         ):
             result = _check_config_exists()
@@ -146,7 +146,7 @@ class TestCheckDefaultModel:
         """Leaving default model empty should be treated as valid auto-routing."""
         mock_config = MagicMock()
         mock_config.intelligence.default_model = ""
-        with patch("DEMON.cli.doctor_cmd.load_config", return_value=mock_config):
+        with patch("OpenDEMON.cli.doctor_cmd.load_config", return_value=mock_config):
             result = _check_default_model()
         assert result.status == "ok"
         assert "auto" in result.message.lower()
@@ -159,7 +159,7 @@ class TestCheckSpeechBackend:
         backend.health.return_value = True
 
         with patch(
-            "DEMON.speech._discovery.get_speech_backend",
+            "OpenDEMON.speech._discovery.get_speech_backend",
             return_value=backend,
         ):
             result = _check_speech_backend()
@@ -174,7 +174,7 @@ class TestCheckSpeechBackend:
         backend.last_error.return_value = "missing cublas64_12.dll"
 
         with patch(
-            "DEMON.speech._discovery.get_speech_backend",
+            "OpenDEMON.speech._discovery.get_speech_backend",
             return_value=backend,
         ):
             result = _check_speech_backend()
@@ -185,7 +185,7 @@ class TestCheckSpeechBackend:
 
     def test_check_speech_backend_missing_uses_desktop_hint(self) -> None:
         with patch(
-            "DEMON.speech._discovery.get_speech_backend",
+            "OpenDEMON.speech._discovery.get_speech_backend",
             return_value=None,
         ):
             result = _check_speech_backend()

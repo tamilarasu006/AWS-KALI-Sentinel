@@ -63,7 +63,7 @@ def test_mine_inspect_model_validated_artifact_passes(monkeypatch) -> None:
             }
         }
 
-    monkeypatch.setattr("DEMON.cli.mine_cmd._hf_json", fake_hf_json)
+    monkeypatch.setattr("OpenDEMON.cli.mine_cmd._hf_json", fake_hf_json)
 
     result = CliRunner().invoke(cli, ["mine", "inspect-model", "--model", model])
 
@@ -90,7 +90,7 @@ def test_mine_inspect_model_gemma4_requires_processor_metadata(monkeypatch) -> N
             }
         }
 
-    monkeypatch.setattr("DEMON.cli.mine_cmd._hf_json", fake_hf_json)
+    monkeypatch.setattr("OpenDEMON.cli.mine_cmd._hf_json", fake_hf_json)
 
     result = CliRunner().invoke(
         cli,
@@ -164,19 +164,19 @@ def test_mine_init_writes_cuda_visible_devices_for_vllm(
     config_path = tmp_path / "config.toml"
 
     with (
-        patch("DEMON.cli.mine_cmd._detect_hardware"),
+        patch("OpenDEMON.cli.mine_cmd._detect_hardware"),
         patch(
-            "DEMON.cli.mine_cmd.detect_for_engine_model",
+            "OpenDEMON.cli.mine_cmd.detect_for_engine_model",
             return_value=MiningCapabilities(supported=True),
         ),
         patch(
-            "DEMON.cli.mine_cmd.check_docker_available",
+            "OpenDEMON.cli.mine_cmd.check_docker_available",
             return_value=(True, ""),
         ),
-        patch("DEMON.cli.mine_cmd.check_disk_free", return_value=(True, "")),
-        patch("DEMON.cli.mine_cmd._docker_from_env", return_value=MagicMock()),
+        patch("OpenDEMON.cli.mine_cmd.check_disk_free", return_value=(True, "")),
+        patch("OpenDEMON.cli.mine_cmd._docker_from_env", return_value=MagicMock()),
         patch(
-            "DEMON.cli.mine_cmd.PearlDockerLauncher.ensure_image",
+            "OpenDEMON.cli.mine_cmd.PearlDockerLauncher.ensure_image",
             return_value="DEMON/pearl-miner:master",
         ),
     ):
@@ -215,15 +215,15 @@ def test_mine_init_writes_local_model_path_for_vllm(
     local_model.mkdir()
 
     with (
-        patch("DEMON.cli.mine_cmd._detect_hardware"),
+        patch("OpenDEMON.cli.mine_cmd._detect_hardware"),
         patch(
-            "DEMON.cli.mine_cmd.check_docker_available",
+            "OpenDEMON.cli.mine_cmd.check_docker_available",
             return_value=(True, ""),
         ),
-        patch("DEMON.cli.mine_cmd.check_disk_free", return_value=(True, "")),
-        patch("DEMON.cli.mine_cmd._docker_from_env", return_value=MagicMock()),
+        patch("OpenDEMON.cli.mine_cmd.check_disk_free", return_value=(True, "")),
+        patch("OpenDEMON.cli.mine_cmd._docker_from_env", return_value=MagicMock()),
         patch(
-            "DEMON.cli.mine_cmd.PearlDockerLauncher.ensure_image",
+            "OpenDEMON.cli.mine_cmd.PearlDockerLauncher.ensure_image",
             return_value="DEMON/pearl-miner:master",
         ),
     ):
@@ -278,7 +278,7 @@ metrics_port = 19109
 """
     )
     sidecar_path = tmp_path / "mining.json"
-    monkeypatch.setattr("DEMON.cli.mine_cmd.SIDECAR_PATH", sidecar_path)
+    monkeypatch.setattr("OpenDEMON.cli.mine_cmd.SIDECAR_PATH", sidecar_path)
 
     started_configs = []
 
@@ -289,10 +289,10 @@ metrics_port = 19109
     provider_cls = MagicMock(return_value=fake_provider)
     fake_provider.start = fake_start
 
-    with patch("DEMON.cli.mine_cmd._provider_ids", return_value=("cpu-pearl",)):
-        with patch("DEMON.cli.mine_cmd.MinerRegistry.contains", return_value=True):
+    with patch("OpenDEMON.cli.mine_cmd._provider_ids", return_value=("cpu-pearl",)):
+        with patch("OpenDEMON.cli.mine_cmd.MinerRegistry.contains", return_value=True):
             with patch(
-                "DEMON.cli.mine_cmd.MinerRegistry.get",
+                "OpenDEMON.cli.mine_cmd.MinerRegistry.get",
                 return_value=provider_cls,
             ):
                 result = CliRunner().invoke(
@@ -323,15 +323,15 @@ def test_mine_status_reports_sidecar_and_metrics(tmp_path: Path, monkeypatch) ->
             "miner_loop_pid": 222,
         },
     )
-    monkeypatch.setattr("DEMON.cli.mine_cmd.SIDECAR_PATH", sidecar_path)
-    monkeypatch.setattr("DEMON.cli.mine_cmd._pid_alive", lambda pid: True)
+    monkeypatch.setattr("OpenDEMON.cli.mine_cmd.SIDECAR_PATH", sidecar_path)
+    monkeypatch.setattr("OpenDEMON.cli.mine_cmd._pid_alive", lambda pid: True)
 
     stats = MagicMock()
     stats.shares_submitted = 3
     stats.shares_accepted = 2
     stats.blocks_found = 1
     monkeypatch.setattr(
-        "DEMON.cli.mine_cmd._stats_from_metrics_url",
+        "OpenDEMON.cli.mine_cmd._stats_from_metrics_url",
         lambda url, provider_id: (stats, None),
     )
 
@@ -355,13 +355,13 @@ def test_mine_stop_terminates_pids_and_removes_sidecar(
             "miner_loop_pid": 222,
         },
     )
-    monkeypatch.setattr("DEMON.cli.mine_cmd.SIDECAR_PATH", sidecar_path)
+    monkeypatch.setattr("OpenDEMON.cli.mine_cmd.SIDECAR_PATH", sidecar_path)
     terminated: list[int] = []
 
     def fake_terminate(pid, *, grace_seconds):
         terminated.append(pid)
 
-    monkeypatch.setattr("DEMON.cli.mine_cmd._terminate_pid", fake_terminate)
+    monkeypatch.setattr("OpenDEMON.cli.mine_cmd._terminate_pid", fake_terminate)
 
     result = CliRunner().invoke(cli, ["mine", "stop"])
 
@@ -372,9 +372,9 @@ def test_mine_stop_terminates_pids_and_removes_sidecar(
 
 def test_mine_doctor_without_config(tmp_path: Path, monkeypatch) -> None:
     config_path = tmp_path / "missing.toml"
-    monkeypatch.setattr("DEMON.cli.mine_cmd.SIDECAR_PATH", tmp_path / "none.json")
+    monkeypatch.setattr("OpenDEMON.cli.mine_cmd.SIDECAR_PATH", tmp_path / "none.json")
 
-    with patch("DEMON.cli.mine_cmd._provider_ids", return_value=()):
+    with patch("OpenDEMON.cli.mine_cmd._provider_ids", return_value=()):
         result = CliRunner().invoke(
             cli,
             ["mine", "doctor"],
@@ -387,7 +387,7 @@ def test_mine_doctor_without_config(tmp_path: Path, monkeypatch) -> None:
 
 
 def test_mine_status_no_session(tmp_path: Path, monkeypatch) -> None:
-    monkeypatch.setattr("DEMON.cli.mine_cmd.SIDECAR_PATH", tmp_path / "none.json")
+    monkeypatch.setattr("OpenDEMON.cli.mine_cmd.SIDECAR_PATH", tmp_path / "none.json")
 
     result = CliRunner().invoke(cli, ["mine", "status"])
 
@@ -409,16 +409,16 @@ def test_mine_validate_model_blocks_planned_without_allow(
             "gateway_metrics_url": "http://127.0.0.1:8339",
         },
     )
-    monkeypatch.setattr("DEMON.cli.mine_cmd.SIDECAR_PATH", sidecar_path)
+    monkeypatch.setattr("OpenDEMON.cli.mine_cmd.SIDECAR_PATH", sidecar_path)
     monkeypatch.setattr(
-        "DEMON.cli.mine_cmd._get_json",
+        "OpenDEMON.cli.mine_cmd._get_json",
         lambda url, *, timeout: {"data": [{"id": model}]},
     )
     stats = MagicMock()
     stats.shares_submitted = 1
     stats.shares_accepted = 1
     monkeypatch.setattr(
-        "DEMON.cli.mine_cmd._stats_from_metrics_url",
+        "OpenDEMON.cli.mine_cmd._stats_from_metrics_url",
         lambda url, provider_id: (stats, None),
     )
 
@@ -443,20 +443,20 @@ def test_mine_validate_model_allows_planned_with_runtime_evidence(
             "gateway_metrics_url": "http://127.0.0.1:8339",
         },
     )
-    monkeypatch.setattr("DEMON.cli.mine_cmd.SIDECAR_PATH", sidecar_path)
+    monkeypatch.setattr("OpenDEMON.cli.mine_cmd.SIDECAR_PATH", sidecar_path)
     monkeypatch.setattr(
-        "DEMON.cli.mine_cmd._get_json",
+        "OpenDEMON.cli.mine_cmd._get_json",
         lambda url, *, timeout: {"data": [{"id": model}]},
     )
     monkeypatch.setattr(
-        "DEMON.cli.mine_cmd._post_json",
+        "OpenDEMON.cli.mine_cmd._post_json",
         lambda url, payload, *, timeout: {"choices": [{"message": {"content": "ok"}}]},
     )
     stats = MagicMock()
     stats.shares_submitted = 2
     stats.shares_accepted = 1
     monkeypatch.setattr(
-        "DEMON.cli.mine_cmd._stats_from_metrics_url",
+        "OpenDEMON.cli.mine_cmd._stats_from_metrics_url",
         lambda url, provider_id: (stats, None),
     )
 
@@ -490,16 +490,16 @@ def test_mine_validate_model_writes_json_artifact(tmp_path: Path, monkeypatch) -
             "gateway_metrics_url": "http://127.0.0.1:8339",
         },
     )
-    monkeypatch.setattr("DEMON.cli.mine_cmd.SIDECAR_PATH", sidecar_path)
+    monkeypatch.setattr("OpenDEMON.cli.mine_cmd.SIDECAR_PATH", sidecar_path)
     monkeypatch.setattr(
-        "DEMON.cli.mine_cmd._get_json",
+        "OpenDEMON.cli.mine_cmd._get_json",
         lambda url, *, timeout: {"data": [{"id": model}]},
     )
     stats = MagicMock()
     stats.shares_submitted = 2
     stats.shares_accepted = 1
     monkeypatch.setattr(
-        "DEMON.cli.mine_cmd._stats_from_metrics_url",
+        "OpenDEMON.cli.mine_cmd._stats_from_metrics_url",
         lambda url, provider_id: (stats, None),
     )
 
@@ -542,9 +542,9 @@ def test_mine_validate_model_falls_back_to_vllm_metrics(
             "gateway_metrics_url": "http://127.0.0.1:8339",
         },
     )
-    monkeypatch.setattr("DEMON.cli.mine_cmd.SIDECAR_PATH", sidecar_path)
+    monkeypatch.setattr("OpenDEMON.cli.mine_cmd.SIDECAR_PATH", sidecar_path)
     monkeypatch.setattr(
-        "DEMON.cli.mine_cmd._get_json",
+        "OpenDEMON.cli.mine_cmd._get_json",
         lambda url, *, timeout: {"data": [{"id": model}]},
     )
     stats = MagicMock()
@@ -556,7 +556,7 @@ def test_mine_validate_model_falls_back_to_vllm_metrics(
             return None, "connection refused"
         return stats, None
 
-    monkeypatch.setattr("DEMON.cli.mine_cmd._stats_from_metrics_url", fake_stats)
+    monkeypatch.setattr("OpenDEMON.cli.mine_cmd._stats_from_metrics_url", fake_stats)
 
     result = CliRunner().invoke(cli, ["mine", "validate-model"])
 

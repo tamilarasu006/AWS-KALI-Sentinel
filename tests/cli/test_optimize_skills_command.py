@@ -21,7 +21,7 @@ class TestOptimizeSkillsCommand:
                 return []
 
         with patch(
-            "DEMON.cli.optimize_cmd._get_trace_store",
+            "OpenDEMON.cli.optimize_cmd._get_trace_store",
             return_value=_EmptyStore(),
         ):
             result = CliRunner().invoke(cli, ["optimize", "skills", "--dry-run"])
@@ -67,11 +67,11 @@ class TestOptimizeSkillsCommand:
         }
 
         with patch(
-            "DEMON.cli.optimize_cmd._get_trace_store",
+            "OpenDEMON.cli.optimize_cmd._get_trace_store",
             return_value=_Store(),
         ):
             with patch(
-                "DEMON.learning.agents.skill_optimizer.SkillOptimizer.optimize",
+                "OpenDEMON.learning.agents.skill_optimizer.SkillOptimizer.optimize",
                 return_value=fake_results,
             ):
                 result = CliRunner().invoke(

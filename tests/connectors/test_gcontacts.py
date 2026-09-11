@@ -89,7 +89,7 @@ def test_auth_url(connector) -> None:
 # ---------------------------------------------------------------------------
 
 
-@patch("DEMON.connectors.gcontacts._gcontacts_api_list")
+@patch("OpenDEMON.connectors.gcontacts._gcontacts_api_list")
 def test_sync_yields_contacts(
     mock_list,
     connector,

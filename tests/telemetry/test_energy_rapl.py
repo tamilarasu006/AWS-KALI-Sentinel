@@ -16,8 +16,8 @@ from tests.telemetry.energy_test_helpers import (
     assert_sample_result_basics,
 )
 
-_PLAT = "DEMON.telemetry.energy_rapl.platform.system"
-_BASE = "DEMON.telemetry.energy_rapl._RAPL_BASE"
+_PLAT = "OpenDEMON.telemetry.energy_rapl.platform.system"
+_BASE = "OpenDEMON.telemetry.energy_rapl._RAPL_BASE"
 
 
 # ---------------------------------------------------------------------------

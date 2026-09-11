@@ -450,7 +450,7 @@ class TestJsonOutput:
 
         runner = CliRunner()
         with patch(
-            "DEMON.cli.scan_cmd.PrivacyScanner.run_all",
+            "OpenDEMON.cli.scan_cmd.PrivacyScanner.run_all",
             return_value=[
                 ScanResult("Test", "ok", "all good", "all"),
             ],

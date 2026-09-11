@@ -106,9 +106,9 @@ class TestChatAgents:
         AgentRegistry.register_value("simple_chat_agent", _SimpleChatAgent)
 
         with (
-            patch("DEMON.cli.chat_cmd.load_config", return_value=config),
-            patch("DEMON.engine.get_engine", return_value=("mock", engine)),
-            patch("DEMON.intelligence.register_builtin_models"),
+            patch("OpenDEMON.cli.chat_cmd.load_config", return_value=config),
+            patch("OpenDEMON.engine.get_engine", return_value=("mock", engine)),
+            patch("OpenDEMON.intelligence.register_builtin_models"),
         ):
             result = CliRunner().invoke(
                 chat,
@@ -132,9 +132,9 @@ class TestChatAgents:
         ToolRegistry.register_value("dangerous_chat", _DangerousChatTool)
 
         with (
-            patch("DEMON.cli.chat_cmd.load_config", return_value=config),
-            patch("DEMON.engine.get_engine", return_value=("mock", engine)),
-            patch("DEMON.intelligence.register_builtin_models"),
+            patch("OpenDEMON.cli.chat_cmd.load_config", return_value=config),
+            patch("OpenDEMON.engine.get_engine", return_value=("mock", engine)),
+            patch("OpenDEMON.intelligence.register_builtin_models"),
         ):
             result = CliRunner().invoke(
                 chat,

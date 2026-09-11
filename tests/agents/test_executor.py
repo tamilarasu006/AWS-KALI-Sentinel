@@ -110,7 +110,7 @@ class TestExecutorBasic:
             return AgentResult(content="success")
 
         with patch.object(executor, "_invoke_agent", side_effect=flaky_invoke):
-            with patch("DEMON.agents.executor.retry_delay", return_value=0):
+            with patch("OpenDEMON.agents.executor.retry_delay", return_value=0):
                 executor.execute_tick(agent["id"])
 
         assert call_count == 3
@@ -122,7 +122,7 @@ class TestExecutorBasic:
         with patch.object(
             executor, "_invoke_agent", side_effect=RetryableError("always fails")
         ):
-            with patch("DEMON.agents.executor.retry_delay", return_value=0):
+            with patch("OpenDEMON.agents.executor.retry_delay", return_value=0):
                 executor.execute_tick(agent["id"])
 
         assert manager.get_agent(agent["id"])["status"] == "error"

@@ -34,7 +34,7 @@ def test_ensure_image_pulls_if_published():
     fake.images.pull.return_value = MagicMock(id="sha256:def")
     launcher = PearlDockerLauncher(client=fake)
     with patch(
-        "DEMON.mining._docker._docker_error_types",
+        "OpenDEMON.mining._docker._docker_error_types",
         return_value=(ImageNotFound, NotFound, APIError),
     ):
         out = launcher.ensure_image("registry.example/pearl-miner:1.0")
@@ -59,7 +59,7 @@ def test_ensure_image_falls_back_to_build_for_default_tag():
         patch.object(launcher, "_clone_pearl_repo") as clone,
         patch.object(launcher, "_docker_build") as build,
         patch(
-            "DEMON.mining._docker._docker_error_types",
+            "OpenDEMON.mining._docker._docker_error_types",
             return_value=(ImageNotFound, NotFound, APIError),
         ),
     ):
@@ -88,7 +88,7 @@ def test_ensure_image_errors_when_non_default_tag_missing():
     launcher = PearlDockerLauncher(client=fake)
     with (
         patch(
-            "DEMON.mining._docker._docker_error_types",
+            "OpenDEMON.mining._docker._docker_error_types",
             return_value=(ImageNotFound, NotFound, APIError),
         ),
         pytest.raises(ImageAcquisitionError) as ei,
@@ -106,7 +106,7 @@ def test_docker_build_raises_nofile_limit(tmp_path):
     dockerfile = tmp_path / "miner" / "vllm-miner" / "Dockerfile"
     dockerfile.write_text("FROM nvidia/cuda:${CUDA_VERSION}-runtime-ubuntu24.04\n")
     launcher = PearlDockerLauncher(client=MagicMock())
-    with patch("DEMON.mining._docker.subprocess.run") as run:
+    with patch("OpenDEMON.mining._docker.subprocess.run") as run:
         launcher._docker_build(tmp_path, "DEMON/pearl-miner:test")
 
     cmd = run.call_args.args[0]

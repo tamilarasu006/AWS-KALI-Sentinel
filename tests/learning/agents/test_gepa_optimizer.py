@@ -73,7 +73,7 @@ class TestGEPAOptimizerOptimize:
         # Ensure gepa is not available
         with patch.dict("sys.modules", {"gepa": None}):
             with patch(
-                "DEMON.learning.agents.gepa_optimizer.HAS_GEPA",
+                "OpenDEMON.learning.agents.gepa_optimizer.HAS_GEPA",
                 False,
             ):
                 result = optimizer.optimize(mock_store)

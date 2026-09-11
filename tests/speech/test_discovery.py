@@ -12,7 +12,7 @@ def test_get_speech_backend_explicit():
     config = DEMONConfig()
     config.speech.backend = "faster-whisper"
 
-    with patch("DEMON.speech._discovery._create_backend") as mock_create:
+    with patch("OpenDEMON.speech._discovery._create_backend") as mock_create:
         mock_backend = type(
             "MockBackend",
             (),

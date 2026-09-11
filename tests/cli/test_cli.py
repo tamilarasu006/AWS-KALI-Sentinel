@@ -27,7 +27,7 @@ class TestMainEntryPoint:
             mock.patch.object(sys, "platform", "win32"),
             mock.patch.object(sys, "stdout", stdout_mock),
             mock.patch.object(sys, "stderr", stderr_mock),
-            mock.patch("DEMON.cli.cli") as cli_mock,
+            mock.patch("OpenDEMON.cli.cli") as cli_mock,
         ):
             main()
         stdout_mock.reconfigure.assert_called_once_with(
@@ -44,7 +44,7 @@ class TestMainEntryPoint:
         with (
             mock.patch.object(sys, "platform", "linux"),
             mock.patch.object(sys, "stdout", stdout_mock),
-            mock.patch("DEMON.cli.cli") as cli_mock,
+            mock.patch("OpenDEMON.cli.cli") as cli_mock,
         ):
             main()
         stdout_mock.reconfigure.assert_not_called()
@@ -126,9 +126,9 @@ class TestCLI:
         config_dir = tmp_path / ".DEMON"
         config_path = config_dir / "config.toml"
         with (
-            mock.patch("DEMON.cli.init_cmd.DEFAULT_CONFIG_DIR", config_dir),
-            mock.patch("DEMON.cli.init_cmd.DEFAULT_CONFIG_PATH", config_path),
-            mock.patch("DEMON.cli.init_cmd.PrivacyScanner"),
+            mock.patch("OpenDEMON.cli.init_cmd.DEFAULT_CONFIG_DIR", config_dir),
+            mock.patch("OpenDEMON.cli.init_cmd.DEFAULT_CONFIG_PATH", config_path),
+            mock.patch("OpenDEMON.cli.init_cmd.PrivacyScanner"),
         ):
             result = CliRunner().invoke(
                 cli, ["init", "--engine", "ollama", "--no-download"]

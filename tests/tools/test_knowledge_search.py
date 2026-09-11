@@ -131,7 +131,7 @@ class TestKnowledgeSearchTool:
         plain import won't re-execute the ``@ToolRegistry.register`` decorator,
         so we explicitly reload the module.
         """
-        mod_name = "DEMON.tools.knowledge_search"
+        mod_name = "OpenDEMON.tools.knowledge_search"
         if mod_name in sys.modules:
             importlib.reload(sys.modules[mod_name])
         else:

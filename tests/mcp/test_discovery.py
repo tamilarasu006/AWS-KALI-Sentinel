@@ -32,11 +32,11 @@ def builder():
 
 # Patch targets: the method uses local imports, so we patch the actual classes
 # in their source modules (which is where the local from-imports resolve to).
-_PATCH_HTTP = "DEMON.mcp.transport.StreamableHTTPTransport"
-_PATCH_STDIO = "DEMON.mcp.transport.StdioTransport"
-_PATCH_CLIENT = "DEMON.mcp.client.MCPClient"
-_PATCH_PROVIDER = "DEMON.tools.mcp_adapter.MCPToolProvider"
-_PATCH_LOGGER = "DEMON.system.builder.logger"
+_PATCH_HTTP = "OpenDEMON.mcp.transport.StreamableHTTPTransport"
+_PATCH_STDIO = "OpenDEMON.mcp.transport.StdioTransport"
+_PATCH_CLIENT = "OpenDEMON.mcp.client.MCPClient"
+_PATCH_PROVIDER = "OpenDEMON.tools.mcp_adapter.MCPToolProvider"
+_PATCH_LOGGER = "OpenDEMON.system.builder.logger"
 
 
 class TestDiscoverHTTPServer:

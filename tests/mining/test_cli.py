@@ -12,17 +12,17 @@ def test_mine_doctor_prints_capability_matrix(hopper_hw):
 
     runner = CliRunner()
     with (
-        patch("DEMON.cli.mine_cmd._detect_hardware", return_value=hopper_hw),
+        patch("OpenDEMON.cli.mine_cmd._detect_hardware", return_value=hopper_hw),
         patch(
-            "DEMON.cli.mine_cmd.check_docker_available",
+            "OpenDEMON.cli.mine_cmd.check_docker_available",
             return_value=(True, "running 24.0.7"),
         ),
         patch(
-            "DEMON.cli.mine_cmd.check_disk_free",
+            "OpenDEMON.cli.mine_cmd.check_disk_free",
             return_value=(True, "300 GB free"),
         ),
         patch(
-            "DEMON.cli.mine_cmd.check_pearld_reachable",
+            "OpenDEMON.cli.mine_cmd.check_pearld_reachable",
             return_value=(True, "block height 442107 (synced)"),
         ),
     ):
@@ -42,17 +42,17 @@ def test_mine_doctor_flags_unsupported_hardware(ada_hw):
 
     runner = CliRunner()
     with (
-        patch("DEMON.cli.mine_cmd._detect_hardware", return_value=ada_hw),
+        patch("OpenDEMON.cli.mine_cmd._detect_hardware", return_value=ada_hw),
         patch(
-            "DEMON.cli.mine_cmd.check_docker_available",
+            "OpenDEMON.cli.mine_cmd.check_docker_available",
             return_value=(True, "ok"),
         ),
         patch(
-            "DEMON.cli.mine_cmd.check_disk_free",
+            "OpenDEMON.cli.mine_cmd.check_disk_free",
             return_value=(True, "300 GB free"),
         ),
         patch(
-            "DEMON.cli.mine_cmd.check_pearld_reachable",
+            "OpenDEMON.cli.mine_cmd.check_pearld_reachable",
             return_value=(False, "connection refused"),
         ),
     ):
@@ -79,9 +79,9 @@ def test_mine_start_runs_provider_start():
     runner = CliRunner()
     fake_provider_class = MagicMock()
     with (
-        patch("DEMON.cli.mine_cmd.MinerRegistry") as reg,
-        patch("DEMON.cli.mine_cmd.load_config") as load,
-        patch("DEMON.cli.mine_cmd.asyncio.run") as arun,
+        patch("OpenDEMON.cli.mine_cmd.MinerRegistry") as reg,
+        patch("OpenDEMON.cli.mine_cmd.load_config") as load,
+        patch("OpenDEMON.cli.mine_cmd.asyncio.run") as arun,
     ):
         load.return_value = MagicMock(mining=_mining_config())
         reg.get.return_value = fake_provider_class
@@ -98,9 +98,9 @@ def test_mine_stop_calls_provider_stop():
     runner = CliRunner()
     fake_provider_class = MagicMock()
     with (
-        patch("DEMON.cli.mine_cmd.MinerRegistry") as reg,
-        patch("DEMON.cli.mine_cmd.load_config") as load,
-        patch("DEMON.cli.mine_cmd.asyncio.run") as arun,
+        patch("OpenDEMON.cli.mine_cmd.MinerRegistry") as reg,
+        patch("OpenDEMON.cli.mine_cmd.load_config") as load,
+        patch("OpenDEMON.cli.mine_cmd.asyncio.run") as arun,
     ):
         load.return_value = MagicMock(mining=_mining_config())
         reg.get.return_value = fake_provider_class
@@ -115,7 +115,7 @@ def test_mine_start_errors_when_no_mining_config():
     from OpenDEMON.cli.mine_cmd import mine
 
     runner = CliRunner()
-    with patch("DEMON.cli.mine_cmd.load_config") as load:
+    with patch("OpenDEMON.cli.mine_cmd.load_config") as load:
         load.return_value = MagicMock(mining=None)
         result = runner.invoke(mine, ["start"])
 
@@ -137,8 +137,8 @@ def test_mine_status_renders_stats():
     )
     fake_provider_class = MagicMock(return_value=fake_provider)
     with (
-        patch("DEMON.cli.mine_cmd.MinerRegistry") as reg,
-        patch("DEMON.cli.mine_cmd.load_config") as load,
+        patch("OpenDEMON.cli.mine_cmd.MinerRegistry") as reg,
+        patch("OpenDEMON.cli.mine_cmd.load_config") as load,
     ):
         load.return_value = MagicMock(mining=_mining_config())
         reg.get.return_value = fake_provider_class
@@ -154,7 +154,7 @@ def test_mine_attach_writes_sidecar(tmp_path, monkeypatch):
 
     runner = CliRunner()
     sidecar = tmp_path / "mining.json"
-    monkeypatch.setattr("DEMON.cli.mine_cmd.SIDECAR_PATH", sidecar)
+    monkeypatch.setattr("OpenDEMON.cli.mine_cmd.SIDECAR_PATH", sidecar)
 
     result = runner.invoke(
         mine,
@@ -183,7 +183,7 @@ def test_mine_logs_streams_container_output():
     fake_container.logs.return_value = b"log line 1\nlog line 2\n"
     fake_client = MagicMock()
     fake_client.containers.get.return_value = fake_container
-    with patch("DEMON.cli.mine_cmd._docker_from_env", return_value=fake_client):
+    with patch("OpenDEMON.cli.mine_cmd._docker_from_env", return_value=fake_client):
         result = runner.invoke(mine, ["logs", "--tail", "100"])
 
     assert result.exit_code == 0, result.output

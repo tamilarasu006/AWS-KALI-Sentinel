@@ -75,7 +75,7 @@ def test_sync_yields_documents(connector):
     """Sync returns Documents for sleep, readiness, and activity."""
     with (
         patch(
-            "DEMON.connectors.oura._oura_api_get",
+            "OpenDEMON.connectors.oura._oura_api_get",
             side_effect=[_SLEEP_RESPONSE, _READINESS_RESPONSE, _ACTIVITY_RESPONSE],
         ),
     ):

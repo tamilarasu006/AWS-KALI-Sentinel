@@ -67,10 +67,10 @@ class TestBuildBackendDispatch:
         )
         with (
             patch(
-                "DEMON.evals.backends.external.hermes_agent.load_third_party_config",
+                "OpenDEMON.evals.backends.external.hermes_agent.load_third_party_config",
                 return_value=cfg,
             ),
-            patch("DEMON.evals.backends.external.hermes_agent.verify_commit_pin"),
+            patch("OpenDEMON.evals.backends.external.hermes_agent.verify_commit_pin"),
         ):
             from OpenDEMON.evals.backends.external import HermesBackend
 

@@ -144,7 +144,7 @@ def test_connect_granola_invalid_key_returns_400_keeps_existing(
     _instances["granola"] = GranolaConnector(credentials_path=str(creds))
     try:
         with patch(
-            "DEMON.connectors.granola._granola_api_validate_key",
+            "OpenDEMON.connectors.granola._granola_api_validate_key",
             side_effect=GranolaKeyError(
                 "Invalid API key. Check your key in Granola Settings → API."
             ),

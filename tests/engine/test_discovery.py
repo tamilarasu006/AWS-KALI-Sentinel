@@ -53,7 +53,7 @@ class TestDiscoverEngines:
 
         cfg = DEMONConfig()
         with mock.patch(
-            "DEMON.engine._discovery._make_engine",
+            "OpenDEMON.engine._discovery._make_engine",
             side_effect=lambda k, c: _FakeEngine(healthy=(k == "healthy")),
         ):
             result = discover_engines(cfg)
@@ -67,7 +67,7 @@ class TestDiscoverEngines:
         cfg = DEMONConfig()
         cfg.engine.default = "b"
         with mock.patch(
-            "DEMON.engine._discovery._make_engine",
+            "OpenDEMON.engine._discovery._make_engine",
             side_effect=lambda k, c: _FakeEngine(healthy=True),
         ):
             result = discover_engines(cfg)
@@ -108,7 +108,7 @@ class TestDiscoverEngines:
 
         cfg = DEMONConfig()
         with mock.patch(
-            "DEMON.engine._discovery._make_engine",
+            "OpenDEMON.engine._discovery._make_engine",
             side_effect=lambda k, c: _SlowEngine(healthy=True),
         ):
             start = time.monotonic()
@@ -143,7 +143,7 @@ class TestGetEngine:
             return _FakeEngine(healthy=(k == "good"))
 
         with mock.patch(
-            "DEMON.engine._discovery._make_engine",
+            "OpenDEMON.engine._discovery._make_engine",
             side_effect=_make,
         ):
             result = get_engine(cfg)
@@ -166,7 +166,7 @@ class TestGetEngine:
             return _FakeEngine(healthy=(k == "running"))
 
         with mock.patch(
-            "DEMON.engine._discovery._make_engine",
+            "OpenDEMON.engine._discovery._make_engine",
             side_effect=_make,
         ):
             # Explicit key "requested" is unhealthy, but "running" is healthy
@@ -196,7 +196,7 @@ class TestGetEngine:
             return _FakeEngine(healthy=(k == "local"))
 
         with mock.patch(
-            "DEMON.engine._discovery._make_engine",
+            "OpenDEMON.engine._discovery._make_engine",
             side_effect=_make,
         ):
             # "picky" is healthy but cannot serve "other" -> fall back to "local"
@@ -245,7 +245,7 @@ class TestGetEngine:
             return eng
 
         with mock.patch(
-            "DEMON.engine._discovery._make_engine",
+            "OpenDEMON.engine._discovery._make_engine",
             side_effect=_make,
         ):
             result = get_engine(cfg, model="qwen3.5:0.8b")
@@ -260,7 +260,7 @@ class TestGetEngine:
         cfg.engine.default = "primary"
 
         with mock.patch(
-            "DEMON.engine._discovery._make_engine",
+            "OpenDEMON.engine._discovery._make_engine",
             side_effect=lambda k, c: _FakeEngine(healthy=True),  # noqa: ANN001
         ):
             result = get_engine(cfg, model=None)
@@ -283,7 +283,7 @@ class TestMiningSidecarEngineHandoff:
 
         cfg = DEMONConfig()
         with mock.patch(
-            "DEMON.engine._discovery._make_engine",
+            "OpenDEMON.engine._discovery._make_engine",
             side_effect=lambda k, c: _FakeEngine(healthy=True),
         ):
             discover_engines(cfg)
@@ -301,7 +301,7 @@ class TestMiningSidecarEngineHandoff:
 
         cfg = DEMONConfig()
         with mock.patch(
-            "DEMON.engine._discovery._make_engine",
+            "OpenDEMON.engine._discovery._make_engine",
             side_effect=lambda k, c: _FakeEngine(healthy=True),
         ):
             discover_engines(cfg)
@@ -335,7 +335,7 @@ class TestMiningSidecarEngineHandoff:
 
         cfg = DEMONConfig()
         with mock.patch(
-            "DEMON.engine._discovery._make_engine",
+            "OpenDEMON.engine._discovery._make_engine",
             side_effect=lambda k, c: _FakeEngine(healthy=True),
         ):
             discover_engines(cfg)

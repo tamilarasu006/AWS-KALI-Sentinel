@@ -104,7 +104,7 @@ class TestGemmaCppLifecycle:
         defaults.update(kwargs)
         return GemmaCppEngine(**defaults)
 
-    @patch("DEMON.engine.gemma_cpp._import_pygemma")
+    @patch("OpenDEMON.engine.gemma_cpp._import_pygemma")
     def test_prepare_loads_model(self, mock_import) -> None:
         mock_gemma_cls = MagicMock()
         mock_import.return_value = mock_gemma_cls
@@ -115,7 +115,7 @@ class TestGemmaCppLifecycle:
             "/fake/tokenizer.spm", "/fake/model.sbs", "2b-it"
         )
 
-    @patch("DEMON.engine.gemma_cpp._import_pygemma")
+    @patch("OpenDEMON.engine.gemma_cpp._import_pygemma")
     def test_prepare_idempotent(self, mock_import) -> None:
         mock_gemma_cls = MagicMock()
         mock_import.return_value = mock_gemma_cls
@@ -125,7 +125,7 @@ class TestGemmaCppLifecycle:
         # Only loaded once
         assert mock_gemma_cls.call_count == 1
 
-    @patch("DEMON.engine.gemma_cpp._import_pygemma")
+    @patch("OpenDEMON.engine.gemma_cpp._import_pygemma")
     def test_close_unloads_model(self, mock_import) -> None:
         mock_gemma_cls = MagicMock()
         mock_import.return_value = mock_gemma_cls
@@ -135,7 +135,7 @@ class TestGemmaCppLifecycle:
         engine.close()
         assert engine._gemma is None
 
-    @patch("DEMON.engine.gemma_cpp._import_pygemma")
+    @patch("OpenDEMON.engine.gemma_cpp._import_pygemma")
     def test_generate_returns_dict(self, mock_import) -> None:
         mock_gemma_cls = MagicMock()
         mock_gemma_instance = MagicMock()
@@ -156,7 +156,7 @@ class TestGemmaCppLifecycle:
         assert result["model"] == "2b-it"
         assert result["finish_reason"] == "stop"
 
-    @patch("DEMON.engine.gemma_cpp._import_pygemma")
+    @patch("OpenDEMON.engine.gemma_cpp._import_pygemma")
     def test_generate_warns_on_model_mismatch(self, mock_import) -> None:
         mock_gemma_cls = MagicMock()
         mock_gemma_instance = MagicMock()
@@ -174,7 +174,7 @@ class TestGemmaCppLifecycle:
             )
             mock_warn.assert_called_once()
 
-    @patch("DEMON.engine.gemma_cpp._import_pygemma")
+    @patch("OpenDEMON.engine.gemma_cpp._import_pygemma")
     def test_generate_wraps_runtime_error(self, mock_import) -> None:
         mock_gemma_cls = MagicMock()
         mock_gemma_instance = MagicMock()
@@ -191,7 +191,7 @@ class TestGemmaCppLifecycle:
 
 
 class TestGemmaCppStream:
-    @patch("DEMON.engine.gemma_cpp._import_pygemma")
+    @patch("OpenDEMON.engine.gemma_cpp._import_pygemma")
     @pytest.mark.asyncio
     async def test_stream_yields_content(self, mock_import) -> None:
         mock_gemma_cls = MagicMock()
@@ -230,7 +230,7 @@ class TestGemmaCppHealth:
             tokenizer_path=str(tokenizer_file),
             model_type="2b-it",
         )
-        with patch("DEMON.engine.gemma_cpp._import_pygemma"):
+        with patch("OpenDEMON.engine.gemma_cpp._import_pygemma"):
             assert engine.health() is True
 
     def test_health_false_when_files_missing(self) -> None:
@@ -262,7 +262,7 @@ class TestGemmaCppHealth:
             model_type="2b-it",
         )
         with patch(
-            "DEMON.engine.gemma_cpp._import_pygemma",
+            "OpenDEMON.engine.gemma_cpp._import_pygemma",
             side_effect=ImportError("no pygemma"),
         ):
             assert engine.health() is False

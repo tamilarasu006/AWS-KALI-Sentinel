@@ -47,7 +47,7 @@ def test_launcher_accepts_custom_provider_and_miner_module(fake_popen, tmp_path)
             wallet_address="prl1qtest",
             log_dir=tmp_path,
             provider_id="apple-mps-pearl",
-            miner_module="DEMON.mining._mps_miner_loop_main",
+            miner_module="OpenDEMON.mining._mps_miner_loop_main",
         )
         launcher.start(m=128, n=128, k=1024, rank=64)
 

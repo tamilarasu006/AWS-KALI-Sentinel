@@ -60,7 +60,7 @@ def connector(tmp_path):
 
 def test_sync_yields_tracks(connector):
     with patch(
-        "DEMON.connectors.spotify._spotify_api_get",
+        "OpenDEMON.connectors.spotify._spotify_api_get",
         return_value=_RECENTLY_PLAYED_RESPONSE,
     ):
         docs = list(connector.sync(since=datetime(2026, 4, 1)))

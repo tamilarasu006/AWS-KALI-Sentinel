@@ -80,7 +80,7 @@ def test_is_connected_no_file(tmp_path):
 def test_sync_yields_documents(connector):
     """Sync returns Documents for each notification."""
     with patch(
-        "DEMON.connectors.github_notifications._github_api_get",
+        "OpenDEMON.connectors.github_notifications._github_api_get",
         return_value=_NOTIFICATIONS_RESPONSE,
     ):
         docs = list(connector.sync(since=datetime(2026, 4, 1)))

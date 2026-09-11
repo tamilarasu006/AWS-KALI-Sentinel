@@ -1,5 +1,5 @@
-﻿<div align="center">
-  <img alt="DEMON" src="assets/DEMON_Horizontal_Logo.png" width="400">
+<div align="center">
+  <img alt="KALI AI" src="assets/DEMON_Horizontal_Logo.png" width="400">
 
   <p><i>Personal AI, On Personal Devices.</i></p>
 
@@ -31,11 +31,11 @@
 >
 > **[Roadmap](https://DEMON.github.io/DEMON/development/roadmap/)**
 
-## Why DEMON?
+## Why KALI AI?
 
 Personal AI agents are exploding in popularity, but nearly all of them still route intelligence through cloud APIs. Your "personal" AI continues to depend on someone else's server. At the same time, our [Intelligence Per Watt](https://www.intelligence-per-watt.ai/) research showed that local language models already handle 88.7% of single-turn chat and reasoning queries, with intelligence efficiency improving 5.3× from 2023 to 2025. The models and hardware are increasingly ready. What has been missing is the software stack to make local-first personal AI practical.
 
-DEMON is that stack. It is a framework for local-first personal AI, built around three core ideas: shared primitives for building on-device agents; evaluations that treat energy, FLOPs, latency, and dollar cost as first-class constraints alongside accuracy; and a learning loop that improves models using local trace data. The goal is simple: make it possible to build personal AI agents that run locally by default, calling the cloud only when truly necessary. DEMON aims to be both a research platform and a production foundation for local AI, in the spirit of PyTorch.
+KALI AI (formerly OpenDEMON) is that stack. It is a framework for local-first personal AI, built around three core ideas: shared primitives for building on-device agents; evaluations that treat energy, FLOPs, latency, and dollar cost as first-class constraints alongside accuracy; and a learning loop that improves models using local trace data. The goal is simple: make it possible to build personal AI agents that run locally by default, calling the cloud only when truly necessary. KALI AI aims to be both a research platform and a production foundation for local AI, in the spirit of PyTorch.
 
 ## Installation
 

@@ -82,7 +82,7 @@ def _reload_tool_modules() -> None:
     """
     for mod_name in list(sys.modules):
         if (
-            mod_name.startswith("DEMON.tools.")
+            mod_name.startswith("OpenDEMON.tools.")
             and not mod_name.endswith("_stubs")
             and not mod_name.endswith("agent_tools")
         ):

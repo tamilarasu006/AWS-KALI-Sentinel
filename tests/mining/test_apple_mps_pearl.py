@@ -8,7 +8,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-_AVAIL = "DEMON.mining._install.pearl_packages_available"
+_AVAIL = "OpenDEMON.mining._install.pearl_packages_available"
 
 
 @pytest.fixture
@@ -71,9 +71,9 @@ def test_detect_supported_when_torch_mps_available(apple_hw):
     from OpenDEMON.mining.apple_mps_pearl import AppleMpsPearlProvider
 
     with (
-        patch("DEMON.mining._install.pearl_packages_available", return_value=True),
+        patch("OpenDEMON.mining._install.pearl_packages_available", return_value=True),
         patch(
-            "DEMON.mining.apple_mps_pearl._torch_mps_available",
+            "OpenDEMON.mining.apple_mps_pearl._torch_mps_available",
             return_value=(True, None),
         ),
     ):
@@ -96,7 +96,7 @@ def test_detect_supports_apple_silicon_gpu_generations(chip):
     with (
         patch(_AVAIL, return_value=True),
         patch(
-            "DEMON.mining.apple_mps_pearl._torch_mps_available",
+            "OpenDEMON.mining.apple_mps_pearl._torch_mps_available",
             return_value=(True, None),
         ),
     ):
@@ -110,15 +110,15 @@ def test_start_uses_mps_miner_module(mps_config, tmp_path, monkeypatch):
 
     sidecar = tmp_path / "mining.json"
     log_dir = tmp_path / "logs"
-    monkeypatch.setattr("DEMON.mining.cpu_pearl._sidecar_path", lambda: sidecar)
-    monkeypatch.setattr("DEMON.mining.cpu_pearl._log_dir", lambda: log_dir)
-    monkeypatch.setattr("DEMON.mining.apple_mps_pearl._log_dir", lambda: log_dir)
+    monkeypatch.setattr("OpenDEMON.mining.cpu_pearl._sidecar_path", lambda: sidecar)
+    monkeypatch.setattr("OpenDEMON.mining.cpu_pearl._log_dir", lambda: log_dir)
+    monkeypatch.setattr("OpenDEMON.mining.apple_mps_pearl._log_dir", lambda: log_dir)
     monkeypatch.setenv("TEST_PEARLD_PASSWORD", "secret")
     fake_launcher = MagicMock()
     fake_launcher.is_running.return_value = True
     fake_launcher.pids.return_value = (11111, 22222)
 
-    target = "DEMON.mining.apple_mps_pearl.PearlSubprocessLauncher"
+    target = "OpenDEMON.mining.apple_mps_pearl.PearlSubprocessLauncher"
     with patch(target, return_value=fake_launcher) as launcher_cls:
         provider = AppleMpsPearlProvider()
         asyncio.run(provider.start(mps_config))
@@ -126,7 +126,7 @@ def test_start_uses_mps_miner_module(mps_config, tmp_path, monkeypatch):
     assert launcher_cls.call_args.kwargs["provider_id"] == "apple-mps-pearl"
     assert (
         launcher_cls.call_args.kwargs["miner_module"]
-        == "DEMON.mining._mps_miner_loop_main"
+        == "OpenDEMON.mining._mps_miner_loop_main"
     )
     payload = json.loads(sidecar.read_text())
     assert payload["provider"] == "apple-mps-pearl"

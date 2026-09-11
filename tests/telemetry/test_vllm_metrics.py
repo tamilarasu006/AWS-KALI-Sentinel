@@ -170,7 +170,7 @@ class TestVLLMMetricsScraper:
             def raise_for_status(self):
                 pass
 
-        target = "DEMON.telemetry.vllm_metrics.httpx.get"
+        target = "OpenDEMON.telemetry.vllm_metrics.httpx.get"
         with patch(target, return_value=FakeResp()):
             metrics = scraper.scrape()
 
@@ -190,7 +190,7 @@ class TestVLLMMetricsScraper:
                 "Server Error", request=request, response=response
             )
 
-        target = "DEMON.telemetry.vllm_metrics.httpx.get"
+        target = "OpenDEMON.telemetry.vllm_metrics.httpx.get"
         with patch(target, side_effect=raise_status_error):
             metrics = scraper.scrape()
 

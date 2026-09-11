@@ -59,7 +59,7 @@ class TestSkillCmd:
         """)
         )
         with patch(
-            "DEMON.cli.skill_cmd._get_skill_paths",
+            "OpenDEMON.cli.skill_cmd._get_skill_paths",
             return_value=[tmp_path],
         ):
             result = CliRunner().invoke(cli, ["skill", "list"])
@@ -84,7 +84,7 @@ class TestSkillCmd:
         """)
         )
         with patch(
-            "DEMON.cli.skill_cmd._get_skill_paths",
+            "OpenDEMON.cli.skill_cmd._get_skill_paths",
             return_value=[tmp_path],
         ):
             result = CliRunner().invoke(cli, ["skill", "info", "info_skill"])
@@ -100,7 +100,7 @@ class TestSkillRemoveCommand:
 
     def test_remove_missing_skill(self, tmp_path: Path) -> None:
         with patch(
-            "DEMON.cli.skill_cmd._get_skill_paths",
+            "OpenDEMON.cli.skill_cmd._get_skill_paths",
             return_value=[tmp_path],
         ):
             result = CliRunner().invoke(cli, ["skill", "remove", "ghost", "--yes"])
@@ -122,7 +122,7 @@ class TestSkillRemoveCommand:
         """)
         )
         with patch(
-            "DEMON.cli.skill_cmd._get_skill_paths",
+            "OpenDEMON.cli.skill_cmd._get_skill_paths",
             return_value=[tmp_path],
         ):
             result = CliRunner().invoke(cli, ["skill", "remove", "to_remove", "--yes"])
@@ -141,7 +141,7 @@ class TestSkillSearchCommand:
 
         cfg = DEMONConfig()
         cfg.skills = SkillsConfig(sources=[])
-        with patch("DEMON.cli.skill_cmd.load_config", return_value=cfg):
+        with patch("OpenDEMON.cli.skill_cmd.load_config", return_value=cfg):
             result = CliRunner().invoke(cli, ["skill", "search", "anything"])
             assert result.exit_code != 0
             assert "no skill sources" in result.output.lower()
@@ -182,9 +182,9 @@ class TestSkillSearchCommand:
 
         cfg = DEMONConfig()
         cfg.skills = SkillsConfig(sources=[SkillSourceConfig(source="hermes")])
-        with patch("DEMON.cli.skill_cmd.load_config", return_value=cfg):
+        with patch("OpenDEMON.cli.skill_cmd.load_config", return_value=cfg):
             with patch(
-                "DEMON.cli.skill_cmd._get_resolver",
+                "OpenDEMON.cli.skill_cmd._get_resolver",
                 return_value=_FakeResolver(),
             ):
                 result = CliRunner().invoke(cli, ["skill", "search", "notes"])
@@ -232,7 +232,7 @@ class TestSkillSourcesCommand:
                 SkillSourceConfig(source="openclaw"),
             ]
         )
-        with patch("DEMON.cli.skill_cmd.load_config", return_value=cfg):
+        with patch("OpenDEMON.cli.skill_cmd.load_config", return_value=cfg):
             result = CliRunner().invoke(cli, ["skill", "sources"])
             assert result.exit_code == 0
             assert "hermes" in result.output
@@ -253,7 +253,7 @@ class TestSkillDiscoverCommand:
                 return []
 
         with patch(
-            "DEMON.cli.skill_cmd._get_trace_store",
+            "OpenDEMON.cli.skill_cmd._get_trace_store",
             return_value=_EmptyStore(),
         ):
             result = CliRunner().invoke(cli, ["skill", "discover", "--dry-run"])
@@ -293,11 +293,11 @@ class TestSkillDiscoverCommand:
 
         output_dir = tmp_path / "discovered"
         with patch(
-            "DEMON.cli.skill_cmd._get_trace_store",
+            "OpenDEMON.cli.skill_cmd._get_trace_store",
             return_value=_Store(),
         ):
             with patch(
-                "DEMON.cli.skill_cmd._get_discovered_dir",
+                "OpenDEMON.cli.skill_cmd._get_discovered_dir",
                 return_value=output_dir,
             ):
                 result = CliRunner().invoke(
@@ -318,7 +318,7 @@ class TestSkillShowOverlayCommand:
         from unittest.mock import patch
 
         with patch(
-            "DEMON.cli.skill_cmd._get_overlay_dir",
+            "OpenDEMON.cli.skill_cmd._get_overlay_dir",
             return_value=tmp_path / "no-such",
         ):
             result = CliRunner().invoke(cli, ["skill", "show-overlay", "nonexistent"])
@@ -342,7 +342,7 @@ class TestSkillShowOverlayCommand:
         )
 
         with patch(
-            "DEMON.cli.skill_cmd._get_overlay_dir",
+            "OpenDEMON.cli.skill_cmd._get_overlay_dir",
             return_value=tmp_path,
         ):
             result = CliRunner().invoke(

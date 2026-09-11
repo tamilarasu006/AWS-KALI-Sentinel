@@ -110,7 +110,7 @@ class TestStatus:
             auth_token="token_test",
             phone_number="+15551234567",
         )
-        with patch("DEMON.channels.twilio_sms._create_twilio_client"):
+        with patch("OpenDEMON.channels.twilio_sms._create_twilio_client"):
             ch.connect()
         assert ch.status() == ChannelStatus.CONNECTED
 
@@ -120,7 +120,7 @@ class TestStatus:
             auth_token="token_test",
             phone_number="+15551234567",
         )
-        with patch("DEMON.channels.twilio_sms._create_twilio_client"):
+        with patch("OpenDEMON.channels.twilio_sms._create_twilio_client"):
             ch.connect()
             ch.disconnect()
         assert ch.status() == ChannelStatus.DISCONNECTED

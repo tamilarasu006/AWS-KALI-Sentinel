@@ -342,7 +342,7 @@ class TestResultToTraceDict:
 class TestDirectBackendGpuMetrics:
     """Verify DEMONDirectBackend sets gpu_metrics on config."""
 
-    @patch("DEMON.system.SystemBuilder")
+    @patch("OpenDEMON.system.SystemBuilder")
     def test_gpu_metrics_propagated(self, mock_builder_cls):
         """When gpu_metrics=True, the builder config should be updated."""
         from OpenDEMON.evals.backends.DEMON_direct import DEMONDirectBackend
@@ -370,7 +370,7 @@ class TestDirectBackendGpuMetrics:
         # Verify gpu_metrics was set to True on config
         assert mock_config.telemetry.gpu_metrics is True
 
-    @patch("DEMON.system.SystemBuilder")
+    @patch("OpenDEMON.system.SystemBuilder")
     def test_gpu_metrics_not_set_when_false(self, mock_builder_cls):
         """When gpu_metrics=False, the builder config should not be touched."""
         from OpenDEMON.evals.backends.DEMON_direct import DEMONDirectBackend
@@ -432,7 +432,7 @@ class TestTauBenchTelemetryPassthrough:
         assert ds._telemetry is True
         assert ds._gpu_metrics is True
 
-    @patch("DEMON.evals.execution.taubench_env.TauBenchTaskEnv")
+    @patch("OpenDEMON.evals.execution.taubench_env.TauBenchTaskEnv")
     def test_create_task_env_passes_flags(self, mock_env_cls):
         """create_task_env should forward telemetry flags."""
         from OpenDEMON.evals.core.types import EvalRecord

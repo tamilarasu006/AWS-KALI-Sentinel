@@ -56,7 +56,7 @@ class TestDEMONInit:
 class TestDEMONAsk:
     def test_ask_returns_string(self):
         engine = _make_engine("The answer is 42.")
-        with patch("DEMON.sdk.get_engine", return_value=("mock", engine)):
+        with patch("OpenDEMON.sdk.get_engine", return_value=("mock", engine)):
             j = DEMON(config=DEMONConfig(), model="test-model")
             result = j.ask("What is the answer?")
             assert result == "The answer is 42."
@@ -64,7 +64,7 @@ class TestDEMONAsk:
 
     def test_ask_with_model_override(self):
         engine = _make_engine()
-        with patch("DEMON.sdk.get_engine", return_value=("mock", engine)):
+        with patch("OpenDEMON.sdk.get_engine", return_value=("mock", engine)):
             j = DEMON(config=DEMONConfig())
             j.ask("Hello", model="custom-model")
             # Verify engine.generate was called with the custom model
@@ -89,14 +89,14 @@ class TestDEMONAsk:
 
         AgentRegistry.register_value("mock-agent", MockAgent)
 
-        with patch("DEMON.sdk.get_engine", return_value=("mock", engine)):
+        with patch("OpenDEMON.sdk.get_engine", return_value=("mock", engine)):
             j = DEMON(config=DEMONConfig(), model="test-model")
             result = j.ask("Hello", agent="mock-agent")
             assert result == "Agent response"
             j.close()
 
     def test_ask_no_engine_raises(self):
-        with patch("DEMON.sdk.get_engine", return_value=None):
+        with patch("OpenDEMON.sdk.get_engine", return_value=None):
             j = DEMON(config=DEMONConfig())
             with pytest.raises(RuntimeError, match="No inference engine"):
                 j.ask("Hello")
@@ -104,7 +104,7 @@ class TestDEMONAsk:
 
     def test_ask_full_returns_dict(self):
         engine = _make_engine("Full response")
-        with patch("DEMON.sdk.get_engine", return_value=("mock", engine)):
+        with patch("OpenDEMON.sdk.get_engine", return_value=("mock", engine)):
             j = DEMON(config=DEMONConfig(), model="test-model")
             result = j.ask_full("Hello")
             assert isinstance(result, dict)
@@ -117,7 +117,7 @@ class TestDEMONAsk:
 class TestDEMONModels:
     def test_list_models(self):
         engine = _make_engine()
-        with patch("DEMON.sdk.get_engine", return_value=("mock", engine)):
+        with patch("OpenDEMON.sdk.get_engine", return_value=("mock", engine)):
             j = DEMON(config=DEMONConfig())
             models = j.list_models()
             assert models == ["test-model"]
@@ -226,7 +226,7 @@ class TestDEMONStreaming:
 
         engine.stream = mock_stream
 
-        with patch("DEMON.sdk.get_engine", return_value=("mock", engine)):
+        with patch("OpenDEMON.sdk.get_engine", return_value=("mock", engine)):
             j = DEMON(config=DEMONConfig(), model="test-model")
             tokens = []
             async for token in j.ask_stream("Hi"):
@@ -244,7 +244,7 @@ class TestDEMONStreaming:
 
         engine.stream = mock_stream
 
-        with patch("DEMON.sdk.get_engine", return_value=("mock", engine)):
+        with patch("OpenDEMON.sdk.get_engine", return_value=("mock", engine)):
             j = DEMON(config=DEMONConfig(), model="test-model")
             chunks = []
             async for chunk in j.ask_full_stream("Hi"):
@@ -275,7 +275,7 @@ class TestDEMONStreaming:
 
         engine.stream = mock_stream
 
-        with patch("DEMON.sdk.get_engine", return_value=("mock", engine)):
+        with patch("OpenDEMON.sdk.get_engine", return_value=("mock", engine)):
             j = DEMON(config=DEMONConfig())
             tokens = []
             async for token in j.ask_stream("Hi", model="custom-model"):
