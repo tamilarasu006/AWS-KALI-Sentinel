@@ -35,8 +35,9 @@ def create_digest_router(*, db_path: str = "") -> APIRouter:
         """Return the latest digest artifact."""
         artifact = store.get_today()
         if artifact is None:
-            raise HTTPException(status_code=404, detail="No digest for today")
+            return {"available": False, "audio_available": False}
         return {
+            "available": True,
             "text": artifact.text,
             "sections": artifact.sections,
             "sources_used": artifact.sources_used,

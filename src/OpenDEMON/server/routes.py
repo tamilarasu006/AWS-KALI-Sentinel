@@ -96,6 +96,92 @@ def _ensure_identity_prompt(messages: list[Message], app_config) -> list[Message
 @user_limiter.limit(lambda: load_config().server.ratelimit_auth)
 async def chat_completions(request_body: ChatCompletionRequest, request: Request):
     """Handle chat completion requests (streaming and non-streaming)."""
+    
+    # --- KALI Interceptor ---
+    # Only route to KALI when the requested model is a kali-* model.
+    # Requests for cloud/Ollama models fall through to the existing pipeline.
+    kali_orchestrator = getattr(request.app.state, "kali_orchestrator", None)
+    _model_for_kali = request_body.model or ""
+    if kali_orchestrator is not None and _model_for_kali.lower().startswith("kali"):
+        try:
+            query_text = ""
+            for m in reversed(request_body.messages):
+                if m.role == "user" and m.content:
+                    query_text = m.content
+                    break
+
+            user_id = getattr(request.state, "user_id", "default_api_user")
+            conversation_id = getattr(request_body, "user", None) or "default_conversation"
+            
+            # Simple in-memory response caching for performance
+            _KALI_CACHE = getattr(request.app.state, "_kali_cache", None)
+            if _KALI_CACHE is None:
+                from functools import lru_cache
+                # Using a dictionary as a simple bounded cache manually or LRUCache
+                import collections
+                _KALI_CACHE = collections.OrderedDict()
+                request.app.state._kali_cache = _KALI_CACHE
+                
+            cache_key = f"{user_id}:{conversation_id}:{query_text}"
+            
+            if request_body.stream:
+                if cache_key in _KALI_CACHE:
+                    kali_text = _KALI_CACHE[cache_key]
+                else:
+                    kali_text = await kali_orchestrator.run(query_text, user_id, conversation_id)
+                    _KALI_CACHE[cache_key] = kali_text
+                    if len(_KALI_CACHE) > 1000:
+                        _KALI_CACHE.popitem(last=False)
+                        
+                chunk_id = f"chatcmpl-{uuid.uuid4().hex[:12]}"
+
+                async def _kali_stream():
+                    import json as _json
+                    first = ChatCompletionChunk(
+                        id=chunk_id, model=_model_for_kali,
+                        choices=[StreamChoice(delta=DeltaMessage(role="assistant"))],
+                    )
+                    yield f"data: {first.model_dump_json()}\n\n"
+                    content_chunk = ChatCompletionChunk(
+                        id=chunk_id, model=_model_for_kali,
+                        choices=[StreamChoice(delta=DeltaMessage(content=kali_text))],
+                    )
+                    yield f"data: {content_chunk.model_dump_json()}\n\n"
+                    finish = ChatCompletionChunk(
+                        id=chunk_id, model=_model_for_kali,
+                        choices=[StreamChoice(delta=DeltaMessage(), finish_reason="stop")],
+                    )
+                    yield f"data: {finish.model_dump_json()}\n\n"
+                    yield "data: [DONE]\n\n"
+
+                return StreamingResponse(
+                    _kali_stream(),
+                    media_type="text/event-stream",
+                    headers={"Cache-Control": "no-cache", "Connection": "keep-alive"},
+                )
+            else:
+                if cache_key in _KALI_CACHE:
+                    final_response = _KALI_CACHE[cache_key]
+                else:
+                    final_response = await kali_orchestrator.run(query_text, user_id, conversation_id)
+                    _KALI_CACHE[cache_key] = final_response
+                    if len(_KALI_CACHE) > 1000:
+                        _KALI_CACHE.popitem(last=False)
+                choice_msg = ChoiceMessage(role="assistant", content=final_response)
+                return ChatCompletionResponse(
+                    model=_model_for_kali,
+                    choices=[Choice(message=choice_msg, finish_reason="stop")],
+                    usage=UsageInfo(prompt_tokens=0, completion_tokens=0, total_tokens=0)
+                )
+        except Exception as exc:
+            import os
+            logging.getLogger("DEMON.server").error(
+                "KALI generation failed, falling back to OpenDEMON: %s", exc
+            )
+            if os.environ.get("KALI_FAIL_MODE", "fallback") != "fallback":
+                raise HTTPException(status_code=500, detail=f"KALI Error: {exc}")
+    # --- End KALI Interceptor ---
+
     engine = request.app.state.engine
     agent = getattr(request.app.state, "agent", None)
     model = request_body.model
@@ -916,20 +1002,26 @@ async def _handle_stream(
 @router.get("/v1/models")
 @limiter.limit(lambda: load_config().server.ratelimit_auth)
 async def list_models(request: Request) -> ModelListResponse:
-    """List locally installed models (Ollama).
+    """List locally installed models (Ollama) plus KALI built-in models.
 
     Cloud models are not included here — they live in the Cloud Models tab
     of the UI and are selected there, not from this endpoint.
     """
+    import os
     from OpenDEMON.server.cloud_router import is_cloud_model, list_local_models
 
     # Prefer engine.list_models() so mock engines work in tests.
-    # We now include ALL models (both local and configured cloud models)
-    # so they all appear in the Installed Models UI.
     engine = request.app.state.engine
     model_ids = engine.list_models()
     if not model_ids:
         model_ids = await list_local_models()
+
+    # Always inject KALI as a built-in model at the top.
+    # KALI is an internal agent orchestrator — it doesn't need a running
+    # Ollama backend and is always available regardless of KALI_ENABLED.
+    kali_model_name = os.environ.get("KALI_DEFAULT_MODEL", "kali")
+    if kali_model_name not in model_ids:
+        model_ids = [kali_model_name] + list(model_ids)
 
     return ModelListResponse(
         data=[ModelObject(id=mid) for mid in model_ids],
@@ -1157,10 +1249,48 @@ async def server_info(request: Request):
 async def health(request: Request):
     """Health check endpoint."""
     engine = request.app.state.engine
-    healthy = engine.health()
+    healthy = engine.health() if engine else False
+    
+    # Model health checks
+    kali_ok = False
+    kali_state = getattr(request.app.state, "kali_orchestrator", None)
+    if kali_state and hasattr(kali_state, "model"):
+        kali_ok = True
+        
     if not healthy:
         raise HTTPException(status_code=503, detail="Engine unhealthy")
-    return {"status": "ok"}
+        
+    return {
+        "status": "ok",
+        "engine": "healthy" if healthy else "unhealthy",
+        "kali_model": "loaded" if kali_ok else "not_configured"
+    }
+
+@router.get("/liveness")
+@limiter.limit(lambda: load_config().server.ratelimit_public)
+async def liveness(request: Request):
+    """Liveness probe - validates async event loop isn't deadlocked."""
+    return {"status": "ok", "alive": True}
+
+@router.get("/readiness")
+@limiter.limit(lambda: load_config().server.ratelimit_public)
+async def readiness(request: Request):
+    """Readiness probe - validates downstream connections (DB, Managers)."""
+    # Check DB Connection if available
+    db_ok = True
+    session_store = getattr(request.app.state, "session_store", None)
+    if hasattr(session_store, "db_path") and not session_store.db_path:
+        pass # Not using SQLite
+        
+    # Agent Manager check
+    am = getattr(request.app.state, "agent_manager", None)
+    if am is None:
+        db_ok = False
+        
+    if not db_ok:
+        raise HTTPException(status_code=503, detail="Database/Manager unavailable")
+        
+    return {"status": "ok", "ready": True}
 
 
 # ---------------------------------------------------------------------------

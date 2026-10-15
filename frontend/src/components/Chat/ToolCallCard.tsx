@@ -10,6 +10,7 @@ const statusConfig = {
   running: { icon: Loader2, color: 'var(--color-accent)' },
   success: { icon: CheckCircle2, color: 'var(--color-success)' },
   error: { icon: XCircle, color: 'var(--color-error)' },
+  requires_approval: { icon: CheckCircle2, color: 'var(--color-warning, #f59e0b)' },
 };
 
 function previewArgs(raw: string): string {
@@ -151,6 +152,29 @@ export function ToolCallCard({ toolCall }: Props) {
               >
                 {toolCall.result}
               </pre>
+            </div>
+          )}
+          {toolCall.status === 'requires_approval' && (
+            <div className="mt-3 flex gap-2">
+              <button 
+                className="px-3 py-1 text-xs rounded font-medium cursor-pointer"
+                style={{ background: 'var(--color-success)', color: '#fff', border: 'none' }}
+                onClick={() => {
+                  fetch(`/api/kali/v1/approvals/${toolCall.id}/approve`, { method: 'POST' });
+                  // UI optimistic update could be placed here, but we rely on SSE event stream
+                }}
+              >
+                Approve
+              </button>
+              <button 
+                className="px-3 py-1 text-xs rounded font-medium cursor-pointer"
+                style={{ background: 'var(--color-error)', color: '#fff', border: 'none' }}
+                onClick={() => {
+                  fetch(`/api/kali/v1/approvals/${toolCall.id}/reject`, { method: 'POST' });
+                }}
+              >
+                Reject
+              </button>
             </div>
           )}
         </div>

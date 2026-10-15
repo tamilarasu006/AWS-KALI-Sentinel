@@ -163,7 +163,41 @@ except ImportError:
 
 def main() -> None:
     """Entry point registered as ``DEMON`` console script."""
+    import os
     import sys
+    from pathlib import Path
+
+    # ------------------------------------------------------------------ #
+    # Load .env BEFORE any OpenDEMON submodule is imported.               #
+    # The database engine is built at module-import time from             #
+    # database/config.py, so DATABASE_URL must be in os.environ first.    #
+    # ------------------------------------------------------------------ #
+    def _load_dotenv_early() -> None:
+        try:
+            from dotenv import load_dotenv
+            here = Path.cwd()
+            for candidate in [here, *here.parents[:3]]:
+                env_file = candidate / ".env"
+                if env_file.exists():
+                    load_dotenv(env_file, override=False)
+                    break
+        except ImportError:
+            here = Path.cwd()
+            for candidate in [here, *here.parents[:3]]:
+                env_file = candidate / ".env"
+                if env_file.exists():
+                    for raw_line in env_file.read_text(encoding="utf-8").splitlines():
+                        raw_line = raw_line.strip()
+                        if not raw_line or raw_line.startswith("#") or "=" not in raw_line:
+                            continue
+                        k, _, v = raw_line.partition("=")
+                        k = k.strip()
+                        v = v.strip().strip('"').strip("'")
+                        if k not in os.environ:
+                            os.environ[k] = v
+                    break
+
+    _load_dotenv_early()
 
     if sys.platform == "win32":
         for _stream in (sys.stdout, sys.stderr):

@@ -151,7 +151,16 @@ export async function fetchModels(): Promise<ModelInfo[]> {
   const res = await apiFetch(`/v1/models`);
   if (!res.ok) throw new Error(`Failed to fetch models: ${res.status}`);
   const data = await res.json();
-  return data.data || [];
+  const models = data.data || [];
+  
+  if (import.meta.env.VITE_KALI_ENABLED === 'true') {
+    models.push({
+      id: import.meta.env.VITE_DEFAULT_MODEL || 'kali-mini',
+      object: 'model',
+      owned_by: 'kali'
+    });
+  }
+  return models;
 }
 
 export async function fetchRecommendedModel(): Promise<{ model: string; reason: string }> {
@@ -202,7 +211,7 @@ export async function deleteModel(modelName: string): Promise<void> {
   }
 }
 
-const _CLOUD_PREFIXES = ['gpt-', 'o1-', 'o3-', 'o4-', 'claude-', 'gemini-', 'openrouter/'];
+const _CLOUD_PREFIXES = ['gpt-', 'o1-', 'o3-', 'o4-', 'claude-', 'gemini-', 'openrouter/', 'kali-'];
 
 export async function preloadModel(modelName: string): Promise<void> {
   // Cloud models don't need Ollama preloading
@@ -210,7 +219,7 @@ export async function preloadModel(modelName: string): Promise<void> {
     return;
   }
   // Trigger Ollama to load the model into memory (empty prompt, no generation).
-  const ollamaUrl = 'http://127.0.0.1:11434';
+  const ollamaUrl = import.meta.env.VITE_OLLAMA_URL || 'http://127.0.0.1:11434';
   try {
     const res = await fetch(`${ollamaUrl}/api/generate`, {
       method: 'POST',

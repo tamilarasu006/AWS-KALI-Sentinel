@@ -112,64 +112,57 @@ from OpenDEMON.core.config import load_config
 from OpenDEMON.core.events import EventBus
 from OpenDEMON.intelligence import register_builtin_models
 from OpenDEMON.server.app import create_app
+from OpenDEMON.agents.manager import AgentManager
+from OpenDEMON.core.paths import get_config_dir
+
+# Set NVIDIA NIM API key as the primary cloud engine key if provided.
+nvidia_key = os.environ.get("NVIDIA_API_KEY", "")
+if nvidia_key:
+    os.environ["OPENAI_API_KEY"] = nvidia_key
+    os.environ.setdefault("OPENAI_BASE_URL", "https://integrate.api.nvidia.com/v1")
+
+config = load_config()
+register_builtin_models()
+
+engine_name, engine = _patched_get_engine(config)
+
+default_model = "echo-1"
+if nvidia_key:
+    default_model = "meta/llama-3.1-8b-instruct"
+elif os.environ.get("OPENAI_API_KEY") and not nvidia_key:
+    default_model = "gpt-4o-mini"
+elif os.environ.get("ANTHROPIC_API_KEY"):
+    default_model = "claude-haiku-4-5"
+
+bus = EventBus()
+cors_origins = ["*"]
+
+agent_manager = None
+try:
+    am_db = config.agent_manager.db_path or str(get_config_dir() / "agents.db")
+    agent_manager = AgentManager(db_path=am_db, clear_stale_running=True)
+except Exception as exc:
+    logging.debug("Agent manager init failed: %s", exc)
+
+app = create_app(
+    engine,
+    default_model,
+    agent=None,
+    bus=bus,
+    engine_name=engine_name,
+    agent_name="",
+    config=config,
+    cors_origins=cors_origins,
+    agent_manager=agent_manager,
+)
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.WARNING)
-
     port = int(os.environ.get("PORT", 8000))
     host = "0.0.0.0"
-
-    # Set NVIDIA NIM API key as the primary cloud engine key if provided.
-    # NIM uses an OpenAI-compatible API at https://integrate.api.nvidia.com/v1
-    nvidia_key = os.environ.get("NVIDIA_API_KEY", "")
-    if nvidia_key:
-        # Override OPENAI env vars so the OpenAI client points to NVIDIA NIM
-        os.environ["OPENAI_API_KEY"] = nvidia_key
-        os.environ.setdefault("OPENAI_BASE_URL", "https://integrate.api.nvidia.com/v1")
-        print("[OpenDemon] NVIDIA NIM API key active — using integrate.api.nvidia.com", flush=True)
-
-    config = load_config()
-    register_builtin_models()
-
-    engine_name, engine = _patched_get_engine(config)
-
-    # Pick default model based on active engine/key
-    default_model = "echo-1"
-    if nvidia_key:
-        default_model = "meta/llama-3.1-8b-instruct"
-    elif os.environ.get("OPENAI_API_KEY") and not nvidia_key:
-        default_model = "gpt-4o-mini"
-    elif os.environ.get("ANTHROPIC_API_KEY"):
-        default_model = "claude-haiku-4-5"
-
+    
     print(f"[OpenDemon] Engine: {engine_name}", flush=True)
     print(f"[OpenDemon] Default model: {default_model}", flush=True)
     print(f"[OpenDemon] Starting on http://{host}:{port}", flush=True)
-
-    bus = EventBus()
-
-    # Allow all CORS origins for Render deployment
-    cors_origins = ["*"]
-
-    agent_manager = None
-    try:
-        from OpenDEMON.agents.manager import AgentManager
-        from OpenDEMON.core.paths import get_config_dir
-        am_db = config.agent_manager.db_path or str(get_config_dir() / "agents.db")
-        agent_manager = AgentManager(db_path=am_db, clear_stale_running=True)
-    except Exception as exc:
-        logging.debug("Agent manager init failed: %s", exc)
-
-    app = create_app(
-        engine,
-        default_model,
-        agent=None,
-        bus=bus,
-        engine_name=engine_name,
-        agent_name="",
-        config=config,
-        cors_origins=cors_origins,
-        agent_manager=agent_manager,
-    )
-
+    
     uvicorn.run(app, host=host, port=port, log_level="info")

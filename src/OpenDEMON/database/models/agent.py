@@ -11,7 +11,7 @@ class Agent(Base):
     description: Mapped[str] = mapped_column(Text, nullable=True)
     system_prompt: Mapped[str] = mapped_column(Text, nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
-    created_at: Mapped[str] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    created_at: Mapped[str] = mapped_column(DateTime(timezone=True), server_default=func.now(), index=True)
 
 class AgentRun(Base):
     __tablename__ = "agent_runs"
@@ -19,10 +19,12 @@ class AgentRun(Base):
     id: Mapped[str] = mapped_column(String, primary_key=True, default=uuid_gen)
     agent_id: Mapped[str] = mapped_column(String, ForeignKey("agents.id", ondelete="CASCADE"), index=True)
     user_id: Mapped[str] = mapped_column(String, ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    model_id: Mapped[str] = mapped_column(String, index=True, nullable=True)
     status: Mapped[str] = mapped_column(String)
     result: Mapped[str] = mapped_column(Text, nullable=True)
     started_at: Mapped[str] = mapped_column(DateTime(timezone=True), server_default=func.now())
     ended_at: Mapped[str] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_at: Mapped[str] = mapped_column(DateTime(timezone=True), server_default=func.now(), index=True)
 
 class ToolCall(Base):
     __tablename__ = "tool_calls"
@@ -33,4 +35,4 @@ class ToolCall(Base):
     tool_name: Mapped[str] = mapped_column(String)
     arguments: Mapped[str] = mapped_column(Text)
     result: Mapped[str] = mapped_column(Text, nullable=True)
-    created_at: Mapped[str] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    created_at: Mapped[str] = mapped_column(DateTime(timezone=True), server_default=func.now(), index=True)

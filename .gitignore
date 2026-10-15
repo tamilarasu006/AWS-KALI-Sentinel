@@ -20,6 +20,7 @@ env/
 *.swp
 *.swo
 *~
+*.bak
 
 # Testing
 .pytest_cache/

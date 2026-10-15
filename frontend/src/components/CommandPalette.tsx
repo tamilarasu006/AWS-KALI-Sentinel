@@ -351,10 +351,15 @@ export function CommandPalette() {
                       style={{ background: 'none', border: 'none', padding: 0 }}
                     >
                       <Cpu size={16} style={{ color: isActive ? 'var(--color-accent)' : 'var(--color-text-tertiary)' }} />
-                      <div className="flex-1 min-w-0">
+                      <div className="flex-1 min-w-0 flex items-center gap-2">
                         <div className="text-sm truncate" style={{ color: isActive ? 'var(--color-accent)' : 'var(--color-text)', fontWeight: isActive ? 500 : 400 }}>
                           {model.id}
                         </div>
+                        {model.id.toLowerCase().startsWith('kali') && (
+                          <span className="text-[9px] px-1.5 py-0.5 rounded uppercase font-bold tracking-wider" style={{ background: 'var(--color-accent-subtle)', color: 'var(--color-accent)' }}>
+                            KALI Engine
+                          </span>
+                        )}
                       </div>
                       {isActive && (
                         <span className="text-[10px] px-2 py-0.5 rounded-full" style={{ background: 'var(--color-accent-subtle)', color: 'var(--color-accent)' }}>

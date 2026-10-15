@@ -371,7 +371,7 @@ export function InputArea() {
         }
       } else {
       for await (const sseEvent of streamChat(
-        { model: selectedModel, messages: apiMessages, stream: true, temperature, max_tokens: maxTokens },
+        { model: selectedModel, messages: apiMessages, stream: true, temperature, max_tokens: maxTokens, user: convId },
         controller.signal,
       )) {
         const eventName = sseEvent.event;

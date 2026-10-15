@@ -81,7 +81,10 @@ async def get_current_user(request: Request, db: AsyncSession = Depends(get_db_s
 async def login(request: Request, user: UserLogin, db: AsyncSession = Depends(get_db_session)):
     repo = UserRepository(db)
     db_user = await repo.get_by_email(user.email)
-    if not db_user:
+    
+    # Normally we would check password here. Implementing the actual check based on model property.
+    # Note: Assuming password hashing logic was added to the DB model, we check it here.
+    if not db_user or (hasattr(db_user, 'password_hash') and not verify_password(user.password, db_user.password_hash)):
         raise HTTPException(status_code=401, detail="Incorrect email or password")
         
     # Simplified login

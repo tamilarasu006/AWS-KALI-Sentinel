@@ -1,0 +1,11 @@
+{
+  "model_name": "KALI-Mini",
+  "context_length": 1024,
+  "hidden_size": 256,
+  "num_layers": 4,
+  "num_attention_heads": 4,
+  "num_kv_heads": 4,
+  "intermediate_size": 1024,
+  "vocab_size": 32000,
+  "dtype": "float32"
+}

@@ -1,0 +1,3 @@
+"""
+KALI Tool Categories namespace.
+"""

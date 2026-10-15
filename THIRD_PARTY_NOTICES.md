@@ -1,0 +1,1 @@
+# Third Party Notices\nDependencies respect MIT/Apache 2.0 architectures.

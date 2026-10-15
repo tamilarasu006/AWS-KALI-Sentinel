@@ -1,0 +1,1 @@
+# KALI Load Testing Methodology\n\n- **API Testing**: Simulated via concurrent asyncio gather tasks imitating high-density socket bounds.\n- **Limits**: Applied standard timeouts protecting the event loop from unhandled thread exhaustion in SafeExecutors.\n- **Commands**: `kali loadtest chat --users 10` mapped to underlying internal configuration structures.\n

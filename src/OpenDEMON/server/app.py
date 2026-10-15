@@ -182,6 +182,9 @@ def create_app(
         version="0.1.0",
     )
 
+    from OpenDEMON.security.audit_logger import configure_production_logging
+    configure_production_logging()
+
     from fastapi.middleware.cors import CORSMiddleware
 
     _origins = (
@@ -229,6 +232,57 @@ def create_app(
     # Exposed so WebSocket handlers can authenticate the handshake (the HTTP
     # AuthMiddleware never sees WS upgrade requests). Empty = auth disabled.
     app.state.api_key = api_key
+
+    # Initialize KALI Orchestrator if enabled
+    import os
+    app.state.kali_orchestrator = None
+    if os.environ.get("KALI_ENABLED", "false").lower() == "true":
+        try:
+            from OpenDEMON.kali.model.kali_model import KALIModel
+            from OpenDEMON.kali.model.config import KALIModelConfig
+            from OpenDEMON.kali.orchestration import KALIOrchestrator, KALIPlanner, KALIRouter, KALIExecutor
+            from OpenDEMON.tools._stubs import ToolExecutor
+
+            _kali_model_path = os.environ.get("KALI_MODEL_PATH", "")
+            _kali_model_name = os.environ.get("KALI_DEFAULT_MODEL", "kali-mini")
+            _kali_device = os.environ.get("KALI_DEVICE", "cpu")
+
+            # Build a small test config when no real checkpoint is specified
+            _kali_cfg = KALIModelConfig(
+                model_name=_kali_model_name,
+                model_path=_kali_model_path,
+                hidden_size=128,
+                num_layers=2,
+                num_attention_heads=4,
+                intermediate_size=256,
+                vocab_size=1000,
+                context_length=128,
+                dtype="float32",
+                device=_kali_device,
+            )
+            k_model = KALIModel(_kali_cfg)
+            k_model.load()  # Eager load — builds the transformer and tokenizer at startup
+
+            _kali_planner = KALIPlanner()
+            _kali_router = KALIRouter()
+
+            # Create a base ToolExecutor for OpenDEMON tools
+            base_tool_executor = ToolExecutor(tools=[])  # In reality, load from ToolRegistry
+            _kali_executor = KALIExecutor(base_tool_executor)
+
+            # Using existing memory_backend if available for manager
+            # RAG would similarly be initialized here
+            app.state.kali_orchestrator = KALIOrchestrator(
+                model=k_model,
+                planner=_kali_planner,
+                router=_kali_router,
+                executor=_kali_executor,
+                memory_manager=None,  # Simplified for integration unless explicitly wired
+                rag_pipeline=None
+            )
+            logger.info("KALI Subsystem initialized successfully.")
+        except Exception as exc:
+            logger.error("Failed to initialize KALI Subsystem: %s", exc)
 
     # Wire up trace store if traces are enabled.
     #
@@ -302,6 +356,26 @@ def create_app(
     app.include_router(upload_router)
     app.include_router(research_router)
     app.include_router(analytics_router)
+    
+    # Mount KALI specific routes
+    try:
+        from OpenDEMON.server.kali_routes import router as kali_router
+        app.include_router(kali_router)
+    except ImportError:
+        pass
+        
+    try:
+        from OpenDEMON.server.kali_approval_routes import router as kali_approval_router
+        app.include_router(kali_approval_router)
+    except ImportError:
+        pass
+        
+    try:
+        from OpenDEMON.server.kali_unified_routes import router as kali_unified_router
+        app.include_router(kali_unified_router)
+    except ImportError:
+        pass
+        
     include_all_routes(app)
 
     # Disable swagger UI by default unless DEMON_DEV is set

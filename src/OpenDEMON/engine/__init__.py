@@ -7,6 +7,7 @@ import importlib
 # Import engine modules to trigger @EngineRegistry.register() decorators
 import OpenDEMON.engine.ollama  # noqa: F401
 import OpenDEMON.engine.openai_compat_engines  # noqa: F401
+import OpenDEMON.engine.kali  # noqa: F401
 from OpenDEMON.engine._base import (
     EngineConnectionError,
     InferenceEngine,

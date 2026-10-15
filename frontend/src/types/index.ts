@@ -39,7 +39,7 @@ export interface ToolCallInfo {
   id: string;
   tool: string;
   arguments: string;
-  status: 'running' | 'success' | 'error';
+  status: 'running' | 'success' | 'error' | 'requires_approval';
   result?: string;
   latency?: number;
 }

@@ -133,46 +133,58 @@ export function Sidebar() {
           </div>
 
           {/* Model badge */}
-          <button
-            onClick={() => setCommandPaletteOpen(true)}
-            className="mx-3 mb-2 flex items-center gap-2 px-3 py-2 rounded-lg text-xs transition-colors cursor-pointer"
-            style={{
-              background: 'var(--color-bg-secondary)',
-              color: 'var(--color-text-secondary)',
-              border: '1px solid var(--color-border)',
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--color-bg-tertiary)')}
-            onMouseLeave={(e) => (e.currentTarget.style.background = 'var(--color-bg-secondary)')}
-          >
-            {modelLoading ? (
-              <Loader2 size={14} className="animate-spin" style={{ color: 'var(--color-accent)' }} />
-            ) : (
-              <Cpu size={14} />
-            )}
-            <div className="flex-1 min-w-0">
-              <span
-                className="truncate block text-left"
-                style={{ color: deepResearch ? 'var(--color-accent)' : 'var(--color-text)' }}
+          {(() => {
+            const currentModel = selectedModel || serverInfo?.model || '';
+            const isKali = currentModel.toLowerCase().startsWith('kali');
+            return (
+              <button
+                onClick={() => setCommandPaletteOpen(true)}
+                className="mx-3 mb-2 flex items-center gap-2 px-3 py-2 rounded-lg text-xs transition-colors cursor-pointer"
+                style={{
+                  background: isKali ? 'var(--color-accent-subtle)' : 'var(--color-bg-secondary)',
+                  color: isKali ? 'var(--color-accent)' : 'var(--color-text-secondary)',
+                  border: isKali ? '1px solid var(--color-accent)' : '1px solid var(--color-border)',
+                  boxShadow: isKali ? '0 0 12px var(--color-accent-glow)' : 'none',
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.background = isKali ? 'var(--color-accent)' : 'var(--color-bg-tertiary)')}
+                onMouseLeave={(e) => (e.currentTarget.style.background = isKali ? 'var(--color-accent-subtle)' : 'var(--color-bg-secondary)')}
               >
-                {deepResearch
-                  ? 'Deep Research'
-                  : selectedModel || serverInfo?.model || 'Select model'}
-              </span>
-              {modelLoading && (
-                <span className="text-[10px] block text-left" style={{ color: 'var(--color-accent)' }}>
-                  Loading model...
-                </span>
-              )}
-            </div>
-            {!modelLoading && (
-              <kbd
-                className="text-[10px] px-1.5 py-0.5 rounded font-mono"
-                style={{ background: 'var(--color-bg-tertiary)', color: 'var(--color-text-tertiary)' }}
-              >
-                ⌘K
-              </kbd>
-            )}
-          </button>
+                {modelLoading ? (
+                  <Loader2 size={14} className="animate-spin" style={{ color: 'inherit' }} />
+                ) : (
+                  <Cpu size={14} style={{ color: 'inherit' }} />
+                )}
+                <div className="flex-1 min-w-0">
+                  <span
+                    className="truncate block text-left"
+                    style={{ color: deepResearch ? 'var(--color-accent)' : 'inherit', fontWeight: isKali ? 600 : 400 }}
+                  >
+                    {deepResearch
+                      ? 'Deep Research'
+                      : currentModel || 'Select model'}
+                  </span>
+                  {modelLoading && (
+                    <span className="text-[10px] block text-left" style={{ color: 'inherit', opacity: 0.8 }}>
+                      Loading model...
+                    </span>
+                  )}
+                  {isKali && !modelLoading && (
+                    <span className="text-[9px] block text-left font-bold uppercase tracking-wider" style={{ color: 'inherit', opacity: 0.9 }}>
+                      KALI Engine Active
+                    </span>
+                  )}
+                </div>
+                {!modelLoading && (
+                  <kbd
+                    className="text-[10px] px-1.5 py-0.5 rounded font-mono"
+                    style={{ background: 'var(--color-bg-tertiary)', color: 'var(--color-text-tertiary)', opacity: isKali ? 0.7 : 1 }}
+                  >
+                    ⌘K
+                  </kbd>
+                )}
+              </button>
+            );
+          })()}
 
           {/* Search */}
           <div className="px-3 mb-2">

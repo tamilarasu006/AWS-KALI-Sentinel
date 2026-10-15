@@ -1,0 +1,27 @@
+# KALI v1.0 Release Gate
+
+- **Model**: PASS_WITH_LIMITATIONS
+- **Tokenizer**: BLOCKED (Dummy tokenizer fallback remains in production path)
+- **Inference**: PASS_WITH_LIMITATIONS
+- **API**: PASS
+- **Authentication**: PASS
+- **Authorization**: PASS
+- **Multi-tenancy**: PASS
+- **Database**: PASS
+- **pgvector**: PASS
+- **RAG**: PASS_WITH_LIMITATIONS
+- **Memory**: PASS
+- **Agents**: PASS
+- **Tools**: PASS
+- **Tool calling**: PASS
+- **Sandbox**: BLOCKED (Requires Linux/Docker, POSIX dependent, fails natively on Windows Server hosts)
+- **Internet gateway**: PASS
+- **Cybersecurity controls**: PASS
+- **Frontend**: PASS
+- **Security**: PASS_WITH_LIMITATIONS (Missing Rust backend compilations for guardrails on some arches)
+- **Performance**: PASS_WITH_LIMITATIONS
+- **Observability**: PASS
+- **Deployment**: BLOCKED (Cannot deploy securely without POSIX sandbox)
+- **Backup**: NOT_TESTED
+- **Recovery**: NOT_TESTED
+- **Documentation**: PASS\n

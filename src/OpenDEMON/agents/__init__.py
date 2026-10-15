@@ -20,6 +20,11 @@ except ImportError:
     pass
 
 try:
+    import OpenDEMON.agents.kali_agent  # noqa: F401
+except ImportError:
+    pass
+
+try:
     import OpenDEMON.agents.orchestrator  # noqa: F401
 except ImportError:
     pass

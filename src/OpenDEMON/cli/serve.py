@@ -3,7 +3,42 @@
 from __future__ import annotations
 
 import logging
+import os
 import sys
+from pathlib import Path
+
+# Load .env FIRST — before any OpenDEMON module is imported.
+# db_config = DatabaseConfig() in database/config.py runs at import time,
+# so DATABASE_URL must already be in os.environ when that line executes.
+def _load_dotenv() -> None:
+    try:
+        from dotenv import load_dotenv
+        # Search cwd and up to 3 parents for a .env file
+        here = Path.cwd()
+        for candidate in [here, *here.parents[:3]]:
+            env_file = candidate / ".env"
+            if env_file.exists():
+                load_dotenv(env_file, override=False)
+                break
+    except ImportError:
+        # python-dotenv not installed — fall back to manual parsing
+        here = Path.cwd()
+        for candidate in [here, *here.parents[:3]]:
+            env_file = candidate / ".env"
+            if env_file.exists():
+                for line in env_file.read_text(encoding="utf-8").splitlines():
+                    line = line.strip()
+                    if not line or line.startswith("#") or "=" not in line:
+                        continue
+                    key, _, val = line.partition("=")
+                    key = key.strip()
+                    val = val.strip().strip('"').strip("'")
+                    # Don't override values already set in the environment
+                    if key not in os.environ:
+                        os.environ[key] = val
+                break
+
+_load_dotenv()
 
 import click
 from rich.console import Console

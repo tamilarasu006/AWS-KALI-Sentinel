@@ -18,6 +18,9 @@ if config.config_file_name is not None:
 
 import os
 import sys
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Add the project root to sys.path so we can import OpenDEMON
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
@@ -78,6 +81,8 @@ async def run_async_migrations() -> None:
     connect_args = {}
     if "pooler.supabase.com" in url:
         _ctx = _ssl.create_default_context()
+        _ctx.check_hostname = False
+        _ctx.verify_mode = _ssl.CERT_NONE
         connect_args = {"ssl": _ctx, "statement_cache_size": 0}
 
     configuration = config.get_section(config.config_ini_section, {})
