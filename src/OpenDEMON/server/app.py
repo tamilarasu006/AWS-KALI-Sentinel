@@ -376,6 +376,12 @@ def create_app(
     except ImportError:
         pass
         
+    try:
+        from kali_sentinel.server.routes import router as kali_sentinel_router
+        app.include_router(kali_sentinel_router)
+    except ImportError:
+        pass
+        
     include_all_routes(app)
 
     # Disable swagger UI by default unless DEMON_DEV is set

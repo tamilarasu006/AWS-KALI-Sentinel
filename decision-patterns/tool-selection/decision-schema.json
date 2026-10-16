@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "StrandsDeciderToolSelectionSchema",
+  "description": "JSON Schema specification for Strands Decider 2B Tool Selection Decision Pattern",
+  "type": "object",
+  "properties": {
+    "question": {
+      "type": "string",
+      "const": "Which security tool should handle this user's authorized security task?"
+    },
+    "options": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["recon", "port_scan", "web_scan", "dns_check", "no_tool"]
+      },
+      "minItems": 5,
+      "maxItems": 5,
+      "uniqueItems": true
+    },
+    "criteria": {
+      "type": "object",
+      "required": ["recon", "port_scan", "web_scan", "dns_check", "no_tool"],
+      "properties": {
+        "recon": {
+          "type": "string",
+          "description": "Passive reconnaissance, OSINT, and footprint discovery"
+        },
+        "port_scan": {
+          "type": "string",
+          "description": "Network port and service availability auditing"
+        },
+        "web_scan": {
+          "type": "string",
+          "description": "Web application security header and endpoint posture check"
+        },
+        "dns_check": {
+          "type": "string",
+          "description": "DNS record configuration and SPF/DMARC verification"
+        },
+        "no_tool": {
+          "type": "string",
+          "description": "General conversational inquiry or non-security request"
+        }
+      }
+    },
+    "input_state": {
+      "type": "object",
+      "required": ["user_task", "action_type", "target", "authorization_status"],
+      "properties": {
+        "user_task": { "type": "string" },
+        "action_type": { "type": "string" },
+        "target": { "type": "string" },
+        "authorization_status": { "type": "string" },
+        "parameters": { "type": "object" }
+      }
+    },
+    "output_decision": {
+      "type": "object",
+      "required": ["tool", "confidence", "probabilities", "latency_ms"],
+      "properties": {
+        "tool": {
+          "type": "string",
+          "enum": ["recon", "port_scan", "web_scan", "dns_check", "no_tool"]
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0
+        },
+        "probabilities": {
+          "type": "object",
+          "additionalProperties": { "type": "number" }
+        },
+        "latency_ms": {
+          "type": "number",
+          "minimum": 0.0
+        },
+        "model": { "type": "string" }
+      }
+    }
+  },
+  "required": ["question", "options", "criteria", "input_state", "output_decision"]
+}
