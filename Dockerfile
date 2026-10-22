@@ -16,7 +16,7 @@ WORKDIR /app
 
 # System deps
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl git && \
+    curl git libmagic1 && \
     rm -rf /var/lib/apt/lists/*
 
 # Install uv
