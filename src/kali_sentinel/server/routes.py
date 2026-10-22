@@ -480,6 +480,36 @@ def create_sentinel_app():
     app.include_router(router)
     app.include_router(v1_router)
 
+    # Mount frontend static files if available (production / Docker SPA)
+    try:
+        from fastapi.responses import FileResponse
+        from fastapi.staticfiles import StaticFiles
+
+        static_dir = Path(__file__).resolve().parent.parent.parent / "OpenDEMON" / "server" / "static"
+        if not static_dir.is_dir():
+            static_dir = Path.cwd() / "src" / "OpenDEMON" / "server" / "static"
+
+        if static_dir.is_dir() and (static_dir / "index.html").is_file():
+            assets_dir = static_dir / "assets"
+            if assets_dir.is_dir():
+                app.mount("/assets", StaticFiles(directory=str(assets_dir)), name="static-assets")
+
+            @app.get("/")
+            async def serve_root():
+                return FileResponse(static_dir / "index.html")
+
+            @app.get("/{full_path:path}")
+            async def spa_fallback(full_path: str):
+                if full_path.startswith("v1/") or full_path.startswith("api/") or full_path == "health":
+                    raise HTTPException(status_code=404, detail="Not Found")
+                if full_path:
+                    candidate = (static_dir / full_path).resolve()
+                    if candidate.is_relative_to(static_dir.resolve()) and candidate.is_file():
+                        return FileResponse(candidate)
+                return FileResponse(static_dir / "index.html")
+    except Exception as exc:
+        logger.warning("Failed to mount static frontend files: %s", exc)
+
     return app
 
 

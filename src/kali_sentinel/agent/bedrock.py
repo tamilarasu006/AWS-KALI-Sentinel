@@ -18,9 +18,14 @@ import logging
 import re
 from typing import Any, Dict, Optional
 
-import boto3
-from botocore.config import Config
-from botocore.exceptions import BotoCoreError, ClientError, NoCredentialsError
+try:
+    import boto3
+    from botocore.config import Config
+    from botocore.exceptions import BotoCoreError, ClientError, NoCredentialsError
+except ImportError:
+    boto3 = None
+    Config = None
+    BotoCoreError = ClientError = NoCredentialsError = Exception
 from pydantic import BaseModel, Field
 
 from kali_sentinel.config import SentinelConfig, get_sentinel_config
@@ -72,6 +77,10 @@ class BedrockAdapter:
 
     def _initialize_client(self) -> None:
         """Initialize the boto3 Bedrock client using the standard AWS credential chain."""
+        if boto3 is None or Config is None:
+            self._runtime_client = None
+            self._is_live = False
+            return
         try:
             boto_cfg = Config(
                 region_name=self.config.aws_region,
