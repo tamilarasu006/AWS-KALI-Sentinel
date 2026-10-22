@@ -50,6 +50,10 @@ class SentinelConfig:
         "192.168.0.0/16",   # Private-use Class C
     ])
 
+    # Database Persistence (PostgreSQL + pgvector / in-memory fallback)
+    database_url: Optional[str] = None
+    database_required: bool = False
+
     @classmethod
     def from_env(cls) -> SentinelConfig:
         """Construct configuration from environment variables."""
@@ -65,6 +69,9 @@ class SentinelConfig:
         bedrock_mock = os.getenv("SENTINEL_MOCK_BEDROCK", "true").lower() in ("1", "true", "yes", "on")
         decider_mock = os.getenv("SENTINEL_MOCK_DECIDER", "true").lower() in ("1", "true", "yes", "on")
 
+        db_req_raw = os.getenv("SENTINEL_DB_REQUIRED", "false").lower()
+        db_required = db_req_raw in ("1", "true", "yes", "on")
+
         return cls(
             aws_region=os.getenv("AWS_REGION", "us-east-1"),
             bedrock_model_id=os.getenv("BEDROCK_MODEL_ID", "anthropic.claude-3-haiku-20240307-v1:0"),
@@ -77,6 +84,8 @@ class SentinelConfig:
             strands_mock_fallback=decider_mock,
             safe_mode=safe_mode,
             authorized_targets=authorized_targets,
+            database_url=os.getenv("DATABASE_URL", None),
+            database_required=db_required,
         )
 
     def is_target_authorized(self, target: str) -> bool:

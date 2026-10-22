@@ -17,7 +17,7 @@ COPY scripts/install scripts/install
 COPY deploy/windows deploy/windows
 
 # Copy built frontend into the server static directory
-COPY --from=frontend /src/opendemon/server/static src/opendemon/server/static/
+COPY --from=frontend /src/OpenDEMON/server/static src/OpenDEMON/server/static/
 
 RUN pip install --no-cache-dir uv && \
     uv pip install --system ".[server]"

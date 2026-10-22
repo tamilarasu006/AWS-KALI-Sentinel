@@ -377,8 +377,12 @@ def create_app(
         pass
         
     try:
-        from kali_sentinel.server.routes import router as kali_sentinel_router
+        from kali_sentinel.server.routes import (
+            router as kali_sentinel_router,
+            v1_router as kali_sentinel_v1_router,
+        )
         app.include_router(kali_sentinel_router)
+        app.include_router(kali_sentinel_v1_router)
     except ImportError:
         pass
         

@@ -1,7 +1,30 @@
 """KALI Sentinel Main Agent Orchestrator.
 
 Integrates Amazon Bedrock for generative task reasoning with Strands Decider 2B
-for typed System One decision routing and guardrail verification.
+for typed System One decision routing and safety guardrail verification.
+
+Workflow:
+    User Request
+        ↓
+    KALI Sentinel Agent
+        ↓
+    Amazon Bedrock (Task Understanding)
+        ↓
+    Structured Security Task
+        ↓
+    Strands Decider 2B (Typed Decision)
+        ↓
+    Typed Tool Selection (RECON, PORT_SCAN, WEB_SCAN, DNS_CHECK, NO_TOOL)
+        ↓
+    Safety Guardrail (Scope & Authorization Check)
+        ↓
+    Safe Tool Adapter (Executes only if authorized & decision != NO_TOOL)
+        ↓
+    Result
+        ↓
+    Amazon Bedrock Explanation
+        ↓
+    Frontend / API
 """
 
 from __future__ import annotations
@@ -11,7 +34,7 @@ import time
 from typing import Any, Dict, Optional
 from pydantic import BaseModel, Field
 
-from kali_sentinel.bedrock.bedrock_client import BedrockClient
+from kali_sentinel.agent.bedrock import BedrockAdapter, StructuredSecurityTask, get_bedrock_adapter
 from kali_sentinel.config import SentinelConfig, get_sentinel_config
 from kali_sentinel.decider.contracts import (
     GuardrailDecision,
@@ -20,8 +43,13 @@ from kali_sentinel.decider.contracts import (
     StructuredIntent,
     ToolDecision,
 )
+from kali_sentinel.decider.decider_2b import (
+    StrandsDecider2BAdapter,
+    decide_tool,
+    get_decider_adapter,
+    map_decision_to_tool,
+)
 from kali_sentinel.decider.guardrail import StrandsGuardrailDecider
-from kali_sentinel.decider.tool_selection import StrandsToolDecider
 from kali_sentinel.tools.security_tools import ToolRegistry
 
 logger = logging.getLogger(__name__)
@@ -47,76 +75,70 @@ class KaliSentinelAgent:
     def __init__(
         self,
         config: Optional[SentinelConfig] = None,
-        bedrock_client: Optional[BedrockClient] = None,
-        tool_decider: Optional[StrandsToolDecider] = None,
+        bedrock_adapter: Optional[BedrockAdapter] = None,
+        decider_adapter: Optional[StrandsDecider2BAdapter] = None,
         guardrail_decider: Optional[StrandsGuardrailDecider] = None,
         tool_registry: Optional[ToolRegistry] = None,
     ) -> None:
         self.config = config or get_sentinel_config()
-        self.bedrock = bedrock_client or BedrockClient(self.config)
-        self.decider = tool_decider or StrandsToolDecider(self.config)
+        self.bedrock = bedrock_adapter or get_bedrock_adapter(self.config)
+        self.decider = decider_adapter or get_decider_adapter(self.config)
         self.guardrail = guardrail_decider or StrandsGuardrailDecider(self.config)
         self.tools = tool_registry or ToolRegistry()
 
-    def run(self, prompt: str) -> SentinelAgentResponse:
+    def run(
+        self,
+        prompt: str,
+        target: Optional[str] = None,
+        authorized: Optional[bool] = None,
+    ) -> SentinelAgentResponse:
         """Execute the full Sentinel Agent pipeline."""
         workflow_start = time.perf_counter()
         logger.info("Executing KALI Sentinel agent for prompt: '%s'", prompt)
 
-        # 1. Amazon Bedrock: Task understanding & structured intent
-        intent = self.bedrock.interpret_request(prompt)
+        # 1. Amazon Bedrock: Task understanding & structured security task
+        structured_task = self.bedrock.understand_task(prompt, target=target, authorized=authorized)
         logger.info(
-            "Bedrock interpreted intent: action='%s', target='%s', authorized=%s",
-            intent.action_type,
-            intent.target,
-            intent.authorization_claimed,
+            "Bedrock interpreted task: action='%s', target='%s', authorized=%s",
+            structured_task.action_type,
+            structured_task.target,
+            structured_task.authorization_claimed,
         )
 
-        # 2. Strands Decider 2B: Typed Tool Selection
-        tool_decision = self.decider.decide(intent)
-        selected_tool = tool_decision.tool
-        logger.info(
-            "Strands Decider 2B selected: tool='%s', confidence=%.2f, latency=%.1fms",
-            selected_tool.value,
-            tool_decision.confidence,
-            tool_decision.latency_ms,
+        intent = StructuredIntent(
+            raw_request=structured_task.raw_request,
+            action_type=structured_task.action_type,
+            target=structured_task.target,
+            authorization_claimed=structured_task.authorization_claimed,
+            parameters=structured_task.parameters,
+            safety_notes=structured_task.safety_notes,
         )
 
-        # 3. Branch: Handle NO_TOOL immediately
-        if selected_tool == SecurityTool.NO_TOOL:
-            guardrail_decision = GuardrailDecision(
-                verdict=GuardrailVerdict.ALLOW,
-                probability=1.0,
-                reasoning="General inquiry; no external security tool execution required.",
-                target=intent.target,
-                latency_ms=0.1,
-            )
-            empty_result = {
-                "tool": "no_tool",
-                "target": intent.target,
-                "status": "NO_OP",
-                "findings": ["No external scanning tool needed."],
-                "summary": "Conversational / non-security query answered directly.",
-            }
-            explanation = self.bedrock.explain_result(
-                prompt, tool_decision, guardrail_decision, empty_result
-            )
-            total_latency = (time.perf_counter() - workflow_start) * 1000
+        # 2. Strands Decider 2B: Typed Tool Selection (RECON, PORT_SCAN, WEB_SCAN, DNS_CHECK, NO_TOOL)
+        decider_result = self.decider.decide(structured_task.to_decider_state())
+        decision_enum = SecurityTool.from_str(decider_result["tool"])
+        confidence = decider_result["confidence"]
+        latency_ms = decider_result["latency_ms"]
 
-            return SentinelAgentResponse(
-                request=prompt,
-                intent=intent,
-                decider_decision=tool_decision,
-                guardrail_decision=guardrail_decision,
-                selected_tool=selected_tool.value,
-                execution_status="NO_TOOL",
-                result=empty_result,
-                explanation=explanation,
-                total_latency_ms=round(total_latency, 2),
-            )
+        tool_decision = ToolDecision(
+            tool=decision_enum,
+            confidence=confidence,
+            probabilities=decider_result.get("probabilities", {}),
+            latency_ms=latency_ms,
+            model=decider_result.get("model", self.config.strands_decider_model),
+            rationale=decider_result.get("rationale", ""),
+        )
 
-        # 4. Guardrail Boundary: Validate Grounding & Authorization
-        guardrail_decision = self.guardrail.evaluate(intent, selected_tool)
+        logger.info(
+            "Strands Decider 2B selected: decision='%s', tool='%s', confidence=%.2f, latency=%.1fms",
+            decider_result["decision"],
+            tool_decision.tool.value,
+            confidence,
+            latency_ms,
+        )
+
+        # 3. Guardrail Boundary: Validate Grounding, Malicious Terms, & Authorization
+        guardrail_decision = self.guardrail.evaluate(intent, decision_enum)
         logger.info(
             "Guardrail verdict: %s (score=%.2f, reason='%s')",
             guardrail_decision.verdict.value,
@@ -124,47 +146,94 @@ class KaliSentinelAgent:
             guardrail_decision.reasoning,
         )
 
-        # 5. Branch: Handle Guardrail Rejection
+        # SAFETY ENFORCEMENT:
+        # If guardrail didn't reject already, verify authorization and scope:
+        if guardrail_decision.verdict == GuardrailVerdict.ALLOW and decision_enum != SecurityTool.NO_TOOL:
+            target_in_scope = self.config.is_target_authorized(intent.target)
+            if not intent.authorization_claimed or not target_in_scope:
+                guardrail_decision.verdict = GuardrailVerdict.REJECT
+                if not intent.authorization_claimed:
+                    guardrail_decision.reasoning = "Execution blocked: Task lacks confirmed authorization."
+                else:
+                    guardrail_decision.reasoning = f"Execution blocked: Target '{intent.target}' is outside authorized scope."
+
+        # 4. Handle Guardrail Rejection (Block Execution)
         if guardrail_decision.verdict == GuardrailVerdict.REJECT:
             blocked_result = {
-                "tool": selected_tool.value,
+                "tool": decision_enum.value,
                 "target": intent.target,
                 "status": "BLOCKED",
                 "findings": [f"Execution blocked: {guardrail_decision.reasoning}"],
                 "summary": "Security action rejected by authorization/safety guardrail.",
             }
+            total_latency = (time.perf_counter() - workflow_start) * 1000.0
+
             explanation = (
                 f"**Action Blocked by Safety Guardrail**\n\n"
-                f"The Strands Decider 2B selected tool `{selected_tool.value.upper()}`, "
+                f"The Strands Decider 2B selected tool `{decider_result['decision']}`, "
                 f"but execution was halted because: {guardrail_decision.reasoning}\n\n"
                 f"KALI Sentinel only executes defensive tools against systems you explicitly own or are authorized to test."
             )
-            total_latency = (time.perf_counter() - workflow_start) * 1000
 
             return SentinelAgentResponse(
                 request=prompt,
                 intent=intent,
                 decider_decision=tool_decision,
                 guardrail_decision=guardrail_decision,
-                selected_tool=selected_tool.value,
+                selected_tool=decision_enum.value,
                 execution_status="BLOCKED",
                 result=blocked_result,
                 explanation=explanation,
                 total_latency_ms=round(total_latency, 2),
             )
 
-        # 6. Tool Execution: Run safe defensive security adapter
-        logger.info("Executing authorized defensive tool: '%s' on '%s'", selected_tool.value, intent.target)
+        # 5. Handle NO_TOOL (Safe conversational or non-security request)
+        if decision_enum == SecurityTool.NO_TOOL or decider_result["decision"] == "NO_TOOL":
+            empty_result = {
+                "tool": "no_tool",
+                "target": intent.target,
+                "status": "NO_OP",
+                "findings": ["No external scanning tool needed."],
+                "summary": "Conversational / non-security query answered directly.",
+            }
+            total_latency = (time.perf_counter() - workflow_start) * 1000.0
+
+            # Synthesize explanation via Bedrock adapter
+            explanation = self.bedrock.summarize_result(
+                prompt, decider_result, guardrail_decision.model_dump(), empty_result
+            )
+
+            return SentinelAgentResponse(
+                request=prompt,
+                intent=intent,
+                decider_decision=tool_decision,
+                guardrail_decision=guardrail_decision,
+                selected_tool="no_tool",
+                execution_status="NO_TOOL",
+                result=empty_result,
+                explanation=explanation,
+                total_latency_ms=round(total_latency, 2),
+            )
+
+        # 6. Tool Execution: Deterministic mapping controls tool execution
+        executable_tool_id = map_decision_to_tool(decider_result["decision"])
+        logger.info(
+            "Executing authorized tool: '%s' (adapter id: '%s') on target: '%s'",
+            decider_result["decision"],
+            executable_tool_id,
+            intent.target,
+        )
+
         tool_result = self.tools.execute_tool(
-            selected_tool, intent.target, intent.parameters
+            decision_enum, intent.target, intent.parameters
         )
 
         # 7. Amazon Bedrock: Generate human-readable explanation
-        explanation = self.bedrock.explain_result(
-            prompt, tool_decision, guardrail_decision, tool_result
+        explanation = self.bedrock.summarize_result(
+            prompt, decider_result, guardrail_decision.model_dump(), tool_result
         )
 
-        total_latency = (time.perf_counter() - workflow_start) * 1000
+        total_latency = (time.perf_counter() - workflow_start) * 1000.0
         logger.info("Workflow completed in %.1fms", total_latency)
 
         return SentinelAgentResponse(
@@ -172,7 +241,7 @@ class KaliSentinelAgent:
             intent=intent,
             decider_decision=tool_decision,
             guardrail_decision=guardrail_decision,
-            selected_tool=selected_tool.value,
+            selected_tool=decision_enum.value,
             execution_status="COMPLETED",
             result=tool_result,
             explanation=explanation,

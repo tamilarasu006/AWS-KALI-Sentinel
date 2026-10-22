@@ -12,14 +12,18 @@ def _build_engine() -> AsyncEngine:
         "DATABASE_URL",
         "postgresql+asyncpg://demon:development_password@localhost:5432/demon_ai"
     )
+    if url.startswith("postgresql://"):
+        url = "postgresql+asyncpg://" + url[len("postgresql://"):]
+
     pool_size = int(os.environ.get("DB_POOL_SIZE", "10"))
     max_overflow = int(os.environ.get("DB_MAX_OVERFLOW", "20"))
     pool_timeout = int(os.environ.get("DB_POOL_TIMEOUT", "30"))
     pool_recycle = int(os.environ.get("DB_POOL_RECYCLE", "1800"))
 
     _is_pooler = "pooler.supabase.com" in url
-    _sni_host = os.environ.get("SUPABASE_POOLER_SNI", "aws-0-ap-northeast-2.pooler.supabase.com")
-    _is_ip_url = not any(c.isalpha() for c in url.split("@")[-1].split(":")[0])
+    host_candidate = url.split("@")[-1].split(":")[0].split("/")[0] if "@" in url else "localhost"
+    _sni_host = os.environ.get("SUPABASE_POOLER_SNI", host_candidate)
+    _is_ip_url = not any(c.isalpha() for c in host_candidate)
 
     _connect_args: dict[str, Any] = {}
     if _is_pooler or _is_ip_url:

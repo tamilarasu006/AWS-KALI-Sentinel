@@ -96,9 +96,13 @@ export const apiFetch = async (
     (init.headers as Record<string, string> | undefined) ?? {},
   );
   const res = await fetch(`${getBase()}${path}`, { ...init, headers });
-  if (res.status === 401 && !path.includes('/auth/login') && typeof window !== 'undefined') {
+  if (
+    res.status === 401 &&
+    !path.includes('/auth/') &&
+    typeof window !== 'undefined'
+  ) {
     localStorage.removeItem('jwt_token');
-    if (window.location.pathname !== '/login') {
+    if (window.location.pathname !== '/login' && window.location.pathname !== '/sentinel') {
       window.location.href = '/login';
     }
   }
@@ -211,7 +215,10 @@ export async function deleteModel(modelName: string): Promise<void> {
   }
 }
 
-const _CLOUD_PREFIXES = ['gpt-', 'o1-', 'o3-', 'o4-', 'claude-', 'gemini-', 'openrouter/', 'kali-'];
+const _CLOUD_PREFIXES = [
+  'gpt-', 'o1-', 'o3-', 'o4-', 'claude-', 'gemini-', 'openrouter/',
+  'kali', 'kali-', 'StrandsAgents/', 'anthropic.', 'amazon.', 'meta.'
+];
 
 export async function preloadModel(modelName: string): Promise<void> {
   // Cloud models don't need Ollama preloading
@@ -1155,8 +1162,17 @@ export const registerUser = async (data: Record<string, string>) => {
     body: JSON.stringify(data),
   });
   if (!res.ok) {
-    const err = await res.json();
-    throw new Error(err.detail || 'Failed to register');
+    let detail = 'Failed to register';
+    try {
+      const err = await res.json();
+      detail = err.detail || detail;
+    } catch {
+      try {
+        const text = await res.text();
+        if (text) detail = text;
+      } catch {}
+    }
+    throw new Error(detail);
   }
   return res.json();
 };
@@ -1168,8 +1184,17 @@ export const loginUser = async (data: Record<string, string>) => {
     body: JSON.stringify(data),
   });
   if (!res.ok) {
-    const err = await res.json();
-    throw new Error(err.detail || 'Failed to login');
+    let detail = 'Failed to login';
+    try {
+      const err = await res.json();
+      detail = err.detail || detail;
+    } catch {
+      try {
+        const text = await res.text();
+        if (text) detail = text;
+      } catch {}
+    }
+    throw new Error(detail);
   }
   const result = await res.json();
   localStorage.setItem('jwt_token', result.access_token);
@@ -1198,6 +1223,13 @@ export const verifyOtp = async (otp: string) => {
 
 export const getCurrentUser = async () => {
   const res = await apiFetch('/v1/auth/me');
-  if (!res.ok) throw new Error('Not authenticated');
+  if (!res.ok) {
+    let detail = 'Not authenticated';
+    try {
+      const err = await res.json();
+      detail = err.detail || detail;
+    } catch {}
+    throw new Error(detail);
+  }
   return res.json();
 };

@@ -52,6 +52,7 @@ Thumbs.db
 *.log
 results/
 logs/
+data/
 # Anchored to repo root — DO NOT use the unanchored form `traces/`.
 # hatchling honors .gitignore when building the wheel; an unanchored
 # `traces/` pattern matches src/opendemon/traces/ and silently drops

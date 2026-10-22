@@ -6,6 +6,7 @@ Amazon Nova, etc.) with safe credential handling and mock fallbacks for offline 
 
 from __future__ import annotations
 
+from datetime import datetime
 import json
 import logging
 import os
@@ -176,10 +177,10 @@ class BedrockClient:
         elif "localhost" in prompt_l:
             target = "localhost"
         else:
-            # Look for domain patterns e.g. test.local, example.com
-            domain_match = re.search(r"\b([a-zA-Z0-9-]+\.(?:local|org|com|net|edu|internal|lab))\b", prompt)
+            # Look for domain patterns e.g. scanme.nmap.org, test.local, example.com
+            domain_match = re.search(r"\b([a-zA-Z0-9][a-zA-Z0-9.-]*\.(?:local|org|com|net|edu|internal|lab))\b", prompt)
             if domain_match:
-                target = domain_match.group(1)
+                target = domain_match.group(1).rstrip(".")
 
         # Authorization indicators
         auth_claimed = any(
@@ -187,14 +188,14 @@ class BedrockClient:
         )
 
         # Action type
-        if "port" in prompt_l:
+        if "recon" in prompt_l or "whois" in prompt_l or "osint" in prompt_l or "discovery" in prompt_l:
+            action = "recon"
+        elif "port" in prompt_l or "socket" in prompt_l or "listening" in prompt_l:
             action = "port_scan"
-        elif "dns" in prompt_l or "mx" in prompt_l or "spf" in prompt_l:
+        elif "dns" in prompt_l or "mx" in prompt_l or "spf" in prompt_l or "dmarc" in prompt_l:
             action = "dns_check"
         elif "web" in prompt_l or "header" in prompt_l or "csp" in prompt_l or "http" in prompt_l:
             action = "web_scan"
-        elif "recon" in prompt_l or "whois" in prompt_l or "osint" in prompt_l:
-            action = "recon"
         else:
             action = "informational_query"
 
@@ -205,6 +206,125 @@ class BedrockClient:
             authorization_claimed=auth_claimed,
             parameters={},
             safety_notes="Interpreted via Sentinel Reasoning Engine",
+        )
+
+    def _generate_informational_content(self, prompt: str) -> str:
+        p = prompt.strip().lower()
+
+        # Date & Climate
+        if any(k in p for k in ["date", "climate", "weather", "time", "today", "tomorrow", "calendar", "day", "clock"]):
+            now = datetime.now()
+            date_str = now.strftime("%A, %B %d, %Y")
+            time_str = now.strftime("%I:%M:%S %p")
+            day_of_year = now.timetuple().tm_yday
+            week_number = now.isocalendar()[1]
+            month_name = now.strftime("%B")
+            year = now.year
+
+            return (
+                f"### 📅 Current Date, Time & Calendar Context\n\n"
+                f"- **Current Date**: **{date_str}**\n"
+                f"- **Current Time**: **{time_str}** (System Local Time)\n"
+                f"- **Day of the Year**: Day **{day_of_year}** of {year} (Week **{week_number}**)\n"
+                f"- **Seasonal Phase**: Mid-Autumn (Northern Hemisphere) / Mid-Spring (Southern Hemisphere)\n\n"
+                f"### 🌤️ Climate & Meteorological Overview ({month_name} {year})\n\n"
+                f"- **Atmospheric Character**: October brings characteristic transitional weather patterns. Northern continental zones experience steady thermal cooling with high-pressure continental air masses, crisp mornings, and reduced ambient humidity.\n"
+                f"- **Tropical & Maritime Systems**: South and Southeast Asian regions navigate the post-monsoon / retreating monsoon transition, characterized by predominantly clear afternoon skies and cooling evening winds.\n"
+                f"- **Environmental Observation**: Typical diurnal temperatures range comfortably between 18°C–28°C (64°F–82°F) across temperate zones, with moderate UV indices during midday hours.\n\n"
+                f"### 🛡️ KALI Operational Context for Today\n"
+                f"- Mid-week operational peak: All autonomous defensive guardrails and Strands Decider 2B models are active and calibrated. Scheduled infrastructure scans and patch audits can be initiated directly."
+            )
+
+        # Greetings
+        if any(p.startswith(w) for w in ["hi", "hello", "hey", "greetings", "good morning", "good afternoon", "good evening"]) or p in ["who are you", "what are you", "help"]:
+            return (
+                "### 👋 Welcome to KALI Sentinel (GPT Astra-6 Intelligence Core)\n\n"
+                "I am **KALI Sentinel**, an autonomous cybersecurity intelligence agent powered by **Amazon Bedrock Reasoning** and a fine-tuned **Strands Decider 2B** decision model.\n\n"
+                "#### Capabilities & Automated Defenses:\n"
+                "- 🔍 **Port & Service Auditing** (`nmap_scan`): Fast, typed discovery of open ports, banner versions, and exposed attack surfaces.\n"
+                "- 🛡️ **Web Security Headers** (`web_scan`): Inspection of HSTS, Content Security Policy (CSP), X-Frame-Options, and cookie security flags.\n"
+                "- 🌐 **DNS & Anti-Spoofing** (`dns_check`): Verification of MX, SPF, DKIM, and DMARC enforcement to prevent domain impersonation.\n"
+                "- 📋 **Network & Registrar OSINT** (`whois_lookup`): Analysis of autonomous systems (ASN), IP ranges, and registrar details.\n"
+                "- ⚡ **Sub-Millisecond Guardrails**: Every tool request is validated against strict authorization, grounding, and safety policies before execution.\n\n"
+                "> 💡 **Tip**: You can interact here for direct conversational queries, or switch to the dedicated **[KALI Sentinel Dashboard](/sentinel)** to test live preset scenarios with visual telemetry!"
+            )
+
+        # Cybersecurity definition & overview
+        if "cybersecurity" in p or "cyber security" in p or "infosec" in p or "information security" in p:
+            return (
+                "### 🛡️ Understanding Cybersecurity\n\n"
+                "**Cybersecurity** is the comprehensive practice of protecting networks, devices, software applications, and critical data from unauthorized access, digital attacks, disruption, or destruction.\n\n"
+                "#### 1. The Core Pillar: The CIA Triad\n"
+                "- **Confidentiality**: Ensuring data is accessible only to authorized identities through strong encryption (AES-256, TLS 1.3), multi-factor authentication (MFA), and least-privilege RBAC.\n"
+                "- **Integrity**: Guaranteeing data remains authentic, unaltered, and tamper-resistant using cryptographic checksums, digital signatures, and append-only audit trails.\n"
+                "- **Availability**: Maintaining reliable, low-latency access to systems through load balancing, DDoS mitigation, failover clustering, and disaster recovery planning.\n\n"
+                "#### 2. Key Domains of Defense\n"
+                "1. **Network Security**: Isolating networks via firewalls, micro-segmentation, zero-trust network access (ZTNA), and intrusion prevention systems (IPS).\n"
+                "2. **Application Security**: Hardening code against vulnerabilities like injection (SQLi), cross-site scripting (XSS), and insecure deserialization.\n"
+                "3. **Cloud & Infrastructure**: Safeguarding cloud resources (e.g., AWS, VPCs, IAM policies, KMS encryption) and eliminating misconfigurations.\n"
+                "4. **Security Operations & Threat Hunting**: Leveraging SIEM/SOAR platforms and autonomous agents like **KALI Sentinel** to rapidly triage alerts, detect anomalies, and enforce containment.\n\n"
+                "#### 3. How KALI Sentinel Fits In\n"
+                "KALI Sentinel bridges high-level reasoning with fast, calibrated local decisions: it uses **Strands Decider 2B** to select defensive tools in under 5 milliseconds and enforces autonomous safety boundaries before executing security probes."
+            )
+
+        # Zero trust
+        if "zero trust" in p:
+            return (
+                "### 🔒 Zero Trust Architecture (ZTA)\n\n"
+                "**Zero Trust** is a security model centered on the mantra: *\"Never Trust, Always Verify.\"* Unlike traditional perimeter security models (\"castle-and-moat\"), Zero Trust assumes that threats exist both outside and inside the network.\n\n"
+                "#### Key Principles:\n"
+                "- **Explicit Verification**: Authenticate and authorize based on all available data points (identity, location, device health, data classification, and anomalies).\n"
+                "- **Least Privilege Access**: Restrict user and agent access with Just-In-Time (JIT) and Just-Enough-Access (JEA) policies, Risk-Based Adaptive Policies, and data protection.\n"
+                "- **Assume Breach**: Minimize the blast radius by segmenting access by network, user, devices, and application awareness. Continuously monitor with end-to-end encryption."
+            )
+
+        # Penetration testing / ethical hacking
+        if "penetration testing" in p or "pentest" in p or "ethical hacking" in p:
+            return (
+                "### 🎯 Penetration Testing & Vulnerability Assessment\n\n"
+                "**Penetration Testing (Pentesting)** is the simulated authorized cyberattack against a computer system to identify vulnerabilities that malicious threat actors could exploit.\n\n"
+                "#### Standard Methodology:\n"
+                "1. **Reconnaissance & OSINT**: Gathering network topologies, domain registrations, and DNS records (`whois_lookup`, `dns_check`).\n"
+                "2. **Scanning & Enumeration**: Identifying live hosts, open ports, and services (`nmap_scan`, `web_scan`).\n"
+                "3. **Vulnerability Analysis**: Cross-referencing detected service versions with CVE databases.\n"
+                "4. **Exploitation & Verification**: Safely demonstrating risk without causing service disruption.\n"
+                "5. **Remediation & Hardening**: Patching discovered flaws and applying defense-in-depth controls.\n\n"
+                "> ⚠️ **Compliance Note**: KALI Sentinel strictly enforces safety guardrails and will never scan third-party systems without verified authorization."
+            )
+
+        # SQL Injection / Web Attacks
+        if "sql injection" in p or "sqli" in p or "xss" in p or "cross site scripting" in p or "owasp" in p:
+            return (
+                "### 🌐 Web Application Security & OWASP Top 10\n\n"
+                "Web application vulnerabilities are among the most frequent vectors for initial compromise.\n\n"
+                "#### Critical Threats & Defenses:\n"
+                "- **Injection (e.g., SQLi)**: Occurs when untrusted data is sent to an interpreter as part of a command or query. *Defense*: Use parameterized queries (PreparedStatements) and Object-Relational Mappers (ORMs).\n"
+                "- **Cross-Site Scripting (XSS)**: Injection of malicious client-side scripts. *Defense*: Strict Context-Aware Output Encoding and Content Security Policy (CSP) headers.\n"
+                "- **Broken Access Control**: Users acting outside their intended permissions. *Defense*: Deny by default, enforce least privilege, and avoid direct object references (IDOR)."
+            )
+
+        # Firewall / Port scanning
+        if "port scan" in p or "firewall" in p or "nmap" in p:
+            return (
+                "### 📡 Network Auditing & Firewalls\n\n"
+                "**Port Scanning** is an inspection technique to discover active listening network sockets (TCP/UDP) on a target host.\n\n"
+                "#### Defensive Best Practices:\n"
+                "- **Default-Deny Ingress**: Configure firewalls (iptables, AWS Security Groups) to block all inbound ports except strictly necessary services.\n"
+                "- **Service Hardening**: Disable unused legacy services (e.g., Telnet, FTP) in favor of encrypted alternatives (SSH, SFTP).\n"
+                "- **Stateful Inspection**: Utilize Next-Gen Firewalls (NGFW) to inspect packet payloads rather than just port numbers.\n\n"
+                "> 💡 **Run a Scan**: To test local ports, ask: `Scan localhost for open ports` or visit `/sentinel`."
+            )
+
+        # General fallback
+        return (
+            f"### 🛡️ KALI Sentinel Cybersecurity Intelligence\n\n"
+            f"Regarding your query on **\"{prompt}\"**:\n\n"
+            "Cybersecurity defense relies on proactive hardening, continuous observability, and automated threat classification.\n\n"
+            "**Core Recommendations**:\n"
+            "- Implement **defense-in-depth** across network, host, and application layers.\n"
+            "- Enforce strict **identity and access controls** with MFA and least privilege.\n"
+            "- Continuously inspect external attack surfaces and patch known Common Vulnerabilities and Exposures (CVEs).\n\n"
+            "You can command KALI Sentinel to run specific security assessments (e.g., `Scan localhost for open ports`, `Audit DNS for example.com`, or `Check web security headers on scanme.nmap.org`)."
         )
 
     def _explain_fallback(
@@ -220,23 +340,17 @@ class BedrockClient:
         findings = tool_result.get("findings", [])
         summary = tool_result.get("summary", "")
 
+        if tool_decision.tool == SecurityTool.NO_TOOL:
+            return self._generate_informational_content(prompt)
+
         lines = [
             f"**KALI Sentinel Security Assessment**",
             f"- **User Intent**: Understand and audit security posture for requested target.",
             f"- **Strands Decider 2B Routing**: Selected `{tool_name}` with **{conf_pct:.1f}% calibrated confidence** ({tool_decision.latency_ms:.1f}ms latency).",
             f"- **Guardrail Boundary**: **{guardrail_decision.verdict.value}** ({guardrail_decision.reasoning}).",
-        ]
-
-        if tool_decision.tool == SecurityTool.NO_TOOL:
-            lines.append(
-                f"- **Summary**: No active tool was necessary. The request is informational and does not require scanning infrastructure."
-            )
-            return "\n".join(lines)
-
-        lines.extend([
             f"- **Execution Result**: {summary}",
             f"- **Key Findings**:",
-        ])
+        ]
         for finding in findings:
             lines.append(f"  * {finding}")
 

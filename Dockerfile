@@ -27,7 +27,7 @@ COPY pyproject.toml README.md render_start.py ./
 COPY src/ src/
 
 # Copy built frontend static files into the server static directory
-COPY --from=frontend /app/src/OpenDEMON/server/static src/OpenDEMON/server/static/
+COPY --from=frontend /src/OpenDEMON/server/static src/OpenDEMON/server/static/
 
 # Install the package with server extras (no Rust extension needed for web deploy)
 RUN uv pip install --system ".[server]"

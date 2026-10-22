@@ -1,21 +1,26 @@
 import asyncio
-import asyncpg
-import ssl
+from dotenv import load_dotenv
+load_dotenv(".env", override=True)
 
-async def main():
-    try:
-        ctx = ssl.create_default_context()
-        ctx.check_hostname = False
-        ctx.verify_mode = ssl.CERT_NONE
-        
-        conn = await asyncpg.connect(
-            "postgresql://postgres.ukktdaqtiujypfhigwld:Tjbcisahgcu%2A%26%25%25HVJgc43Hvhgf%26%258KJB68KJVUy9%2A%29KJBkh%5E%2A@aws-0-ap-northeast-2.pooler.supabase.com:5432/postgres",
-            ssl=ctx
-        )
-        print("Success! Connected.")
-        await conn.execute('SELECT 1')
-        await conn.close()
-    except Exception as e:
-        print(f"Error: {type(e).__name__} - {e}")
+from OpenDEMON.database.engine import _build_engine
+from OpenDEMON.database.repositories.users import UserRepository
+from OpenDEMON.server.auth_routes import local_user_store
+from sqlalchemy.ext.asyncio import async_sessionmaker
 
-asyncio.run(main())
+async def sync():
+    eng = _build_engine()
+    factory = async_sessionmaker(bind=eng, autocommit=False, autoflush=False)
+    async with factory() as session:
+        repo = UserRepository(session)
+        for email, u in local_user_store._users.items():
+            db_u = await repo.get_by_email(email)
+            if not db_u:
+                name = u.get("name", "Operative")
+                print(f"Syncing {email} ({name}) to Supabase...")
+                await repo.create_user(email=email, name=name)
+            else:
+                print(f"{email} already exists in Supabase.")
+    await eng.dispose()
+    print("Sync complete!")
+
+asyncio.run(sync())

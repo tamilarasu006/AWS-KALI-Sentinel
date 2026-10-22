@@ -35,8 +35,23 @@ class StrandsGuardrailDecider:
 
         target = intent.target.strip() if intent.target else ""
 
-        # 1. NO_TOOL is always allowed (safe informational flow)
-        if tool == SecurityTool.NO_TOOL:
+        # 1. Check for banned destructive or offensive keywords
+        request_lower = intent.raw_request.lower()
+        is_conceptual = any(
+            request_lower.startswith(q)
+            for q in ["what is", "how does", "explain", "why is", "tell me about", "what are"]
+        )
+        malicious_patterns = [
+            "steal", "malware", "ransomware", "botnet", "ddos", "dos attack",
+            "credential harvesting", "deploy malware", "steal credentials",
+        ]
+        if not is_conceptual:
+            malicious_patterns.extend(["exploit", "credential", "bypass", "unauthorized"])
+
+        has_malicious_terms = any(term in request_lower for term in malicious_patterns)
+
+        # 2. NO_TOOL is allowed for non-malicious conversational flow
+        if tool == SecurityTool.NO_TOOL and not has_malicious_terms:
             return GuardrailDecision(
                 verdict=GuardrailVerdict.ALLOW,
                 probability=1.0,
@@ -45,16 +60,8 @@ class StrandsGuardrailDecider:
                 latency_ms=0.1,
             )
 
-        # 2. Hard Policy Check: Scope & Target Authorization
+        # 3. Hard Policy Check: Scope & Target Authorization
         is_authorized = self.config.is_target_authorized(target)
-
-        # 3. Check for banned destructive or offensive keywords
-        malicious_patterns = [
-            "steal", "exploit", "ddos", "dos", "malware", "ransomware",
-            "botnet", "credential", "bypass", "unauthorized", "persistence",
-        ]
-        request_lower = intent.raw_request.lower()
-        has_malicious_terms = any(term in request_lower for term in malicious_patterns)
 
         # 4. Attempt Strands Decider Noul query if live endpoint available
         noul_prob = 0.95 if is_authorized and not has_malicious_terms else 0.05
@@ -94,6 +101,15 @@ class StrandsGuardrailDecider:
                     f"({', '.join(sorted(self.config.authorized_targets))}). "
                     f"Only authorized owned/lab environments may be tested."
                 ),
+                target=target,
+                latency_ms=round(latency_ms, 2),
+            )
+
+        if not intent.authorization_claimed:
+            return GuardrailDecision(
+                verdict=GuardrailVerdict.REJECT,
+                probability=0.05,
+                reasoning="Rejected: Task lacks confirmed authorization. Execution blocked.",
                 target=target,
                 latency_ms=round(latency_ms, 2),
             )

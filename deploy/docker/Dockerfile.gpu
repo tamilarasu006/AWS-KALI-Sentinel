@@ -20,7 +20,7 @@ COPY src/ src/
 COPY scripts/install scripts/install
 COPY deploy/windows deploy/windows
 
-COPY --from=frontend /src/opendemon/server/static src/opendemon/server/static/
+COPY --from=frontend /src/OpenDEMON/server/static src/OpenDEMON/server/static/
 
 RUN pip install --no-cache-dir uv && \
     uv pip install --system ".[server]"

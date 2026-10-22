@@ -88,11 +88,17 @@ export function AuthFlow() {
     try {
       if (flow === 'register') {
         await registerUser({ name, email, password });
-        setFlow('login');
-        setErrorMsg('Operative deployed. Please initiate connection.');
+        try {
+          await loginUser({ email, password });
+          navigate('/sentinel');
+          return;
+        } catch {
+          setFlow('login');
+          setErrorMsg('Operative deployed. Please initiate connection.');
+        }
       } else if (flow === 'login') {
         await loginUser({ email, password });
-        navigate('/'); // Redirect to main app
+        navigate('/sentinel');
       } else if (flow === 'forgot') {
         await forgotPassword(email);
         setFlow('otp');
@@ -198,8 +204,16 @@ export function AuthFlow() {
           <form onSubmit={handleSubmit} className="space-y-6">
             
             {errorMsg && (
-              <div className="text-xs font-mono text-[#FF3D8A] bg-[#FF3D8A]/10 border border-[#FF3D8A]/20 rounded-[4px] p-3 flex items-start gap-2">
-                <X size={14} className="shrink-0 mt-0.5" />
+              <div className={`text-xs font-mono rounded-[4px] p-3 flex items-start gap-2 ${
+                errorMsg.includes('deployed') || errorMsg.includes('confirmed')
+                  ? 'text-[#39FF88] bg-[#39FF88]/10 border border-[#39FF88]/20'
+                  : 'text-[#FF3D8A] bg-[#FF3D8A]/10 border border-[#FF3D8A]/20'
+              }`}>
+                {errorMsg.includes('deployed') || errorMsg.includes('confirmed') ? (
+                  <Check size={14} className="shrink-0 mt-0.5 text-[#39FF88]" />
+                ) : (
+                  <X size={14} className="shrink-0 mt-0.5 text-[#FF3D8A]" />
+                )}
                 <span>{errorMsg}</span>
               </div>
             )}

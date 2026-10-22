@@ -147,10 +147,10 @@ class StrandsToolDecider:
 
         # Recon indicators
         if any(w in combined for w in ["recon", "passive", "osint", "whois", "discovery", "footprint", "subdomain"]):
-            scores["recon"] += 0.80
+            scores["recon"] += 0.85
 
         # Port scan indicators
-        if any(w in combined for w in ["port", "listening", "service", "socket", "open port", "nmap", "tcp", "udp"]):
+        if any(w in combined for w in ["port", "listening", "service", "socket", "open port", "tcp", "udp"]) or ("nmap" in combined and "recon" not in combined and "scanme.nmap.org" not in combined):
             scores["port_scan"] += 0.85
 
         # Web scan indicators
@@ -162,7 +162,7 @@ class StrandsToolDecider:
             scores["dns_check"] += 0.85
 
         # Conversational / safe / non-tool indicators
-        if any(w in combined for w in ["hello", "hi", "help", "who are you", "what can you do", "explain", "weather", "joke"]):
+        if any(w in combined for w in ["hello", "hi", "help", "who are you", "what can you do", "explain", "weather", "joke", "what is", "why is", "how does", "tell me", "concept", "principle", "defense in depth", "least privilege", "definition", "overview"]) or action_lower == "informational_query":
             scores["no_tool"] += 0.90
 
         # Target absence usually suggests no_tool unless general query
@@ -185,6 +185,6 @@ class StrandsToolDecider:
             confidence=round(confidence, 4),
             probabilities=probabilities,
             latency_ms=round(elapsed_ms, 2),
-            model="strands-decider-2b-calibrated",
-            rationale=f"Selected '{best_choice}' with {confidence * 100:.1f}% confidence.",
+            model="strands-decider-2b-dev-adapter",
+            rationale=f"Selected '{best_choice}' via Strands Decider 2B development adapter ({confidence * 100:.1f}% confidence).",
         )
