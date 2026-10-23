@@ -379,18 +379,12 @@ class BedrockAdapter:
                 f"- Mid-week operational peak: All autonomous defensive guardrails and Strands Decider 2B models are active and calibrated. Scheduled infrastructure scans and patch audits can be initiated directly."
             )
 
-        # 2. Live Hosted KALI Model API (Qwen3-8B)
-        try:
-            from kali_sentinel.model_client import get_kali_client
-            client = get_kali_client(self.config.kali_api_url)
-            live_reply = client.generate(prompt)
-            if live_reply and len(live_reply.strip()) > 10:
-                return live_reply
-        except Exception as exc:
-            logger.debug("Live KALI Model API skipped: %s", exc)
+        # 2. Fast Conversational Greetings & Persona (GPT Astra-6 / KALI Sentinel - Instant Response)
+        greeting_words = ["hi", "hello", "hey", "greetings", "good morning", "good afternoon", "good evening", "howdy", "sup", "yo"]
+        is_greeting = any(p == w or p.startswith(w + " ") or p.startswith(w + "!") or p.startswith(w + ",") or p.startswith(w + ".") for w in greeting_words)
+        is_persona = any(k in p for k in ["who are you", "what are you", "what can you do", "help", "astra", "tell me about yourself", "ping", "status"])
 
-        # 2. Greetings & Persona (GPT Astra-6 / KALI Sentinel)
-        if any(p.startswith(w) for w in ["hi", "hello", "hey", "greetings", "good morning", "good afternoon", "good evening", "howdy"]) or any(k in p for k in ["who are you", "what are you", "what can you do", "help", "astra"]):
+        if is_greeting or is_persona:
             return (
                 "### 👋 Welcome to KALI Sentinel (GPT Astra-6 Intelligence Core)\n\n"
                 "I am **KALI Sentinel**, an autonomous cybersecurity intelligence and engineering copilot. I combine high-level reasoning with the sub-millisecond precision of **Strands Decider 2B** and strict safety guardrails.\n\n"
@@ -405,6 +399,17 @@ class BedrockAdapter:
                 "- **Live Temporal & System Diagnostics**: Accurate date, time, weather, and real-time operational metrics.\n\n"
                 "> 💡 **Ready to test?** Try asking: `Check open ports on my authorized lab server`, `Audit web security headers on localhost:8080`, or ask any technical question!"
             )
+
+        # 3. Live Hosted KALI Model API (Qwen3-8B) for complex questions & reasoning
+        if not getattr(self.config, "bedrock_mock_fallback", False):
+            try:
+                from kali_sentinel.model_client import get_kali_client
+                client = get_kali_client(self.config.kali_api_url)
+                live_reply = client.generate(prompt)
+                if live_reply and len(live_reply.strip()) > 10:
+                    return live_reply
+            except Exception as exc:
+                logger.debug("Live KALI Model API skipped: %s", exc)
 
         # 3. Cybersecurity & Infosec Overview
         if "cybersecurity" in p or "cyber security" in p or "infosec" in p or "information security" in p:

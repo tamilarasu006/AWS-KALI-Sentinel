@@ -362,7 +362,7 @@ def create_sentinel_app():
             import asyncio
             agent = get_agent()
             prompt = self._extract_prompt(messages) or "System health status"
-            resp = agent.run(prompt)
+            resp = await asyncio.to_thread(agent.run, prompt)
             content = resp.explanation
             words = content.split(" ")
             for i, word in enumerate(words):
@@ -383,8 +383,9 @@ def create_sentinel_app():
 
     class SentinelKaliOrchestrator:
         async def run(self, query_text: str, user_id: str = "default", conversation_id: str = "default") -> str:
+            import asyncio
             agent = get_agent()
-            resp = agent.run(query_text or "System status")
+            resp = await asyncio.to_thread(agent.run, query_text or "System status")
             return resp.explanation
 
     app = FastAPI(

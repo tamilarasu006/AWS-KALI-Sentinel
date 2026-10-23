@@ -1222,14 +1222,18 @@ export const verifyOtp = async (otp: string) => {
 };
 
 export const getCurrentUser = async () => {
-  const res = await apiFetch('/v1/auth/me');
-  if (!res.ok) {
-    let detail = 'Not authenticated';
-    try {
-      const err = await res.json();
-      detail = err.detail || detail;
-    } catch {}
-    throw new Error(detail);
+  const token = getApiKey();
+  if (!token) {
+    return null;
   }
-  return res.json();
+  try {
+    const res = await apiFetch('/v1/auth/me');
+    if (!res.ok) {
+      return null;
+    }
+    return await res.json();
+  } catch {
+    return null;
+  }
 };
+

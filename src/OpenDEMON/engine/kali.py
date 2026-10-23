@@ -83,7 +83,31 @@ class KALIEngine(InferenceEngine):
         if not user_prompt:
             user_prompt = self._format_messages(messages)
 
-        # 1. Try Live Hosted KALI Model API
+        # 1. Fast conversational greetings & persona check (<1ms)
+        p = user_prompt.strip().lower()
+        greeting_words = ["hi", "hello", "hey", "greetings", "good morning", "good afternoon", "good evening", "howdy", "sup", "yo"]
+        is_greeting = any(p == w or p.startswith(w + " ") or p.startswith(w + "!") or p.startswith(w + ",") or p.startswith(w + ".") for w in greeting_words)
+        is_persona = any(k in p for k in ["who are you", "what are you", "what can you do", "help", "astra", "tell me about yourself", "ping", "status"])
+        if is_greeting or is_persona:
+            try:
+                from kali_sentinel.agent.bedrock import get_bedrock_adapter
+                fast_reply = get_bedrock_adapter()._generate_astra6_response(user_prompt)
+                prompt_tokens = estimate_prompt_tokens(messages)
+                completion_tokens = max(1, len(fast_reply) // 4)
+                return {
+                    "content": fast_reply,
+                    "model": model,
+                    "usage": {
+                        "prompt_tokens": prompt_tokens,
+                        "completion_tokens": completion_tokens,
+                        "total_tokens": prompt_tokens + completion_tokens,
+                    },
+                    "finish_reason": "stop",
+                }
+            except Exception as exc:
+                logger.debug("Fast-path greeting fallback: %s", exc)
+
+        # 2. Try Live Hosted KALI Model API
         try:
             from kali_sentinel.model_client import get_kali_client
             client = get_kali_client()
@@ -160,7 +184,26 @@ class KALIEngine(InferenceEngine):
         if not user_prompt:
             user_prompt = self._format_messages(messages)
 
-        # 1. Try Live Hosted KALI Model API
+        # 1. Fast conversational greetings & persona check (<1ms)
+        p = user_prompt.strip().lower()
+        greeting_words = ["hi", "hello", "hey", "greetings", "good morning", "good afternoon", "good evening", "howdy", "sup", "yo"]
+        is_greeting = any(p == w or p.startswith(w + " ") or p.startswith(w + "!") or p.startswith(w + ",") or p.startswith(w + ".") for w in greeting_words)
+        is_persona = any(k in p for k in ["who are you", "what are you", "what can you do", "help", "astra", "tell me about yourself", "ping", "status"])
+        if is_greeting or is_persona:
+            try:
+                import asyncio
+                from kali_sentinel.agent.bedrock import get_bedrock_adapter
+                fast_reply = get_bedrock_adapter()._generate_astra6_response(user_prompt)
+                words = fast_reply.split(" ")
+                for i, w in enumerate(words):
+                    suffix = " " if i < len(words) - 1 else ""
+                    yield w + suffix
+                    await asyncio.sleep(0.01)
+                return
+            except Exception as exc:
+                logger.debug("Fast-path greeting stream fallback: %s", exc)
+
+        # 2. Try Live Hosted KALI Model API
         try:
             import asyncio
             from kali_sentinel.model_client import get_kali_client

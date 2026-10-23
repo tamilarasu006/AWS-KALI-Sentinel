@@ -125,28 +125,40 @@ async def chat_completions(request_body: ChatCompletionRequest, request: Request
             cache_key = f"{user_id}:{conversation_id}:{query_text}"
             
             if request_body.stream:
-                if cache_key in _KALI_CACHE:
-                    kali_text = _KALI_CACHE[cache_key]
-                else:
-                    kali_text = await kali_orchestrator.run(query_text, user_id, conversation_id)
-                    _KALI_CACHE[cache_key] = kali_text
-                    if len(_KALI_CACHE) > 1000:
-                        _KALI_CACHE.popitem(last=False)
-                        
                 chunk_id = f"chatcmpl-{uuid.uuid4().hex[:12]}"
 
                 async def _kali_stream():
                     import json as _json
+                    import asyncio
+
+                    # 1. Immediately yield initial role chunk so client connection starts without lag
                     first = ChatCompletionChunk(
                         id=chunk_id, model=_model_for_kali,
                         choices=[StreamChoice(delta=DeltaMessage(role="assistant"))],
                     )
                     yield f"data: {first.model_dump_json()}\n\n"
-                    content_chunk = ChatCompletionChunk(
-                        id=chunk_id, model=_model_for_kali,
-                        choices=[StreamChoice(delta=DeltaMessage(content=kali_text))],
-                    )
-                    yield f"data: {content_chunk.model_dump_json()}\n\n"
+
+                    # 2. Retrieve from cache or run orchestrator
+                    if cache_key in _KALI_CACHE:
+                        kali_text = _KALI_CACHE[cache_key]
+                    else:
+                        kali_text = await kali_orchestrator.run(query_text, user_id, conversation_id)
+                        _KALI_CACHE[cache_key] = kali_text
+                        if len(_KALI_CACHE) > 1000:
+                            _KALI_CACHE.popitem(last=False)
+
+                    # 3. Stream text progressively word-by-word for instant, fluid feedback
+                    words = (kali_text or "").split(" ")
+                    for i, w in enumerate(words):
+                        suffix = " " if i < len(words) - 1 else ""
+                        content_chunk = ChatCompletionChunk(
+                            id=chunk_id, model=_model_for_kali,
+                            choices=[StreamChoice(delta=DeltaMessage(content=w + suffix))],
+                        )
+                        yield f"data: {content_chunk.model_dump_json()}\n\n"
+                        await asyncio.sleep(0.01)
+
+                    # 4. Finish chunk and DONE signal
                     finish = ChatCompletionChunk(
                         id=chunk_id, model=_model_for_kali,
                         choices=[StreamChoice(delta=DeltaMessage(), finish_reason="stop")],
