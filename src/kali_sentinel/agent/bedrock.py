@@ -352,10 +352,10 @@ class BedrockAdapter:
         return f"Informational and analytical inquiry: '{prompt[:50]}'."
 
     def _generate_astra6_response(self, prompt: str) -> str:
-        """GPT Astra-6 intelligence core delivering rich, articulate, direct responses."""
+        """KALI Model intelligence core delivering rich, articulate, direct responses."""
         p = prompt.strip().lower()
 
-        # 1. Temporal & Climate / Date & Time Intelligence
+        # 1. Temporal & Climate / Date & Time Intelligence (local system clock)
         if any(k in p for k in ["date", "climate", "weather", "time", "today", "tomorrow", "calendar", "day", "clock"]):
             now = datetime.now()
             date_str = now.strftime("%A, %B %d, %Y")
@@ -378,6 +378,16 @@ class BedrockAdapter:
                 f"### 🛡️ KALI Operational Context for Today\n"
                 f"- Mid-week operational peak: All autonomous defensive guardrails and Strands Decider 2B models are active and calibrated. Scheduled infrastructure scans and patch audits can be initiated directly."
             )
+
+        # 2. Live Hosted KALI Model API (Qwen3-8B)
+        try:
+            from kali_sentinel.model_client import get_kali_client
+            client = get_kali_client(self.config.kali_api_url)
+            live_reply = client.generate(prompt)
+            if live_reply and len(live_reply.strip()) > 10:
+                return live_reply
+        except Exception as exc:
+            logger.debug("Live KALI Model API skipped: %s", exc)
 
         # 2. Greetings & Persona (GPT Astra-6 / KALI Sentinel)
         if any(p.startswith(w) for w in ["hi", "hello", "hey", "greetings", "good morning", "good afternoon", "good evening", "howdy"]) or any(k in p for k in ["who are you", "what are you", "what can you do", "help", "astra"]):

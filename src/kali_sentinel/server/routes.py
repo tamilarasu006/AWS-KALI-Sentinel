@@ -102,6 +102,8 @@ class HealthResponse(BaseModel):
     safe_mode: bool
     authorized_targets: List[str]
     database: Optional[Dict[str, Any]] = None
+    kali_api_url: Optional[str] = None
+    kali_model: Optional[str] = None
 
 
 def _run_agent_workflow(
@@ -264,6 +266,8 @@ async def get_health() -> HealthResponse:
         safe_mode=cfg.safe_mode,
         authorized_targets=sorted(list(cfg.authorized_targets)),
         database=db_health,
+        kali_api_url=cfg.kali_api_url,
+        kali_model=cfg.kali_model_name,
     )
 
 
@@ -432,6 +436,8 @@ def create_sentinel_app():
             "version": "1.0.0",
             "bedrock_live": agent.bedrock.is_live,
             "decider_model": agent.config.strands_decider_model,
+            "kali_api_url": agent.config.kali_api_url,
+            "kali_model": agent.config.kali_model_name,
         }
 
     # Mount OpenDEMON core routes (/v1/models, /v1/info, /v1/savings, etc.)

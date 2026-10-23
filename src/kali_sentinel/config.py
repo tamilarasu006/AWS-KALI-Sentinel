@@ -54,6 +54,10 @@ class SentinelConfig:
     database_url: Optional[str] = None
     database_required: bool = False
 
+    # KALI Model Live API (hosted / ngrok endpoint)
+    kali_api_url: str = "https://unportentous-vanna-unpretentiously.ngrok-free.dev"
+    kali_model_name: str = "Qwen3-8B"
+
     @classmethod
     def from_env(cls) -> SentinelConfig:
         """Construct configuration from environment variables."""
@@ -86,6 +90,8 @@ class SentinelConfig:
             authorized_targets=authorized_targets,
             database_url=os.getenv("DATABASE_URL", None),
             database_required=db_required,
+            kali_api_url=os.getenv("KALI_API_URL", "https://unportentous-vanna-unpretentiously.ngrok-free.dev"),
+            kali_model_name=os.getenv("KALI_MODEL_NAME", "Qwen3-8B"),
         )
 
     def is_target_authorized(self, target: str) -> bool:

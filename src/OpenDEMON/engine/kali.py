@@ -76,6 +76,35 @@ class KALIEngine(InferenceEngine):
         **kwargs: Any,
     ) -> Dict[str, Any]:
         """Generate text using a registered KALI model."""
+        user_prompt = next(
+            (getattr(m, "content", "") for m in reversed(messages) if getattr(getattr(m, "role", None), "value", str(getattr(m, "role", ""))) == "user"),
+            ""
+        )
+        if not user_prompt:
+            user_prompt = self._format_messages(messages)
+
+        # 1. Try Live Hosted KALI Model API
+        try:
+            from kali_sentinel.model_client import get_kali_client
+            client = get_kali_client()
+            live_res = client.generate(user_prompt)
+            if live_res and len(live_res.strip()) > 10:
+                prompt_tokens = estimate_prompt_tokens(messages)
+                completion_tokens = max(1, len(live_res) // 4)
+                return {
+                    "content": live_res,
+                    "model": model,
+                    "usage": {
+                        "prompt_tokens": prompt_tokens,
+                        "completion_tokens": completion_tokens,
+                        "total_tokens": prompt_tokens + completion_tokens,
+                    },
+                    "finish_reason": "stop",
+                }
+        except Exception as exc:
+            logger.debug("KALIEngine live API call skipped: %s", exc)
+
+        # 2. Local Model Fallback
         kali_model = self._registry.get_model(model)
 
         if not kali_model.health():
@@ -124,6 +153,30 @@ class KALIEngine(InferenceEngine):
         **kwargs: Any,
     ) -> AsyncIterator[str]:
         """Stream generated text from a registered KALI model."""
+        user_prompt = next(
+            (getattr(m, "content", "") for m in reversed(messages) if getattr(getattr(m, "role", None), "value", str(getattr(m, "role", ""))) == "user"),
+            ""
+        )
+        if not user_prompt:
+            user_prompt = self._format_messages(messages)
+
+        # 1. Try Live Hosted KALI Model API
+        try:
+            import asyncio
+            from kali_sentinel.model_client import get_kali_client
+            client = get_kali_client()
+            live_res = client.generate(user_prompt)
+            if live_res and len(live_res.strip()) > 10:
+                words = live_res.split(" ")
+                for i, w in enumerate(words):
+                    suffix = " " if i < len(words) - 1 else ""
+                    yield w + suffix
+                    await asyncio.sleep(0.01)
+                return
+        except Exception as exc:
+            logger.debug("KALIEngine live stream skipped: %s", exc)
+
+        # 2. Local Model Fallback
         kali_model = self._registry.get_model(model)
 
         if not kali_model.health():
